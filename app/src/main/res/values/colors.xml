@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="main_mlue">#003D9B</color>
+    <color name="light_mlue">#08003D9B</color>
 </resources>
