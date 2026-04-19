@@ -8,21 +8,52 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import com.example.medictown.R;
+import androidx.recyclerview.widget.GridLayoutManager;
+import com.example.medictown.databinding.FragmentProductBinding;
 
 public class ProductFragment extends Fragment {
-    private ProductViewModel mViewModel;
+    private FragmentProductBinding binding;
+    private ProductViewModel viewModel;
+    private ProductAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_product, container, false);
+        binding = FragmentProductBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-        // TODO: Use the ViewModel
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+
+        setupRecyclerView();
+        observeViewModel();
+    }
+
+    private void setupRecyclerView() {
+        adapter = new ProductAdapter();
+        binding.rvProducts.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        binding.rvProducts.setAdapter(adapter);
+    }
+
+    private void observeViewModel() {
+        viewModel.getFeaturedProducts().observe(getViewLifecycleOwner(), products -> {
+            if (products != null) {
+                adapter.setProductList(products);
+            }
+        });
+
+        // Optional: show loading state
+        // viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+        //     binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        // });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

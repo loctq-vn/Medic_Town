@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.medictown.data.repositories.ProductRepository;
 import com.example.medictown.ui.cart.CartFragment;
 import com.example.medictown.ui.history.HistoryFragment;
 import com.example.medictown.ui.product.ProductFragment;
@@ -22,11 +23,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            // Bỏ padding bottom (set thành 0) vì BottomNavigationView sẽ tự xử lý inset ở dưới
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 

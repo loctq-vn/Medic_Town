@@ -1,9 +1,23 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.MedicTown" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Thiết lập màu xanh làm màu chủ đạo -->
+        <item name="colorPrimary">@color/main_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/light_blue</item>
+        <item name="colorOnPrimaryContainer">@color/main_blue</item>
+
+        <!-- Thay đổi màu của viên thuốc (indicator) -->
+        <item name="colorSecondaryContainer">@color/light_blue</item>
+        <item name="colorOnSecondaryContainer">@color/main_blue</item>
+
+        <!-- Thêm style cho thanh điều hướng -->
+        <item name="bottomNavigationStyle">@style/Widget.Material3.BottomNavigationView</item>
     </style>
 
     <style name="Theme.MedicTown" parent="Base.Theme.MedicTown" />
+
+    <style name="App.ShapeAppearance.Rounded" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">12dp</item>
+    </style>
 </resources>
