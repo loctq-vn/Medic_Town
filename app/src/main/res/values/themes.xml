@@ -1,23 +1,43 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.MedicTown" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Thiết lập màu xanh làm màu chủ đạo -->
-        <item name="colorPrimary">@color/main_blue</item>
+    <style name="Base.Theme.MedicTown" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryContainer">@color/light_blue</item>
-        <item name="colorOnPrimaryContainer">@color/main_blue</item>
-
-        <!-- Thay đổi màu của viên thuốc (indicator) -->
-        <item name="colorSecondaryContainer">@color/light_blue</item>
-        <item name="colorOnSecondaryContainer">@color/main_blue</item>
-
-        <!-- Thêm style cho thanh điều hướng -->
-        <item name="bottomNavigationStyle">@style/Widget.Material3.BottomNavigationView</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="android:windowBackground">@color/surface</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+        <item name="colorOutlineVariant">@color/outline_variant</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
+        <item name="colorTertiaryContainer">@color/tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/on_tertiary_container</item>
     </style>
 
     <style name="Theme.MedicTown" parent="Base.Theme.MedicTown" />
 
-    <style name="App.ShapeAppearance.Rounded" parent="ShapeAppearance.Material3.SmallComponent">
-        <item name="cornerSize">12dp</item>
+    <style name="App.ShapeAppearance.Small" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">2dp</item>
+    </style>
+
+    <style name="App.ShapeAppearance.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">6dp</item>
+    </style>
+
+    <style name="TextAppearance.Apothecary.Headline" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Apothecary.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textColor">@color/on_surface_variant</item>
+    </style>
+
+    <style name="TextAppearance.Apothecary.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textColor">@color/on_surface_variant</item>
     </style>
 </resources>
