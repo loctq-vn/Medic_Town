@@ -37,6 +37,11 @@ public class ProductFragment extends Fragment {
 
     private void setupRecyclerView() {
         adapter = new ProductAdapter();
+        adapter.setOnProductClickListener(product -> {
+            android.content.Intent intent = new android.content.Intent(getContext(), ProductDetailActivity.class);
+            intent.putExtra("product", product);
+            startActivity(intent);
+        });
         binding.rvProducts.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.rvProducts.setAdapter(adapter);
     }

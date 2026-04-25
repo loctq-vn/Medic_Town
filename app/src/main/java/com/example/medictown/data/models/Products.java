@@ -1,9 +1,10 @@
 package com.example.medictown.data.models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Products {
+public class Products implements Serializable {
     public String id;
     public String name;
     public String brand;
