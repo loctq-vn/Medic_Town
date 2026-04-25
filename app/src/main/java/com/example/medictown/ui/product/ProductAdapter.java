@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
+import com.example.medictown.R;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.databinding.ItemProductBinding;
 import java.text.NumberFormat;
@@ -49,7 +51,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         public void bind(Products product) {
             binding.tvProductName.setText(product.name);
             binding.tvBrand.setText(product.brand);
-            binding.tvPackaging.setText(product.usage); // Using usage as packaging info for now
+            binding.tvPackaging.setText(product.usage);
 
             NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             binding.tvPrice.setText(formatter.format(product.price));
@@ -64,8 +66,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 binding.tvBadge.setVisibility(View.GONE);
             }
 
-            // Note: In a real app, use Glide or Picasso to load image from product.images.get(0)
-            // binding.imgProduct.setImageResource(...)
+            // Hiển thị hình ảnh sử dụng Glide
+            if (product.images != null && !product.images.isEmpty()) {
+                String imageUrl = product.images.get(0);
+                Glide.with(binding.imgProduct.getContext())
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_launcher_background) // Ảnh tạm trong khi chờ tải
+                        .error(R.drawable.ic_launcher_foreground)       // Ảnh khi lỗi
+                        .into(binding.imgProduct);
+            } else {
+                binding.imgProduct.setImageResource(R.drawable.ic_launcher_background);
+            }
         }
     }
 }

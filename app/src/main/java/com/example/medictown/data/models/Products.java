@@ -5,8 +5,6 @@ import java.util.List;
 
 public class Products {
     public String id;
-    public String category_id;
-    public String seller_id;
     public String name;
     public String brand;
     public double price;

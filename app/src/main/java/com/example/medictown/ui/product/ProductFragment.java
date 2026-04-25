@@ -30,6 +30,9 @@ public class ProductFragment extends Fragment {
 
         setupRecyclerView();
         observeViewModel();
+        
+        // Gọi tải tất cả sản phẩm
+        viewModel.loadAllProducts();
     }
 
     private void setupRecyclerView() {
@@ -39,16 +42,24 @@ public class ProductFragment extends Fragment {
     }
 
     private void observeViewModel() {
+        // Quan sát cả featured và all products để hiển thị
         viewModel.getFeaturedProducts().observe(getViewLifecycleOwner(), products -> {
-            if (products != null) {
+            if (products != null && !products.isEmpty()) {
                 adapter.setProductList(products);
             }
         });
 
-        // Optional: show loading state
-        // viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-        //     binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        // });
+        viewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
+            if (products != null && !products.isEmpty()) {
+                adapter.setProductList(products);
+            }
+        });
+
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (error != null) {
+                android.widget.Toast.makeText(getContext(), error, android.widget.Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
