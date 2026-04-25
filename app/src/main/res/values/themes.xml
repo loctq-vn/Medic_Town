@@ -15,6 +15,7 @@
         <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
         <item name="colorTertiaryContainer">@color/tertiary_container</item>
         <item name="colorOnTertiaryContainer">@color/on_tertiary_container</item>
+        <item name="android:fontFamily">@font/inter</item>
     </style>
 
     <style name="Theme.MedicTown" parent="Base.Theme.MedicTown" />
