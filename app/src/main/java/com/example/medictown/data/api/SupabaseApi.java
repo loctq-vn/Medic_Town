@@ -1,10 +1,14 @@
 package com.example.medictown.data.api;
 
+import com.example.medictown.data.models.AuthRequest;
+import com.example.medictown.data.models.AuthResponse;
 import com.example.medictown.data.models.Products;
 import java.util.List;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface SupabaseApi {
@@ -22,5 +26,18 @@ public interface SupabaseApi {
         @Query("is_featured") String isFeatured,
         @Query("is_active") String isActive,
         @Query("select") String select
+    );
+
+    // Auth Endpoints
+    @POST("signup")
+    Call<AuthResponse> signUp(
+        @Header("apikey") String apiKey,
+        @Body AuthRequest request
+    );
+
+    @POST("token?grant_type=password")
+    Call<AuthResponse> login(
+        @Header("apikey") String apiKey,
+        @Body AuthRequest request
     );
 }

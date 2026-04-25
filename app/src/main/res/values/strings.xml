@@ -2,7 +2,7 @@
     <string name="app_name">MedicTown</string>
     <string name="welcome_back">Chào mừng trở lại</string>
     <string name="login_description">Đăng nhập để mua sắm dược phẩm và quản lý sức khỏe của bạn.</string>
-    <string name="phone_email_label">Số điện thoại hoặc Email</string>
+    <string name="phone_email_label">Địa chỉ Email</string>
     <string name="password_label">Mật khẩu</string>
     <string name="forgot_password">Quên mật khẩu?</string>
     <string name="login_hint">Nhập thông tin của bạn</string>
