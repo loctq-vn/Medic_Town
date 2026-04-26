@@ -42,13 +42,15 @@
 
         <TextView
             android:id="@+id/tv_brand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
             android:layout_marginTop="8dp"
             android:text="BRAND NAME"
             android:textColor="@color/text_gray"
             android:textSize="10sp"
-            android:textAllCaps="true"/>
+            android:textAllCaps="true"
+            android:ellipsize="end"
+            android:maxLines="1"/>
 
         <TextView
             android:id="@+id/tv_product_name"
@@ -64,31 +66,61 @@
 
         <TextView
             android:id="@+id/tv_packaging"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
             android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="Hộp / 30 viên"
             android:textColor="@color/text_gray"
             android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/tv_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:text="500.000đ"
-            android:textColor="@color/main_blue"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:gravity="bottom">
 
-        <TextView
-            android:id="@+id/tv_old_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="600.000đ"
-            android:textColor="@color/old_price_color"
-            android:textSize="12sp"
-            android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tv_old_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="500.000đ"
+                android:textColor="@color/old_price_color"
+                android:textSize="11sp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="450.000đ"
+                    android:textColor="@color/main_blue"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_discount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="#FFE0E0"
+                    android:paddingHorizontal="4dp"
+                    android:paddingVertical="1dp"
+                    android:text="-10%"
+                    android:textColor="#D32F2F"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_add_to_cart"
@@ -99,7 +131,7 @@
             android:backgroundTint="@color/main_blue"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="Thêm vào giỏ"
+            android:text="Xem chi tiết"
             android:textAllCaps="false"
             android:textSize="12sp"
             android:drawableStart="@drawable/ic_cart"
