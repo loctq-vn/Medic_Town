@@ -3,12 +3,19 @@ package com.example.medictown.data.api;
 import com.example.medictown.data.models.AuthRequest;
 import com.example.medictown.data.models.AuthResponse;
 import com.example.medictown.data.models.Products;
+import com.example.medictown.data.models.Users;
+
 import java.util.List;
+
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface SupabaseApi {
@@ -26,6 +33,21 @@ public interface SupabaseApi {
         @Query("is_featured") String isFeatured,
         @Query("is_active") String isActive,
         @Query("select") String select
+    );
+    @GET("users")
+    Call<Users> getUser(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Header("Accept") String accept,
+        @Query("select") String select,
+        @Query("id") String id
+    );
+    @PATCH("users")
+    Call<Void> updateUser(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Query("id") String id,
+        @Body Users user
     );
 
     // Auth Endpoints
