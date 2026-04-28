@@ -44,7 +44,12 @@ public class CartFragment extends Fragment {
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Tạm thời để trống, sau này sẽ viết code chuyển màn hình ở đây
+                if (getActivity() != null) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new com.example.medictown.ui.payment.PaymentFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
     }
