@@ -25,7 +25,6 @@ public class RetrofitClient {
         }
         return retrofitAuth.create(SupabaseApi.class);
     }
-
     private static Retrofit createRetrofit(String baseUrl) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

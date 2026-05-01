@@ -59,9 +59,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.cbSelect.setChecked(itemUI.isSelected());
 
         // Cài đặt sự kiện khi bấm nút (+), (-) và Xóa
-        holder.btnPlus.setOnClickListener(v -> listener.onIncrease(itemUI.getProduct().id));
-        holder.btnMinus.setOnClickListener(v -> listener.onDecrease(itemUI.getProduct().id));
-        holder.btnDelete.setOnClickListener(v -> listener.onDelete(itemUI.getProduct().id));
+        holder.btnPlus.setOnClickListener(v -> listener.onIncrease(itemUI.getCartItemId()));
+        holder.btnMinus.setOnClickListener(v -> listener.onDecrease(itemUI.getCartItemId()));
+        holder.btnDelete.setOnClickListener(v -> listener.onDelete(itemUI.getCartItemId()));
     }
 
     @Override

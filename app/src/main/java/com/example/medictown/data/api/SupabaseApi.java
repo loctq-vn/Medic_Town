@@ -2,15 +2,19 @@ package com.example.medictown.data.api;
 
 import com.example.medictown.data.models.AuthRequest;
 import com.example.medictown.data.models.AuthResponse;
+import com.example.medictown.data.models.CartItemRequest;
+import com.example.medictown.data.models.CartItemResponse;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.data.models.Users;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
@@ -61,5 +65,25 @@ public interface SupabaseApi {
     Call<AuthResponse> login(
         @Header("apikey") String apiKey,
         @Body AuthRequest request
+    );
+
+    @POST("rest/v1/cart_items")
+    Call<Void> addToCart(@Body CartItemRequest body);
+
+    @GET("rest/v1/cart_items")
+    Call<List<CartItemResponse>> getCartItems(
+            @Query("cart_id") String cartIdOperator,
+            @Query("select") String selectQuery
+    );
+
+    @PATCH("rest/v1/cart_items")
+    Call<Void> updateQuantity(
+            @Query("id") String itemIdOperator,
+            @Body Map<String, Integer> body
+    );
+
+    @DELETE("rest/v1/cart_items")
+    Call<Void> deleteItem(
+            @Query("id") String itemIdOperator
     );
 }

@@ -3,78 +3,85 @@ package com.example.medictown.ui.cart;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.example.medictown.data.models.Products;
+import com.example.medictown.data.models.CartItemResponse;
+import com.example.medictown.data.repositories.CartRepository;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CartViewModel extends ViewModel {
 
-    // Danh sách sản phẩm trong giỏ (Dùng MutableLiveData để khi danh sách thay đổi, giao diện tự động update)
     private final MutableLiveData<List<CartItemUI>> cartItemsList = new MutableLiveData<>(new ArrayList<>());
-
-    // Biến lưu tổng tiền
     private final MutableLiveData<Double> totalAmount = new MutableLiveData<>(0.0);
+    private final CartRepository repository;
 
-    // Cho phép Fragment lấy dữ liệu ra để hiển thị
+    // TODO: Replace with authenticated user's cart ID
+    private static final String CURRENT_CART_ID = "replace-with-real-cart-uuid";
+
+    public CartViewModel() {
+        repository = new CartRepository();
+        loadCartFromDB();
+    }
+
     public LiveData<List<CartItemUI>> getCartItems() { return cartItemsList; }
     public LiveData<Double> getTotalAmount() { return totalAmount; }
 
-    // 1. CHỨC NĂNG: Tăng hoặc giảm số lượng
-    public void changeQuantity(String productId, int change) {
+    private void loadCartFromDB() {
+        repository.fetchCartItems(CURRENT_CART_ID, new CartRepository.OnCartFetchedListener() {
+            @Override
+            public void onSuccess(List<CartItemResponse> responses) {
+                List<CartItemUI> uiList = new ArrayList<>();
+                for (CartItemResponse res : responses) {
+                    if (res.products != null) {
+                        uiList.add(new CartItemUI(res.id, res.products, res.quantity));
+                    }
+                }
+                cartItemsList.postValue(uiList);
+                calculateTotal();
+            }
+            @Override public void onError(String error) { /* Handle UI error */ }
+        });
+    }
+
+    public void changeQuantity(String cartItemId, int change) {
         List<CartItemUI> currentList = cartItemsList.getValue();
         if (currentList != null) {
             for (int i = 0; i < currentList.size(); i++) {
                 CartItemUI item = currentList.get(i);
-
-                // Tìm đúng cái sản phẩm người dùng vừa bấm
-                if (item.getProduct().id.equals(productId)) {
-                    int newQuantity = item.getQuantity() + change; // Cộng hoặc trừ đi change
-
+                if (item.getCartItemId().equals(cartItemId)) {
+                    int newQuantity = item.getQuantity() + change;
                     if (newQuantity > 0) {
-                        item.setQuantity(newQuantity); // Cập nhật số lượng mới
+                        item.setQuantity(newQuantity);
+                        repository.updateQuantity(cartItemId, newQuantity);
                     } else {
-                        currentList.remove(i); // Nếu lùi về 0 thì đá nó khỏi giỏ hàng luôn
+                        currentList.remove(i);
+                        repository.deleteItem(cartItemId);
                     }
                     break;
                 }
             }
-            cartItemsList.setValue(currentList); // Cập nhật lại danh sách
-            calculateTotal(); // Tính lại tiền
+            cartItemsList.setValue(currentList);
+            calculateTotal();
         }
     }
 
-    // 2. CHỨC NĂNG: Bấm nút thùng rác để xóa
-    public void removeItem(String productId) {
+    public void removeItem(String cartItemId) {
         List<CartItemUI> currentList = cartItemsList.getValue();
         if (currentList != null) {
-            // Xóa món hàng có ID tương ứng
-            currentList.removeIf(item -> item.getProduct().id.equals(productId));
+            currentList.removeIf(item -> item.getCartItemId().equals(cartItemId));
             cartItemsList.setValue(currentList);
-            calculateTotal(); // Tính lại tiền
+            calculateTotal();
+            repository.deleteItem(cartItemId);
         }
     }
 
-    // 3. CHỨC NĂNG: Tính tổng tiền
     private void calculateTotal() {
         List<CartItemUI> currentList = cartItemsList.getValue();
         double total = 0;
         if (currentList != null) {
             for (CartItemUI item : currentList) {
-                if (item.isSelected()) { // Chỉ cộng tiền những món có tick chọn
-                    total += (item.getEffectivePrice() * item.getQuantity());
-                }
+                if (item.isSelected()) total += (item.getEffectivePrice() * item.getQuantity());
             }
         }
-        totalAmount.setValue(total); // Báo cho giao diện biết tổng tiền mới
-    }
-
-    // --- HÀM TẠM THỜI ĐỂ TEST GIAO DIỆN ---
-    public void addDummyData(Products p) {
-        List<CartItemUI> currentList = cartItemsList.getValue();
-        if (currentList != null) {
-            currentList.add(new CartItemUI(p, 1));
-            cartItemsList.setValue(currentList);
-            calculateTotal();
-        }
+        totalAmount.postValue(total);
     }
 }
