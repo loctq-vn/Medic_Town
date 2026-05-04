@@ -5,10 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"
-    tools:context=".ui.profile.ProfileDetailActivity">
+    tools:context=".ui.profile.AddressEditActivity">
 
-    <!-- Header / Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -22,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:title="Thông tin cá nhân"
+            app:title="Thông tin địa chỉ"
             app:titleTextColor="@color/main_blue" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -38,69 +36,82 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Profile Image Section -->
-
-
-            <ImageButton
-                android:id="@+id/ivAvatar"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center"
-                android:backgroundTint="#00FFFFFF"
-                android:onClick="openGallery"></ImageButton>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Avatar"
-                android:textAlignment="center"/>
-
-
-            <!-- Name Field -->
+            <!--location name-->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Họ và tên"
+                android:hint="Tên địa điểm"
                 app:startIconDrawable="@android:drawable/ic_menu_edit">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFullName"
+                    android:id="@+id/location_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Phone Field -->
+            <!--recipient name-->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Tên người nhận"
+                app:startIconDrawable="@android:drawable/ic_menu_edit">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/recipient_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--location name-->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:hint="Số điện thoại"
-                app:startIconDrawable="@android:drawable/ic_menu_call">
+                app:startIconDrawable="@android:drawable/ic_menu_edit">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPhone"
+                    android:id="@+id/phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone" />
+                    android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!--location name-->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Địa chỉ"
+                app:startIconDrawable="@android:drawable/ic_menu_edit">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+
+
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Save Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="20dp"
-        android:text="Lưu thay đổi"
+        android:text="Lưu địa chỉ"
         android:textAllCaps="false"
         android:textSize="16sp"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.medictown.data.api;
 
+import com.example.medictown.data.models.Address;
 import com.example.medictown.data.models.AuthRequest;
 import com.example.medictown.data.models.AuthResponse;
 import com.example.medictown.data.models.Products;
@@ -11,6 +12,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
@@ -49,7 +51,32 @@ public interface SupabaseApi {
         @Query("id") String id,
         @Body Users user
     );
-
+    @POST("address")
+    Call<Void> addAddress(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authToken,
+            @Body Address address
+    );
+    @PATCH("address")
+    Call<Void> setAddress(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authToken,
+            @Query("id") String id,
+            @Body Address address
+    );
+    @GET("address")
+    Call<List<Address>> getAddress(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authToken,
+            @Query("select") String select,
+            @Query("user_id") String userid
+    );
+    @DELETE("address")
+    Call<Void> deleteAddress(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authToken,
+            @Query("id") String id
+    );
     // Auth Endpoints
     @POST("signup")
     Call<AuthResponse> signUp(

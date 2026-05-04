@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,7 +12,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MedicTown" >
+        android:theme="@style/Theme.MedicTown">
+        <activity
+            android:name=".ui.profile.AddressEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.profile.AddressDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.profile.ProfileDetailActivity"
             android:exported="false" />
@@ -24,7 +30,7 @@
             android:exported="true" />
         <activity
             android:name=".ui.auth.LoginActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

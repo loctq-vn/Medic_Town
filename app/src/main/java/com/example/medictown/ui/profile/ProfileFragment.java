@@ -52,13 +52,23 @@ public class ProfileFragment extends Fragment {
 
         setupClickListeners();
         observeViewModel();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
         SessionManager sessionManager = new SessionManager(getContext());
         mViewModel.fetchUserProfile(sessionManager.getUserId());
     }
     private void setupClickListeners() {
         binding.itemProfile.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ProfileDetailActivity.class);
+            intent.putExtra("id", user.id);
+            startActivity(intent);
+        });
+
+        binding.itemAddresses.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), AddressDetailActivity.class);
             intent.putExtra("id", user.id);
             startActivity(intent);
         });

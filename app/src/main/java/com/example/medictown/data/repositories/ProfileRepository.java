@@ -7,11 +7,13 @@ import android.widget.Toast;
 import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SupabaseApi;
 import com.example.medictown.data.api.SupabaseConfig;
+import com.example.medictown.data.models.Address;
 import com.example.medictown.data.models.Users;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -38,6 +40,36 @@ public class ProfileRepository {
                 "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
                 "eq." + user.id,
                 user
+        ).enqueue(callback);
+    }
+    public void getAddress(String userId, Callback<List<Address>> callback){
+        apiService.getAddress(
+                SupabaseConfig.SUPABASE_ANON_KEY,
+                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
+                "*",
+                "eq." + userId
+        ).enqueue(callback);
+    }
+    public void setAddress(Address address, Callback<Void> callback){
+        apiService.setAddress(
+                SupabaseConfig.SUPABASE_ANON_KEY,
+                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
+                "eq." + address.id,
+                address
+        ).enqueue(callback);
+    }
+    public void addAddress(Address address, Callback<Void> callback){
+        apiService.addAddress(
+                SupabaseConfig.SUPABASE_ANON_KEY,
+                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
+                address
+        ).enqueue(callback);
+    }
+    public void deleteAddress(String addressId, Callback<Void> callback){
+        apiService.deleteAddress(
+                SupabaseConfig.SUPABASE_ANON_KEY,
+                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
+                "eq." + addressId
         ).enqueue(callback);
     }
     public void uploadToSupabase(Context context, Uri fileUri, okhttp3.Callback callback){
