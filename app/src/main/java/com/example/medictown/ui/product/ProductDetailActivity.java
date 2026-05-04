@@ -1,25 +1,38 @@
 package com.example.medictown.ui.product;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.bumptech.glide.Glide;
+import com.example.medictown.MainActivity;
 import com.example.medictown.R;
+import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.databinding.ActivityProductDetailBinding;
+import com.example.medictown.ui.cart.CartViewModel;
+
 import java.text.NumberFormat;
 import java.util.Locale;
-import androidx.appcompat.widget.Toolbar;
 
 public class ProductDetailActivity extends AppCompatActivity {
     private ActivityProductDetailBinding binding;
     private Products product;
+    private CartViewModel cartViewModel;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityProductDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        sessionManager = new SessionManager(this);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
 
         // Nhận dữ liệu product từ Intent
         product = (Products) getIntent().getSerializableExtra("product");
@@ -29,6 +42,13 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
 
         setupButtons();
+        observeViewModel();
+    }
+
+    private void observeViewModel() {
+        cartViewModel.addToCartStatus.observe(this, status -> {
+            Toast.makeText(this, status, Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void displayProductDetails() {
@@ -72,7 +92,20 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
         
         binding.btnAddToCartDetail.setOnClickListener(v -> {
-            // Logic thêm vào giỏ hàng
+            if (sessionManager.isLoggedIn()) {
+                String userId = sessionManager.getUserId();
+                String token = sessionManager.getToken();
+                cartViewModel.addToCart(userId, product.id, 1, token);
+            } else {
+                Toast.makeText(this, "Vui lòng đăng nhập để thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        binding.btnCart.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("open_cart", true);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
         });
 
         binding.btnBuyNowDetail.setOnClickListener(v -> {

@@ -3,6 +3,7 @@ package com.example.medictown.data.api;
 import com.example.medictown.data.models.Address;
 import com.example.medictown.data.models.AuthRequest;
 import com.example.medictown.data.models.AuthResponse;
+import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.data.models.Users;
 
@@ -76,6 +77,45 @@ public interface SupabaseApi {
             @Header("apikey") String apiKey,
             @Header("Authorization") String authToken,
             @Query("id") String id
+    );
+
+    // Cart Endpoints
+    @GET("cart_items")
+    Call<List<CartItem>> getCartItems(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Query("user_id") String userId,
+        @Query("product_id") String productId,
+        @Query("select") String select
+    );
+
+    @POST("cart_items")
+    Call<Void> addToCart(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Body CartItem cartItem
+    );
+
+    @PATCH("cart_items")
+    Call<Void> updateCartItem(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Query("id") String id,
+        @Body CartItem cartItem
+    );
+
+    @DELETE("cart_items")
+    Call<Void> deleteCartItem(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Query("id") String id
+    );
+
+    @DELETE("cart_items")
+    Call<Void> clearCart(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Query("user_id") String userId
     );
     // Auth Endpoints
     @POST("signup")
