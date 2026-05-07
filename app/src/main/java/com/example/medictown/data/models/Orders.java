@@ -1,6 +1,7 @@
 package com.example.medictown.data.models;
 
 import java.util.Date;
+import java.util.List;
 
 public class Orders {
     public String id;
@@ -12,11 +13,13 @@ public class Orders {
     public String note;
     public String shipping_name;
     public String shipping_phone;
-    public String shipping_street;
-    public String shipping_district;
-    public String shipping_city;
+
     public Date created_at;
     public Date updated_at;
+
+    public String shipping_address;
+
+    public List<OrderItem> order_items;
 
     public Orders() {}
 }

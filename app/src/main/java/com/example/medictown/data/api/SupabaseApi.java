@@ -117,6 +117,32 @@ public interface SupabaseApi {
         @Header("Authorization") String authToken,
         @Query("user_id") String userId
     );
+
+    // Orders Endpoints
+    @POST("orders")
+    Call<List<com.example.medictown.data.models.Orders>> createOrder(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Header("Prefer") String prefer,
+        @Body com.example.medictown.data.models.Orders order
+    );
+
+    @POST("order_items")
+    Call<Void> createOrderItems(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Body List<com.example.medictown.data.models.OrderItem> orderItems
+    );
+
+    @GET("orders")
+    Call<List<com.example.medictown.data.models.Orders>> getOrders(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Query("user_id") String userIdFilter,
+        @Query("select") String select,
+        @Query("order") String orderBy
+    );
+
     // Auth Endpoints
     @POST("signup")
     Call<AuthResponse> signUp(

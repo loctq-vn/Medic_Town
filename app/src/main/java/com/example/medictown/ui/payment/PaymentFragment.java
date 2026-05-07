@@ -84,11 +84,26 @@ public class PaymentFragment extends Fragment {
         });
 
         binding.btnConfirmPayment.setOnClickListener(v -> {
-            // Future implementation for placing order
+            String paymentMethod = binding.rbCod.isChecked() ? "COD" : "Momo";
+            String note = binding.edtNote.getText().toString();
+            viewModel.placeOrder(sessionManager.getUserId(), paymentMethod, note);
         });
 
         // Xử lý chọn duy nhất 1 phương thức thanh toán
         setupPaymentMethodSelection();
+    }
+
+    private void showSuccessDialog() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Đặt hàng thành công")
+                .setMessage("Đơn hàng của bạn đã được tiếp nhận. Bạn có thể kiểm tra trạng thái trong Lịch sử đơn hàng.")
+                .setPositiveButton("Về trang chủ", (dialog, which) -> {
+                    if (isAdded()) {
+                        requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private void setupPaymentMethodSelection() {
@@ -174,6 +189,23 @@ public class PaymentFragment extends Fragment {
 
         viewModel.totalAmount.observe(getViewLifecycleOwner(), total -> {
             binding.tvTotalValue.setText(formatter.format(total));
+        });
+
+        viewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
+            binding.btnConfirmPayment.setEnabled(!isLoading);
+            binding.btnConfirmPayment.setText(isLoading ? "Đang xử lý..." : "Xác nhận đặt hàng");
+        });
+
+        viewModel.orderSuccess.observe(getViewLifecycleOwner(), success -> {
+            if (success) {
+                showSuccessDialog();
+            }
+        });
+
+        viewModel.error.observe(getViewLifecycleOwner(), error -> {
+            if (error != null) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+            }
         });
     }
 
