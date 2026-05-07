@@ -11,12 +11,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.repositories.ProductRepository;
 import com.example.medictown.ui.cart.CartFragment;
 import com.example.medictown.ui.history.HistoryFragment;
+import com.example.medictown.ui.payment.PaymentFragment;
 import com.example.medictown.ui.product.ProductFragment;
 import com.example.medictown.ui.profile.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,8 +83,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleIntent(Intent intent) {
-        if (intent != null && intent.getBooleanExtra("open_cart", false)) {
-            bottomNav.setSelectedItemId(R.id.nav_cart);
+        if (intent != null) {
+            if (intent.getBooleanExtra("open_cart", false)) {
+                bottomNav.setSelectedItemId(R.id.nav_cart);
+            } else if (intent.hasExtra("open_payment")) {
+                List<CartItem> items = (List<CartItem>) intent.getSerializableExtra("payment_items");
+                if (items != null) {
+                    PaymentFragment paymentFragment = PaymentFragment.newInstance(items);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, paymentFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
         }
     }
 }

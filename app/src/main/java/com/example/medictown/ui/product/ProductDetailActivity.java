@@ -1,6 +1,7 @@
 package com.example.medictown.ui.product;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -12,11 +13,17 @@ import com.bumptech.glide.Glide;
 import com.example.medictown.MainActivity;
 import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
+import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.databinding.ActivityProductDetailBinding;
+import com.example.medictown.databinding.LayoutBuyNowBottomSheetBinding;
 import com.example.medictown.ui.cart.CartViewModel;
+import com.example.medictown.ui.payment.PaymentFragment;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ProductDetailActivity extends AppCompatActivity {
@@ -24,6 +31,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private Products product;
     private CartViewModel cartViewModel;
     private SessionManager sessionManager;
+    private int buyNowQuantity = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +117,76 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
         binding.btnBuyNowDetail.setOnClickListener(v -> {
-            // Logic mua ngay
+            if (sessionManager.isLoggedIn()) {
+                showBuyNowBottomSheet();
+            } else {
+                Toast.makeText(this, "Vui lòng đăng nhập để mua hàng", Toast.LENGTH_SHORT).show();
+            }
         });
+    }
+
+    private void showBuyNowBottomSheet() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        LayoutBuyNowBottomSheetBinding sheetBinding = LayoutBuyNowBottomSheetBinding.inflate(getLayoutInflater());
+        bottomSheetDialog.setContentView(sheetBinding.getRoot());
+
+        buyNowQuantity = 1;
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+        // Set Product Info
+        if (product.images != null && !product.images.isEmpty()) {
+            Glide.with(this).load(product.images.get(0)).into(sheetBinding.imgProduct);
+        }
+
+        double currentPrice = (product.sale_price != null && product.sale_price > 0) ? product.sale_price : product.price;
+        sheetBinding.tvPrice.setText(formatter.format(currentPrice));
+        
+        if (product.sale_price != null && product.sale_price > 0) {
+            sheetBinding.tvOldPrice.setVisibility(View.VISIBLE);
+            sheetBinding.tvOldPrice.setText(formatter.format(product.price));
+            sheetBinding.tvOldPrice.setPaintFlags(sheetBinding.tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            sheetBinding.tvOldPrice.setVisibility(View.GONE);
+        }
+
+        sheetBinding.tvStock.setText("Kho: " + product.stock);
+
+        // Quantity Logic
+        sheetBinding.btnPlus.setOnClickListener(v -> {
+            if (buyNowQuantity < product.stock) {
+                buyNowQuantity++;
+                sheetBinding.tvQuantity.setText(String.valueOf(buyNowQuantity));
+            }
+        });
+
+        sheetBinding.btnMinus.setOnClickListener(v -> {
+            if (buyNowQuantity > 1) {
+                buyNowQuantity--;
+                sheetBinding.tvQuantity.setText(String.valueOf(buyNowQuantity));
+            }
+        });
+
+        // Buy Now Logic
+        sheetBinding.btnBuyNow.setOnClickListener(v -> {
+            CartItem buyNowItem = new CartItem();
+            buyNowItem.product_id = product.id;
+            buyNowItem.products = product;
+            buyNowItem.quantity = buyNowQuantity;
+            buyNowItem.user_id = sessionManager.getUserId();
+
+            ArrayList<CartItem> items = new ArrayList<>();
+            items.add(buyNowItem);
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("open_payment", true);
+            intent.putExtra("payment_items", items);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            
+            bottomSheetDialog.dismiss();
+            finish();
+        });
+
+        bottomSheetDialog.show();
     }
 }
