@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.CartItem;
+import com.example.medictown.ui.payment.PaymentFragment;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,7 +73,25 @@ public class CartFragment extends Fragment {
         });
 
         btnCheckout.setOnClickListener(v -> {
-            // Logic thanh toán
+            List<CartItem> items = mViewModel.cartItems.getValue();
+            if (items != null) {
+                List<CartItem> selectedItems = new ArrayList<>();
+                for (CartItem item : items) {
+                    if (item.isSelected) {
+                        selectedItems.add(item);
+                    }
+                }
+
+                if (!selectedItems.isEmpty()) {
+                    PaymentFragment paymentFragment = PaymentFragment.newInstance(selectedItems);
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, paymentFragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    Toast.makeText(getContext(), "Vui lòng chọn sản phẩm để thanh toán", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
     }
 

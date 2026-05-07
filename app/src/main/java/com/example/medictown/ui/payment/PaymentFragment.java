@@ -4,46 +4,189 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.medictown.R;
+import com.example.medictown.data.api.SessionManager;
+import com.example.medictown.data.models.Address;
+import com.example.medictown.data.models.CartItem;
+import com.example.medictown.databinding.FragmentPaymentBinding;
+import com.example.medictown.databinding.LayoutAddressBottomSheetBinding;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class PaymentFragment extends Fragment {
 
-    private ImageView btnBack;
-    private Button btnConfirmPayment;
+    private FragmentPaymentBinding binding;
+    private PaymentViewModel viewModel;
+    private PaymentProductAdapter adapter;
+    private SessionManager sessionManager;
+    private final NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+    public static PaymentFragment newInstance(List<CartItem> selectedItems) {
+        PaymentFragment fragment = new PaymentFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("selected_items", new ArrayList<>(selectedItems));
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_payment, container, false);
+        binding = FragmentPaymentBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        
+        // Hide BottomNavigationView and AppBar from MainActivity
+        if (getActivity() != null) {
+            View bottomNav = getActivity().findViewById(R.id.bottom_navigation);
+            View appBar = getActivity().findViewById(R.id.app_bar_main);
+            if (bottomNav != null) bottomNav.setVisibility(View.GONE);
+            if (appBar != null) appBar.setVisibility(View.GONE);
+        }
 
-        btnBack = view.findViewById(R.id.btnBack);
-        btnConfirmPayment = view.findViewById(R.id.btnConfirmPayment);
+        viewModel = new ViewModelProvider(this).get(PaymentViewModel.class);
+        sessionManager = new SessionManager(requireContext());
+        
+        setupRecyclerView();
+        observeViewModel();
+        
+        if (getArguments() != null) {
+            List<CartItem> items = (List<CartItem>) getArguments().getSerializable("selected_items");
+            if (items != null) {
+                viewModel.setSelectedItems(items);
+            }
+        }
 
-        btnBack.setOnClickListener(v -> {
-            if (getFragmentManager() != null) {
-                getFragmentManager().popBackStack();
+        if (sessionManager.isLoggedIn()) {
+            viewModel.fetchAddresses(sessionManager.getUserId());
+        }
+
+        binding.cardAddress.setOnClickListener(v -> showAddressSelectionDialog());
+
+        binding.btnBack.setOnClickListener(v -> {
+            if (getParentFragmentManager() != null) {
+                getParentFragmentManager().popBackStack();
             }
         });
 
-        btnConfirmPayment.setOnClickListener(v -> {
-            // Logic xử lý thanh toán thực tế sẽ ở đây
-            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
-            
-            // Sau khi đặt hàng thành công, có thể quay về màn hình chính hoặc lịch sử
-            if (getFragmentManager() != null) {
-                getFragmentManager().popBackStack();
+        binding.btnConfirmPayment.setOnClickListener(v -> {
+            // Future implementation for placing order
+        });
+
+        // Xử lý chọn duy nhất 1 phương thức thanh toán
+        setupPaymentMethodSelection();
+    }
+
+    private void setupPaymentMethodSelection() {
+        binding.rbCod.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                binding.rbMomo.setChecked(false);
+                updatePaymentMethodUI();
             }
         });
+
+        binding.rbMomo.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                binding.rbCod.setChecked(false);
+                updatePaymentMethodUI();
+            }
+        });
+
+        // Cho phép bấm vào cả vùng Card để chọn
+        binding.cardCod.setOnClickListener(v -> binding.rbCod.setChecked(true));
+        binding.cardMomo.setOnClickListener(v -> binding.rbMomo.setChecked(true));
+        
+        // Khởi tạo UI ban đầu
+        updatePaymentMethodUI();
+    }
+
+    private void updatePaymentMethodUI() {
+        int primaryColor = getResources().getColor(R.color.primary);
+        int outlineColor = getResources().getColor(R.color.outline_variant);
+
+        // Highlight thẻ đang được chọn
+        binding.cardCod.setStrokeColor(binding.rbCod.isChecked() ? primaryColor : outlineColor);
+        binding.cardCod.setStrokeWidth(binding.rbCod.isChecked() ? 4 : 2);
+
+        binding.cardMomo.setStrokeColor(binding.rbMomo.isChecked() ? primaryColor : outlineColor);
+        binding.cardMomo.setStrokeWidth(binding.rbMomo.isChecked() ? 4 : 2);
+    }
+
+    private void showAddressSelectionDialog() {
+        List<Address> addresses = viewModel.addresses.getValue();
+        if (addresses == null || addresses.isEmpty()) {
+            Toast.makeText(getContext(), "Bạn chưa có địa chỉ nào. Vui lòng thêm địa chỉ trong hồ sơ.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme);
+        LayoutAddressBottomSheetBinding sheetBinding = LayoutAddressBottomSheetBinding.inflate(getLayoutInflater());
+        bottomSheetDialog.setContentView(sheetBinding.getRoot());
+
+        AddressSelectionAdapter selectionAdapter = new AddressSelectionAdapter();
+        sheetBinding.rvAddresses.setLayoutManager(new LinearLayoutManager(getContext()));
+        sheetBinding.rvAddresses.setAdapter(selectionAdapter);
+        selectionAdapter.setData(addresses, viewModel.selectedAddress.getValue());
+
+        selectionAdapter.setOnAddressSelectedListener(address -> {
+            viewModel.selectAddress(address);
+            bottomSheetDialog.dismiss();
+        });
+
+        bottomSheetDialog.show();
+    }
+
+    private void setupRecyclerView() {
+        adapter = new PaymentProductAdapter();
+        binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvOrderItems.setAdapter(adapter);
+    }
+
+    private void observeViewModel() {
+        viewModel.selectedItems.observe(getViewLifecycleOwner(), items -> {
+            adapter.setItems(items);
+        });
+
+        viewModel.selectedAddress.observe(getViewLifecycleOwner(), address -> {
+            if (address != null) {
+                binding.tvRecipientName.setText(address.recipient_name + " | " + address.phone_number);
+                binding.tvAddressDetail.setText(address.location);
+            }
+        });
+
+        viewModel.subtotal.observe(getViewLifecycleOwner(), subtotal -> {
+            binding.tvSubtotalValue.setText(formatter.format(subtotal));
+        });
+
+        viewModel.totalAmount.observe(getViewLifecycleOwner(), total -> {
+            binding.tvTotalValue.setText(formatter.format(total));
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Show BottomNavigationView and AppBar when leaving
+        if (getActivity() != null) {
+            View bottomNav = getActivity().findViewById(R.id.bottom_navigation);
+            View appBar = getActivity().findViewById(R.id.app_bar_main);
+            if (bottomNav != null) bottomNav.setVisibility(View.VISIBLE);
+            if (appBar != null) appBar.setVisibility(View.VISIBLE);
+        }
+        binding = null;
     }
 }

@@ -1,8 +1,9 @@
 package com.example.medictown.data.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class CartItem {
+public class CartItem implements Serializable {
     public String id;
     public String user_id;
     public String product_id;

@@ -28,6 +28,18 @@
         <item name="cornerSize">6dp</item>
     </style>
 
+    <style name="RoundedSquare" parent="">
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <style name="TextAppearance.Apothecary.Headline" parent="TextAppearance.Material3.HeadlineMedium">
         <item name="android:textColor">@color/on_surface</item>
         <item name="android:letterSpacing">-0.02</item>
