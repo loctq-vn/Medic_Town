@@ -19,6 +19,16 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     private final NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
+    public interface OnOrderClickListener {
+        void onDetailClick(Orders order);
+    }
+
+    private OnOrderClickListener listener;
+
+    public void setOnOrderClickListener(OnOrderClickListener listener) {
+        this.listener = listener;
+    }
+
     public void setOrders(List<Orders> orders) {
         this.ordersList = orders;
         notifyDataSetChanged();
@@ -55,6 +65,12 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             binding.tvOrderDate.setText(order.created_at != null ? "Ngày đặt: " + dateFormat.format(order.created_at) : "");
             binding.tvOrderTotal.setText(formatter.format(order.total_amount));
             binding.tvOrderStatus.setText(getStatusText(order.status));
+
+            binding.btnDetails.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onDetailClick(order);
+                }
+            });
             
             // Show first item name and more if any
             if (order.order_items != null && !order.order_items.isEmpty()) {

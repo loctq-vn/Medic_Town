@@ -2,5 +2,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:color="@color/main_blue" android:state_selected="true" />
     <item android:color="@color/text_gray" android:state_selected="false" />
-    <item android:color="@color/text_gray" /> <!-- Default -->
+    <item android:color="@color/text_gray" />
+    <color name="primary_alpha_05">#0D003D9B</color> <!-- Default -->
 </selector>

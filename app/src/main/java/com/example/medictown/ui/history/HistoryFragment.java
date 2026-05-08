@@ -33,7 +33,8 @@ public class HistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        viewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        // Use requireActivity() to share ViewModel with OrderDetailFragment
+        viewModel = new ViewModelProvider(requireActivity()).get(HistoryViewModel.class);
         sessionManager = new SessionManager(requireContext());
         
         setupRecyclerView();
@@ -57,6 +58,13 @@ public class HistoryFragment extends Fragment {
 
     private void setupRecyclerView() {
         adapter = new OrderHistoryAdapter();
+        adapter.setOnOrderClickListener(order -> {
+            OrderDetailFragment detailFragment = OrderDetailFragment.newInstance(order.id);
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, detailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
         binding.rvOrderHistory.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvOrderHistory.setAdapter(adapter);
     }

@@ -18,6 +18,7 @@ public class HistoryViewModel extends ViewModel {
     private final HistoryRepository historyRepository;
 
     private final MutableLiveData<List<Orders>> _allOrders = new MutableLiveData<>();
+    public LiveData<List<Orders>> allOrders = _allOrders;
     private final MutableLiveData<List<Orders>> _filteredOrders = new MutableLiveData<>();
     public LiveData<List<Orders>> orders = _filteredOrders;
 

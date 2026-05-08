@@ -31,4 +31,6 @@
     <color name="warning_red">#A33500</color>
     <color name="divider_color">#E0E0E0</color>
     <color name="price_color">#003D9B</color>
+    <color name="primary_alpha_05">#0D003D9B</color>
+    <color name="error">#BA1A1A</color>
 </resources>

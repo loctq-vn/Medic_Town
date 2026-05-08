@@ -21,4 +21,6 @@
     <string name="email_hint">ten@vi-du.com</string>
     <string name="confirm_password_label">Xác nhận mật khẩu</string>
     <string name="already_have_account">Bạn đã có tài khoản?</string>
+    <string name="order_id_format">#MC-%s</string>
+    <string name="quantity_format">Số lượng: %s</string>
 </resources>
