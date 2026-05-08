@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.repositories.HistoryRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -16,8 +17,12 @@ import retrofit2.Response;
 public class HistoryViewModel extends ViewModel {
     private final HistoryRepository historyRepository;
 
-    private final MutableLiveData<List<Orders>> _orders = new MutableLiveData<>();
-    public LiveData<List<Orders>> orders = _orders;
+    private final MutableLiveData<List<Orders>> _allOrders = new MutableLiveData<>();
+    private final MutableLiveData<List<Orders>> _filteredOrders = new MutableLiveData<>();
+    public LiveData<List<Orders>> orders = _filteredOrders;
+
+    private final MutableLiveData<String> _currentFilter = new MutableLiveData<>("all");
+    public LiveData<String> currentFilter = _currentFilter;
 
     private final MutableLiveData<Boolean> _isLoading = new MutableLiveData<>(false);
     public LiveData<Boolean> isLoading = _isLoading;
@@ -36,7 +41,8 @@ public class HistoryViewModel extends ViewModel {
             public void onResponse(Call<List<Orders>> call, Response<List<Orders>> response) {
                 _isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null) {
-                    _orders.setValue(response.body());
+                    _allOrders.setValue(response.body());
+                    applyFilter(_currentFilter.getValue());
                 } else {
                     _errorMessage.setValue("Lỗi khi lấy lịch sử đơn hàng: " + response.code());
                 }
@@ -48,5 +54,27 @@ public class HistoryViewModel extends ViewModel {
                 _errorMessage.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
+    }
+
+    public void setFilter(String filter) {
+        _currentFilter.setValue(filter);
+        applyFilter(filter);
+    }
+
+    private void applyFilter(String filter) {
+        List<Orders> all = _allOrders.getValue();
+        if (all == null) return;
+
+        if ("all".equals(filter)) {
+            _filteredOrders.setValue(all);
+        } else {
+            List<Orders> filtered = new ArrayList<>();
+            for (Orders order : all) {
+                if (filter.equals(order.status)) {
+                    filtered.add(order);
+                }
+            }
+            _filteredOrders.setValue(filtered);
+        }
     }
 }

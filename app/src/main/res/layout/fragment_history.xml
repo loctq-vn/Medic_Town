@@ -45,6 +45,7 @@
                 android:paddingVertical="4dp">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFilterAll"
                     style="@style/Widget.Material3.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -55,6 +56,7 @@
                     android:paddingHorizontal="20dp"/>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFilterPending"
                     style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -67,6 +69,7 @@
                     android:paddingHorizontal="20dp"/>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFilterShipping"
                     style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,11 +82,25 @@
                     android:paddingHorizontal="20dp"/>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFilterCompleted"
                     style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="Hoàn thành"
+                    android:textSize="13sp"
+                    android:textColor="@color/on_surface_variant"
+                    app:backgroundTint="@color/surface_container_high"
+                    app:cornerRadius="100dp"
+                    android:paddingHorizontal="20dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFilterCancelled"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Đã hủy"
                     android:textSize="13sp"
                     android:textColor="@color/on_surface_variant"
                     app:backgroundTint="@color/surface_container_high"

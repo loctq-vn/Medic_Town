@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.databinding.FragmentHistoryBinding;
 
@@ -36,6 +37,7 @@ public class HistoryFragment extends Fragment {
         sessionManager = new SessionManager(requireContext());
         
         setupRecyclerView();
+        setupFilterButtons();
         observeViewModel();
         
         if (sessionManager.isLoggedIn()) {
@@ -43,6 +45,14 @@ public class HistoryFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), "Vui lòng đăng nhập để xem lịch sử", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setupFilterButtons() {
+        binding.btnFilterAll.setOnClickListener(v -> viewModel.setFilter("all"));
+        binding.btnFilterPending.setOnClickListener(v -> viewModel.setFilter("pending"));
+        binding.btnFilterShipping.setOnClickListener(v -> viewModel.setFilter("shipping"));
+        binding.btnFilterCompleted.setOnClickListener(v -> viewModel.setFilter("completed"));
+        binding.btnFilterCancelled.setOnClickListener(v -> viewModel.setFilter("cancelled"));
     }
 
     private void setupRecyclerView() {
@@ -56,6 +66,8 @@ public class HistoryFragment extends Fragment {
             adapter.setOrders(orders);
         });
 
+        viewModel.currentFilter.observe(getViewLifecycleOwner(), this::updateFilterButtonsUI);
+
         viewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
             // Có thể thêm ProgressBar nếu cần
         });
@@ -65,6 +77,24 @@ public class HistoryFragment extends Fragment {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updateFilterButtonsUI(String activeFilter) {
+        int activeBg = getResources().getColor(R.color.primary);
+        int inactiveBg = getResources().getColor(R.color.surface_container_high);
+        int activeText = getResources().getColor(R.color.white);
+        int inactiveText = getResources().getColor(R.color.on_surface_variant);
+
+        resetButton(binding.btnFilterAll, "all".equals(activeFilter), activeBg, inactiveBg, activeText, inactiveText);
+        resetButton(binding.btnFilterPending, "pending".equals(activeFilter), activeBg, inactiveBg, activeText, inactiveText);
+        resetButton(binding.btnFilterShipping, "shipping".equals(activeFilter), activeBg, inactiveBg, activeText, inactiveText);
+        resetButton(binding.btnFilterCompleted, "completed".equals(activeFilter), activeBg, inactiveBg, activeText, inactiveText);
+        resetButton(binding.btnFilterCancelled, "cancelled".equals(activeFilter), activeBg, inactiveBg, activeText, inactiveText);
+    }
+
+    private void resetButton(com.google.android.material.button.MaterialButton button, boolean isActive, int activeBg, int inactiveBg, int activeText, int inactiveText) {
+        button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(isActive ? activeBg : inactiveBg));
+        button.setTextColor(isActive ? activeText : inactiveText);
     }
 
     @Override
