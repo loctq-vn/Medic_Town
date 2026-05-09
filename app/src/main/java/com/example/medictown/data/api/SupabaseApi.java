@@ -155,4 +155,10 @@ public interface SupabaseApi {
         @Header("apikey") String apiKey,
         @Body AuthRequest request
     );
+
+    @POST("token?grant_type=id_token")
+    Call<AuthResponse> loginWithGoogle(
+        @Header("apikey") String apiKey,
+        @Body com.example.medictown.data.models.GoogleAuthRequest request
+    );
 }
