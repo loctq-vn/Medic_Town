@@ -9,10 +9,25 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import android.view.View;
+import com.example.medictown.MainActivity;
 import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.databinding.FragmentOrderDetailBinding;
 import com.example.medictown.ui.cart.CartAdapter; // Reusing CartAdapter for product list if suitable
+import com.example.medictown.data.models.OrderItem;
+import com.example.medictown.data.models.Reviews;
+import com.example.medictown.data.repositories.ReviewRepository;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import android.widget.RatingBar;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import java.util.List;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.NumberFormat;
@@ -21,6 +36,7 @@ import java.util.Locale;
 public class OrderDetailFragment extends Fragment {
     private FragmentOrderDetailBinding binding;
     private HistoryViewModel viewModel;
+    private ReviewRepository reviewRepository;
     private static final String ARG_ORDER_ID = "order_id";
 
     public static OrderDetailFragment newInstance(String orderId) {
@@ -41,8 +57,14 @@ public class OrderDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setNavBarsVisibility(false);
+        }
+
         // Ensure we get the ViewModel from the Activity scope to access the same data as HistoryFragment
         viewModel = new ViewModelProvider(requireActivity()).get(HistoryViewModel.class);
+        reviewRepository = new ReviewRepository();
 
         String orderId = getArguments() != null ? getArguments().getString(ARG_ORDER_ID) : null;
 
@@ -104,7 +126,90 @@ public class OrderDetailFragment extends Fragment {
 
         // Setup product list
         OrderDetailProductAdapter adapter = new OrderDetailProductAdapter(order.order_items);
+        adapter.setOnReviewClickListener(order.status, this::showReviewDialog);
         binding.rvOrderItems.setAdapter(adapter);
+
+        // Check which items are already reviewed
+        if ("completed".equals(order.status) && order.order_items != null && !order.order_items.isEmpty()) {
+            java.util.List<String> itemIds = new java.util.ArrayList<>();
+            for (OrderItem item : order.order_items) {
+                itemIds.add(item.id);
+            }
+            reviewRepository.getReviewsForOrderItems(itemIds, new Callback<List<Reviews>>() {
+                @Override
+                public void onResponse(Call<List<Reviews>> call, Response<List<Reviews>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        java.util.List<String> reviewedIds = new java.util.ArrayList<>();
+                        for (Reviews r : response.body()) {
+                            reviewedIds.add(r.order_item_id);
+                        }
+                        adapter.setReviewedItemIds(reviewedIds);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Reviews>> call, Throwable t) {
+                    // Ignore error for this check
+                }
+            });
+        }
+    }
+
+    private void showReviewDialog(OrderItem item) {
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext());
+        View view = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_review, null);
+        dialog.setContentView(view);
+
+        TextView tvName = view.findViewById(R.id.tvProductName);
+        RatingBar ratingBar = view.findViewById(R.id.ratingBar);
+        EditText etComment = view.findViewById(R.id.etComment);
+        View btnSubmit = view.findViewById(R.id.btnSubmitReview);
+
+        tvName.setText(item.product_name);
+
+        btnSubmit.setOnClickListener(v -> {
+            int rating = (int) ratingBar.getRating();
+            if (rating == 0) {
+                Toast.makeText(getContext(), "Vui lòng chọn số sao", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            SessionManager sessionManager = new SessionManager(requireContext());
+            Reviews review = new Reviews();
+            review.user_id = sessionManager.getUserId();
+            review.product_id = item.product_id;
+            review.order_item_id = item.id;
+            review.rating = rating;
+            review.comment = etComment.getText().toString().trim();
+            review.created_at = new Date();
+
+            btnSubmit.setEnabled(false);
+            reviewRepository.submitReview(review, new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getContext(), "Cảm ơn bạn đã đánh giá!", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        // Refresh order details to update review buttons
+                        String orderId = getArguments() != null ? getArguments().getString(ARG_ORDER_ID) : null;
+                        if (orderId != null) {
+                            observeOrderDetails(orderId);
+                        }
+                    } else {
+                        btnSubmit.setEnabled(true);
+                        Toast.makeText(getContext(), "Lỗi khi gửi đánh giá", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    btnSubmit.setEnabled(true);
+                    Toast.makeText(getContext(), "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        dialog.show();
     }
 
     private void updateProgress(String status) {
@@ -144,6 +249,9 @@ public class OrderDetailFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setNavBarsVisibility(true);
+        }
         binding = null;
     }
 }

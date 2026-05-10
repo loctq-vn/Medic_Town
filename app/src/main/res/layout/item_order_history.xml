@@ -162,6 +162,21 @@
                     android:minWidth="0dp"/>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnReview"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:text="Đánh giá"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:backgroundTint="@color/primary"
+                    app:cornerRadius="8dp"
+                    android:paddingHorizontal="16dp"
+                    android:minWidth="0dp"/>
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnReorder"
                     style="@style/Widget.Material3.Button"
                     android:layout_width="wrap_content"

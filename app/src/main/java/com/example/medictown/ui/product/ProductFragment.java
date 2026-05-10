@@ -29,10 +29,25 @@ public class ProductFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
         setupRecyclerView();
+        setupSearch();
         observeViewModel();
         
         // Gọi tải tất cả sản phẩm
         viewModel.loadAllProducts();
+    }
+
+    private void setupSearch() {
+        binding.cvSearch.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(getContext(), SearchProductActivity.class);
+            intent.putExtra("mode", "search");
+            startActivity(intent);
+        });
+
+        binding.tvSeeAll.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(getContext(), SearchProductActivity.class);
+            intent.putExtra("mode", "see_all");
+            startActivity(intent);
+        });
     }
 
     private void setupRecyclerView() {

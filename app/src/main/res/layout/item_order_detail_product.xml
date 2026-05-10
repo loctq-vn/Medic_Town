@@ -65,4 +65,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="180.000đ"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnReviewItem"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginTop="8dp"
+        android:text="Đánh giá"
+        android:textSize="11sp"
+        android:paddingHorizontal="12dp"
+        android:minHeight="0dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/tvQuantity"
+        app:layout_constraintTop_toBottomOf="@+id/tvQuantity"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="4dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

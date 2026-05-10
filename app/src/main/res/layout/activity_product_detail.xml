@@ -392,6 +392,277 @@
                             android:textSize="14sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
+                <!-- Reviews Section -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_review_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Đánh giá sản phẩm (0 đánh giá)"
+                            android:textColor="@color/on_surface"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:paddingEnd="24dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Trung bình"
+                                    android:textColor="@color/on_surface_variant"
+                                    android:textSize="14sp" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="bottom"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tv_avg_rating"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textColor="@color/on_surface"
+                                        android:textSize="32sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_marginStart="4dp"
+                                        android:layout_marginBottom="6dp"
+                                        android:src="@android:drawable/btn_star_big_on"
+                                        app:tint="#FFA000" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <!-- Star 5 -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <RatingBar
+                                        style="?android:attr/ratingBarStyleSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:numStars="5"
+                                        android:rating="5"
+                                        android:progressTint="#FFA000" />
+
+                                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                                        android:id="@+id/progress_5_star"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="8dp"
+                                        android:layout_weight="1"
+                                        android:progress="0"
+                                        app:indicatorColor="#FFA000"
+                                        app:trackColor="#F5F5F5"
+                                        app:trackCornerRadius="4dp"
+                                        app:trackThickness="6dp" />
+
+                                    <TextView
+                                        android:id="@+id/tv_count_5_star"
+                                        android:layout_width="20dp"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textAlignment="viewEnd"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                                <!-- Star 4 -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <RatingBar
+                                        style="?android:attr/ratingBarStyleSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:numStars="5"
+                                        android:rating="4"
+                                        android:progressTint="#FFA000" />
+
+                                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                                        android:id="@+id/progress_4_star"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="8dp"
+                                        android:layout_weight="1"
+                                        android:progress="0"
+                                        app:indicatorColor="#FFA000"
+                                        app:trackColor="#F5F5F5"
+                                        app:trackCornerRadius="4dp"
+                                        app:trackThickness="6dp" />
+
+                                    <TextView
+                                        android:id="@+id/tv_count_4_star"
+                                        android:layout_width="20dp"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textAlignment="viewEnd"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                                <!-- Star 3 -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <RatingBar
+                                        style="?android:attr/ratingBarStyleSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:numStars="5"
+                                        android:rating="3"
+                                        android:progressTint="#FFA000" />
+
+                                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                                        android:id="@+id/progress_3_star"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="8dp"
+                                        android:layout_weight="1"
+                                        android:progress="0"
+                                        app:indicatorColor="#FFA000"
+                                        app:trackColor="#F5F5F5"
+                                        app:trackCornerRadius="4dp"
+                                        app:trackThickness="6dp" />
+
+                                    <TextView
+                                        android:id="@+id/tv_count_3_star"
+                                        android:layout_width="20dp"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textAlignment="viewEnd"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                                <!-- Star 2 -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <RatingBar
+                                        style="?android:attr/ratingBarStyleSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:numStars="5"
+                                        android:rating="2"
+                                        android:progressTint="#FFA000" />
+
+                                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                                        android:id="@+id/progress_2_star"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="8dp"
+                                        android:layout_weight="1"
+                                        android:progress="0"
+                                        app:indicatorColor="#FFA000"
+                                        app:trackColor="#F5F5F5"
+                                        app:trackCornerRadius="4dp"
+                                        app:trackThickness="6dp" />
+
+                                    <TextView
+                                        android:id="@+id/tv_count_2_star"
+                                        android:layout_width="20dp"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textAlignment="viewEnd"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                                <!-- Star 1 -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <RatingBar
+                                        style="?android:attr/ratingBarStyleSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:numStars="5"
+                                        android:rating="1"
+                                        android:progressTint="#FFA000" />
+
+                                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                                        android:id="@+id/progress_1_star"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginHorizontal="8dp"
+                                        android:layout_weight="1"
+                                        android:progress="0"
+                                        app:indicatorColor="#FFA000"
+                                        app:trackColor="#F5F5F5"
+                                        app:trackCornerRadius="4dp"
+                                        app:trackThickness="6dp" />
+
+                                    <TextView
+                                        android:id="@+id/tv_count_1_star"
+                                        android:layout_width="20dp"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textAlignment="viewEnd"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginVertical="24dp"
+                            android:background="#EEEEEE" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_reviews"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

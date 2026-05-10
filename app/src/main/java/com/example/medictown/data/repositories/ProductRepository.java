@@ -35,4 +35,14 @@ public class ProductRepository {
             "*"
         ).enqueue(callback);
     }
+
+    public void searchProducts(String query, Callback<List<Products>> callback) {
+        String nameFilter = "ilike.*" + query + "*";
+        apiService.searchProducts(
+            com.example.medictown.data.api.SupabaseConfig.SUPABASE_ANON_KEY,
+            "Bearer " + com.example.medictown.data.api.SupabaseConfig.SUPABASE_ANON_KEY,
+            nameFilter,
+            "*"
+        ).enqueue(callback);
+    }
 }

@@ -71,6 +71,17 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                     listener.onDetailClick(order);
                 }
             });
+
+            if ("completed".equals(order.status)) {
+                binding.btnReview.setVisibility(android.view.View.VISIBLE);
+                binding.btnReview.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onDetailClick(order);
+                    }
+                });
+            } else {
+                binding.btnReview.setVisibility(android.view.View.GONE);
+            }
             
             // Show first item name and more if any
             if (order.order_items != null && !order.order_items.isEmpty()) {

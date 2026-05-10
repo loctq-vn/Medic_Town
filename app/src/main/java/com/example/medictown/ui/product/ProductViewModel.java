@@ -79,4 +79,25 @@ public class ProductViewModel extends ViewModel {
             }
         });
     }
+
+    public void searchProducts(String query) {
+        isLoading.setValue(true);
+        repository.searchProducts(query, new Callback<List<Products>>() {
+            @Override
+            public void onResponse(Call<List<Products>> call, Response<List<Products>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    allProducts.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Không tìm thấy sản phẩm: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Products>> call, Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
 }

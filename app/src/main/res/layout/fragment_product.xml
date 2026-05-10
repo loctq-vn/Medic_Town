@@ -18,9 +18,13 @@
 
             <!-- Search Bar (moved from header to content body) -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cv_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="#F1F3F5"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp">
@@ -249,10 +253,14 @@
                     android:background="@color/main_blue" />
 
                 <TextView
+                    android:id="@+id/tv_see_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     android:text="Xem tất cả"
                     android:textColor="@color/main_blue"
                     android:textSize="14sp"

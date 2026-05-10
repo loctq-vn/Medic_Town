@@ -37,6 +37,14 @@ public interface SupabaseApi {
         @Query("is_active") String isActive,
         @Query("select") String select
     );
+    @GET("products")
+    Call<List<Products>> searchProducts(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Query("name") String nameFilter,
+        @Query("select") String select
+    );
+
     @GET("users")
     Call<Users> getUser(
         @Header("apikey") String apiKey,
@@ -141,6 +149,30 @@ public interface SupabaseApi {
         @Query("user_id") String userIdFilter,
         @Query("select") String select,
         @Query("order") String orderBy
+    );
+
+    // Reviews Endpoints
+    @GET("reviews")
+    Call<List<com.example.medictown.data.models.Reviews>> getReviews(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Query("order_item_id") String orderItemId,
+        @Query("select") String select
+    );
+
+    @GET("reviews")
+    Call<List<com.example.medictown.data.models.Reviews>> getReviewsByProduct(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Query("product_id") String productId,
+        @Query("select") String select
+    );
+
+    @POST("reviews")
+    Call<Void> createReview(
+        @Header("apikey") String apiKey,
+        @Header("Authorization") String authToken,
+        @Body com.example.medictown.data.models.Reviews review
     );
 
     // Auth Endpoints

@@ -1,5 +1,6 @@
 package com.example.medictown;
 
+import android.view.View;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -26,12 +27,16 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNav;
+    private View appBarMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        appBarMain = findViewById(R.id.app_bar_main);
+        bottomNav = findViewById(R.id.bottom_navigation);
         
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -73,6 +78,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         handleIntent(getIntent());
+    }
+
+    public void setNavBarsVisibility(boolean show) {
+        int visibility = show ? View.VISIBLE : View.GONE;
+        if (bottomNav != null) {
+            bottomNav.setVisibility(visibility);
+        }
+        if (appBarMain != null) {
+            appBarMain.setVisibility(visibility);
+        }
     }
 
     @Override
