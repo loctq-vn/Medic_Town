@@ -17,7 +17,6 @@ import com.example.medictown.data.models.CartItem;
 import com.example.medictown.databinding.FragmentPaymentBinding;
 import com.example.medictown.databinding.LayoutAddressBottomSheetBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +64,7 @@ public class PaymentFragment extends Fragment {
         observeViewModel();
         
         if (getArguments() != null) {
+            @SuppressWarnings("unchecked")
             List<CartItem> items = (List<CartItem>) getArguments().getSerializable("selected_items");
             if (items != null) {
                 viewModel.setSelectedItems(items);
@@ -85,7 +85,7 @@ public class PaymentFragment extends Fragment {
 
         binding.btnConfirmPayment.setOnClickListener(v -> {
             String paymentMethod = binding.rbCod.isChecked() ? "COD" : "Momo";
-            String note = binding.edtNote.getText().toString();
+            String note = binding.edtNote.getText() != null ? binding.edtNote.getText().toString() : "";
             viewModel.placeOrder(sessionManager.getUserId(), paymentMethod, note);
         });
 
@@ -93,17 +93,17 @@ public class PaymentFragment extends Fragment {
         setupPaymentMethodSelection();
     }
 
-    private void showSuccessDialog() {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Đặt hàng thành công")
-                .setMessage("Đơn hàng của bạn đã được tiếp nhận. Bạn có thể kiểm tra trạng thái trong Lịch sử đơn hàng.")
-                .setPositiveButton("Về trang chủ", (dialog, which) -> {
-                    if (isAdded()) {
-                        requireActivity().getOnBackPressedDispatcher().onBackPressed();
-                    }
-                })
-                .setCancelable(false)
-                .show();
+    private void navigateToHistory() {
+        if (getActivity() != null) {
+            com.google.android.material.bottomnavigation.BottomNavigationView bottomNav =
+                    getActivity().findViewById(R.id.bottom_navigation);
+            if (bottomNav != null) {
+                // Xóa fragment thanh toán khỏi backstack để khi nhấn back không quay lại đây
+                getParentFragmentManager().popBackStack();
+                // Chuyển sang tab Lịch sử (điều này sẽ kích hoạt listener trong MainActivity)
+                bottomNav.setSelectedItemId(R.id.nav_history);
+            }
+        }
     }
 
     private void setupPaymentMethodSelection() {
@@ -130,8 +130,9 @@ public class PaymentFragment extends Fragment {
     }
 
     private void updatePaymentMethodUI() {
-        int primaryColor = getResources().getColor(R.color.primary);
-        int outlineColor = getResources().getColor(R.color.outline_variant);
+        // Sử dụng ContextCompat để tránh lỗi deprecated
+        int primaryColor = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary);
+        int outlineColor = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.outline_variant);
 
         // Highlight thẻ đang được chọn
         binding.cardCod.setStrokeColor(binding.rbCod.isChecked() ? primaryColor : outlineColor);
@@ -198,7 +199,8 @@ public class PaymentFragment extends Fragment {
 
         viewModel.orderSuccess.observe(getViewLifecycleOwner(), success -> {
             if (success) {
-                showSuccessDialog();
+                Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
+                navigateToHistory();
             }
         });
 

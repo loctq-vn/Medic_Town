@@ -144,7 +144,10 @@ public class PaymentViewModel extends ViewModel {
 
     private void createOrderItems(String orderId, List<CartItem> cartItems, String userId) {
         List<OrderItem> orderItems = new ArrayList<>();
+        List<String> cartItemIdsToDelete = new ArrayList<>();
+        
         for (CartItem cartItem : cartItems) {
+            cartItemIdsToDelete.add(cartItem.id);
             OrderItem item = new OrderItem();
             item.order_id = orderId;
             item.product_id = cartItem.product_id;
@@ -165,7 +168,7 @@ public class PaymentViewModel extends ViewModel {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    clearCart(userId);
+                    deletePurchasedItems(cartItemIdsToDelete);
                 } else {
                     _isLoading.setValue(false);
                     _error.setValue("Lỗi khi tạo chi tiết đơn hàng: " + response.code());
@@ -180,8 +183,8 @@ public class PaymentViewModel extends ViewModel {
         });
     }
 
-    private void clearCart(String userId) {
-        cartRepository.clearCart(userId, null, new Callback<Void>() {
+    private void deletePurchasedItems(List<String> cartItemIds) {
+        cartRepository.removeItemsFromCart(cartItemIds, new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 _isLoading.setValue(false);
@@ -190,7 +193,7 @@ public class PaymentViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                // Thậm chí nếu xóa giỏ hàng lỗi, đơn hàng đã được tạo thành công
+                // Vẫn coi là thành công vì đơn hàng đã tạo xong
                 _isLoading.setValue(false);
                 _orderSuccess.setValue(true);
             }

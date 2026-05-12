@@ -22,14 +22,14 @@ public class CartRepository {
     public void getCartItems(String userId, String token, Callback<List<CartItem>> callback) {
         String authHeader = "Bearer " + apiKey;
         // select=*,products(*) to get product details
-        apiService.getCartItems(apiKey, authHeader, "eq." + userId, null, "*,products(*)").enqueue(callback);
+        apiService.getCartItems(apiKey, authHeader, "eq." + userId, null, "*,products(*)", "added_at.desc").enqueue(callback);
     }
 
     public void addToCart(String userId, String productId, int quantity, String token, Callback<Void> callback) {
         String authHeader = "Bearer " + apiKey;
 
         // Check if item already exists in cart
-        apiService.getCartItems(apiKey, authHeader, "eq." + userId, "eq." + productId, "*").enqueue(new Callback<List<CartItem>>() {
+        apiService.getCartItems(apiKey, authHeader, "eq." + userId, "eq." + productId, "*", null).enqueue(new Callback<List<CartItem>>() {
             @Override
             public void onResponse(Call<List<CartItem>> call, Response<List<CartItem>> response) {
                 if (response.isSuccessful()) {
@@ -65,6 +65,25 @@ public class CartRepository {
     public void removeFromCart(String cartItemId, String token, Callback<Void> callback) {
         String authHeader = "Bearer " + apiKey;
         apiService.deleteCartItem(apiKey, authHeader, "eq." + cartItemId).enqueue(callback);
+    }
+
+    public void removeItemsFromCart(List<String> cartItemIds, Callback<Void> callback) {
+        if (cartItemIds == null || cartItemIds.isEmpty()) {
+            callback.onResponse(null, Response.success(null));
+            return;
+        }
+        
+        String authHeader = "Bearer " + apiKey;
+        StringBuilder idFilter = new StringBuilder("in.(");
+        for (int i = 0; i < cartItemIds.size(); i++) {
+            idFilter.append(cartItemIds.get(i));
+            if (i < cartItemIds.size() - 1) {
+                idFilter.append(",");
+            }
+        }
+        idFilter.append(")");
+        
+        apiService.deleteCartItem(apiKey, authHeader, idFilter.toString()).enqueue(callback);
     }
 
     public void clearCart(String userId, String token, Callback<Void> callback) {

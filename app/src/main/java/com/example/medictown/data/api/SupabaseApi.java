@@ -94,7 +94,8 @@ public interface SupabaseApi {
         @Header("Authorization") String authToken,
         @Query("user_id") String userId,
         @Query("product_id") String productId,
-        @Query("select") String select
+        @Query("select") String select,
+        @Query("order") String order
     );
 
     @POST("cart_items")

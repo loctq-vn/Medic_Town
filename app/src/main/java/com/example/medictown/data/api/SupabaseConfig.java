@@ -1,7 +1,6 @@
 package com.example.medictown.data.api;
 
 public class SupabaseConfig {
-    // Thay thế bằng thông tin từ Project Settings -> API trên Dashboard Supabase của bạn
     public static final String BASE_URL = "https://wuhoqresirnxjnxulviw.supabase.co/";
     public static final String SUPABASE_URL = BASE_URL + "rest/v1/";
     public static final String AUTH_URL = BASE_URL + "auth/v1/";
