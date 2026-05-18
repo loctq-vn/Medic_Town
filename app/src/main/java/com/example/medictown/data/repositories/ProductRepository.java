@@ -1,17 +1,15 @@
 package com.example.medictown.data.repositories;
 
-import com.example.medictown.data.api.SupabaseConfig;
 import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SupabaseApi;
 import com.example.medictown.data.models.Products;
 
 import java.util.List;
 
-import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ProductRepository {
+    private static final int DEFAULT_LIMIT = 100;
     private final SupabaseApi apiService;
 
     public ProductRepository() {
@@ -19,30 +17,14 @@ public class ProductRepository {
     }
 
     public void getAllProducts(Callback<List<Products>> callback) {
-        apiService.getProducts(
-            SupabaseConfig.SUPABASE_ANON_KEY,
-            "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
-            "*"
-        ).enqueue(callback);
+        apiService.getProducts(DEFAULT_LIMIT, 0).enqueue(callback);
     }
 
     public void getFeaturedProducts(Callback<List<Products>> callback) {
-        apiService.getFeaturedProducts(
-            SupabaseConfig.SUPABASE_ANON_KEY,
-            "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
-            "true",
-            "true",
-            "*"
-        ).enqueue(callback);
+        apiService.getFeaturedProducts(DEFAULT_LIMIT, 0).enqueue(callback);
     }
 
     public void searchProducts(String query, Callback<List<Products>> callback) {
-        String nameFilter = "ilike.*" + query + "*";
-        apiService.searchProducts(
-            com.example.medictown.data.api.SupabaseConfig.SUPABASE_ANON_KEY,
-            "Bearer " + com.example.medictown.data.api.SupabaseConfig.SUPABASE_ANON_KEY,
-            nameFilter,
-            "*"
-        ).enqueue(callback);
+        apiService.searchProducts(query, DEFAULT_LIMIT, 0).enqueue(callback);
     }
 }

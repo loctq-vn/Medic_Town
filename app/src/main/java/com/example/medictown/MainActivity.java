@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.medictown.data.models.CartItem;
+import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.repositories.ProductRepository;
 import com.example.medictown.ui.cart.CartFragment;
 import com.example.medictown.ui.history.HistoryFragment;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        new SessionManager(this);
 
         appBarMain = findViewById(R.id.app_bar_main);
         bottomNav = findViewById(R.id.bottom_navigation);

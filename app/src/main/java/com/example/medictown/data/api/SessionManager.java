@@ -17,6 +17,7 @@ public class SessionManager {
         this.context = context;
         pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
+        RetrofitClient.setAuthToken(getToken());
     }
 
     public void saveSession(String token, String userId, String email) {
@@ -24,6 +25,7 @@ public class SessionManager {
         editor.putString(KEY_USER_ID, userId);
         editor.putString(KEY_USER_EMAIL, email);
         editor.apply();
+        RetrofitClient.setAuthToken(token);
     }
 
     public String getToken() {
@@ -37,6 +39,7 @@ public class SessionManager {
     public void clearSession() {
         editor.clear();
         editor.apply();
+        RetrofitClient.setAuthToken(null);
     }
 
     public boolean isLoggedIn() {

@@ -116,8 +116,9 @@ public class OrderDetailFragment extends Fragment {
         // Update Progress Bar based on status
         updateProgress(order.status);
 
-        binding.tvTotalAmount.setText(formatter.format(order.total_amount));
-        binding.tvSubtotal.setText(formatter.format(order.total_amount));
+        double totalAmount = order.total_amount != null ? order.total_amount : 0;
+        binding.tvTotalAmount.setText(formatter.format(totalAmount));
+        binding.tvSubtotal.setText(formatter.format(totalAmount));
         
         binding.tvRecipientName.setText(order.shipping_name != null ? order.shipping_name : "N/A");
         binding.tvRecipientPhone.setText(order.shipping_phone != null ? order.shipping_phone : "N/A");

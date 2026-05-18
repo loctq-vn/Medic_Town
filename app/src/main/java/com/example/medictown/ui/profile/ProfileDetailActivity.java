@@ -1,11 +1,6 @@
 package com.example.medictown.ui.profile;
 
-import static com.example.medictown.data.api.SupabaseConfig.BASE_URL;
-import static com.example.medictown.data.api.SupabaseConfig.STORAGE_URL;
-import static com.example.medictown.data.api.SupabaseConfig.SUPABASE_URL;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,28 +22,17 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.medictown.R;
 
-import com.example.medictown.data.api.SupabaseConfig;
 import com.example.medictown.data.models.Users;
 import com.example.medictown.data.repositories.ProfileRepository;
 import com.example.medictown.databinding.ActivityProfileDetailBinding;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import org.json.JSONObject;
 public class ProfileDetailActivity extends AppCompatActivity {
     private ActivityProfileDetailBinding binding;
     private ProfileRepository repository;
@@ -116,7 +100,7 @@ public class ProfileDetailActivity extends AppCompatActivity {
         });
 
         binding.btnSave.setOnClickListener(v -> {
-            if (exportedurl == user.avatar_url){
+            if (imageUri == null){
                 user.name = binding.etFullName.getText().toString();
                 user.phone = binding.etPhone.getText().toString();
                 saveUser();
@@ -135,8 +119,7 @@ public class ProfileDetailActivity extends AppCompatActivity {
                     String responseBody = response.body().string();
                     try {
                         JSONObject jsonObject = new JSONObject(responseBody);
-                        String key = jsonObject.getString("Key");
-                        exportedurl = STORAGE_URL + "object/public/" + key;
+                        exportedurl = jsonObject.getString("url");
                         user.name = binding.etFullName.getText().toString();
                         user.phone = binding.etPhone.getText().toString();
                         user.avatar_url = exportedurl;

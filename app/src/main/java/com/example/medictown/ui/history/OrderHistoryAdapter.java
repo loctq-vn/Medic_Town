@@ -63,7 +63,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         public void bind(Orders order) {
             binding.tvOrderId.setText("#MC-" + (order.id != null && order.id.length() > 8 ? order.id.substring(0, 8) : order.id));
             binding.tvOrderDate.setText(order.created_at != null ? "Ngày đặt: " + dateFormat.format(order.created_at) : "");
-            binding.tvOrderTotal.setText(formatter.format(order.total_amount));
+            binding.tvOrderTotal.setText(formatter.format(order.total_amount != null ? order.total_amount : 0));
             binding.tvOrderStatus.setText(getStatusText(order.status));
 
             binding.btnDetails.setOnClickListener(v -> {

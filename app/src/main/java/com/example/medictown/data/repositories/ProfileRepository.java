@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.example.medictown.data.api.RetrofitClient;
+import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.api.SupabaseApi;
 import com.example.medictown.data.api.SupabaseConfig;
 import com.example.medictown.data.models.Address;
@@ -20,59 +21,39 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Callback;
+
 public class ProfileRepository {
     private final SupabaseApi apiService;
+
     public ProfileRepository() {
         this.apiService = RetrofitClient.getApiService();
     }
+
     public void getUser(String userId, Callback<Users> callback) {
-        apiService.getUser(
-            SupabaseConfig.SUPABASE_ANON_KEY,
-            "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
-            "application/vnd.pgrst.object+json",
-            "*",
-            "eq." + userId
-        ).enqueue(callback);
+        apiService.getUser().enqueue(callback);
     }
-    public void setUser(Users user, Callback<Void> callback){
-        apiService.updateUser(
-                SupabaseConfig.SUPABASE_ANON_KEY,
-                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
-                "eq." + user.id,
-                user
-        ).enqueue(callback);
+
+    public void setUser(Users user, Callback<Void> callback) {
+        apiService.updateUser(user).enqueue(callback);
     }
-    public void getAddress(String userId, Callback<List<Address>> callback){
-        apiService.getAddress(
-                SupabaseConfig.SUPABASE_ANON_KEY,
-                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
-                "*",
-                "eq." + userId
-        ).enqueue(callback);
+
+    public void getAddress(String userId, Callback<List<Address>> callback) {
+        apiService.getAddress().enqueue(callback);
     }
-    public void setAddress(Address address, Callback<Void> callback){
-        apiService.setAddress(
-                SupabaseConfig.SUPABASE_ANON_KEY,
-                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
-                "eq." + address.id,
-                address
-        ).enqueue(callback);
+
+    public void setAddress(Address address, Callback<Void> callback) {
+        apiService.setAddress(address.id, address).enqueue(callback);
     }
-    public void addAddress(Address address, Callback<Void> callback){
-        apiService.addAddress(
-                SupabaseConfig.SUPABASE_ANON_KEY,
-                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
-                address
-        ).enqueue(callback);
+
+    public void addAddress(Address address, Callback<Void> callback) {
+        apiService.addAddress(address).enqueue(callback);
     }
-    public void deleteAddress(String addressId, Callback<Void> callback){
-        apiService.deleteAddress(
-                SupabaseConfig.SUPABASE_ANON_KEY,
-                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
-                "eq." + addressId
-        ).enqueue(callback);
+
+    public void deleteAddress(String addressId, Callback<Void> callback) {
+        apiService.deleteAddress(addressId).enqueue(callback);
     }
-    public void uploadToSupabase(Context context, Uri fileUri, okhttp3.Callback callback){
+
+    public void uploadToSupabase(Context context, Uri fileUri, okhttp3.Callback callback) {
         OkHttpClient client = new OkHttpClient();
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
@@ -83,21 +64,21 @@ public class ProfileRepository {
             if (mimeType == null) mimeType = "image/jpeg";
 
             RequestBody requestBody = RequestBody.create(bytes, MediaType.parse(mimeType));
-
-            String url = "https://wuhoqresirnxjnxulviw.supabase.co/storage/v1/object/avatars/" + fileName;
+            String token = new SessionManager(context).getToken();
 
             Request request = new Request.Builder()
-                    .url(url)
+                    .url(SupabaseConfig.BACKEND_URL + "api/users/me/avatar?filename=" + fileName)
                     .post(requestBody)
-                    .addHeader("Authorization", "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY)
+                    .addHeader("Authorization", "Bearer " + token)
                     .addHeader("Content-Type", mimeType)
                     .build();
             client.newCall(request).enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(context,"lỗi",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Loi upload anh", Toast.LENGTH_SHORT).show();
         }
     }
+
     public byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         int bufferSize = 1024;

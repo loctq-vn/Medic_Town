@@ -22,7 +22,6 @@ import com.example.medictown.R;
 import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.api.SupabaseApi;
-import com.example.medictown.data.api.SupabaseConfig;
 import com.example.medictown.data.models.AuthRequest;
 import com.example.medictown.data.models.AuthResponse;
 import com.example.medictown.data.models.GoogleAuthRequest;
@@ -131,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
         SupabaseApi authService = RetrofitClient.getAuthService();
         AuthRequest loginRequest = new AuthRequest(email, password);
 
-        authService.login(SupabaseConfig.SUPABASE_ANON_KEY, loginRequest).enqueue(new Callback<AuthResponse>() {
+        authService.login(loginRequest).enqueue(new Callback<AuthResponse>() {
             @Override
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -172,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
         SupabaseApi authService = RetrofitClient.getAuthService();
         GoogleAuthRequest request = new GoogleAuthRequest(idToken);
 
-        authService.loginWithGoogle(SupabaseConfig.SUPABASE_ANON_KEY, request).enqueue(new Callback<AuthResponse>() {
+        authService.loginWithGoogle(request).enqueue(new Callback<AuthResponse>() {
             @Override
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

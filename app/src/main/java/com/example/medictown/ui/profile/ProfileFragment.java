@@ -16,10 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.medictown.R;
-import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SessionManager;
-import com.example.medictown.data.api.SupabaseApi;
-import com.example.medictown.data.api.SupabaseConfig;
 import com.example.medictown.data.models.Users;
 import com.example.medictown.databinding.FragmentProfileBinding;
 import com.example.medictown.ui.auth.LoginActivity;
@@ -82,7 +79,6 @@ public class ProfileFragment extends Fragment {
         });
 
         binding.btnLogout.setOnClickListener(v -> {
-            SupabaseApi api = RetrofitClient.getAuthService();
             SessionManager sessionManager = new SessionManager(getContext());
             sessionManager.clearSession();
             Intent intent = new Intent(getActivity(), LoginActivity.class);

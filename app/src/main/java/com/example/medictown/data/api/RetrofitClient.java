@@ -9,28 +9,38 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static Retrofit retrofitRest = null;
-    private static Retrofit retrofitAuth = null;
+    private static Retrofit retrofit = null;
+    private static String authToken = null;
+
+    public static void setAuthToken(String token) {
+        authToken = token;
+    }
 
     public static SupabaseApi getApiService() {
-        if (retrofitRest == null) {
-            retrofitRest = createRetrofit(SupabaseConfig.SUPABASE_URL);
+        if (retrofit == null) {
+            retrofit = createRetrofit(SupabaseConfig.BACKEND_URL);
         }
-        return retrofitRest.create(SupabaseApi.class);
+        return retrofit.create(SupabaseApi.class);
     }
 
     public static SupabaseApi getAuthService() {
-        if (retrofitAuth == null) {
-            retrofitAuth = createRetrofit(SupabaseConfig.AUTH_URL);
-        }
-        return retrofitAuth.create(SupabaseApi.class);
+        return getApiService();
     }
 
     private static Retrofit createRetrofit(String baseUrl) {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
+                .addInterceptor(chain -> {
+                    okhttp3.Request original = chain.request();
+                    okhttp3.Request.Builder builder = original.newBuilder();
+                    if (authToken != null && !authToken.isEmpty() && original.header("Authorization") == null) {
+                        builder.addHeader("Authorization", "Bearer " + authToken);
+                    }
+                    return chain.proceed(builder.build());
+                })
+                .addInterceptor(loggingInterceptor)
                 .build();
 
         Gson gson = new GsonBuilder()
