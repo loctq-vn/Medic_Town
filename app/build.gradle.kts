@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.recyclerview)
     
     // Navigation Component
     implementation("androidx.navigation:navigation-fragment:2.8.5")

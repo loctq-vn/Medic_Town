@@ -105,4 +105,15 @@ public interface SupabaseApi {
 
     @POST("api/auth/google")
     Call<AuthResponse> loginWithGoogle(@Body GoogleAuthRequest request);
+    @PATCH("rest/v1/orders")
+    Call<Void> updateOrderStatus(
+            @Query("id") String orderId,
+            @Body java.util.Map<String, Object> update
+    );
+
+    @PATCH("rest/v1/products")
+    Call<Void> updateProduct(
+            @Query("id") String productId,
+            @Body java.util.Map<String, Object> update
+    );
 }

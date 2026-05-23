@@ -19,6 +19,7 @@ import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.Users;
 import com.example.medictown.databinding.FragmentProfileBinding;
+import com.example.medictown.ui.admin.AdminDashboardFragment;
 import com.example.medictown.ui.auth.LoginActivity;
 
 import java.util.List;
@@ -78,6 +79,13 @@ public class ProfileFragment extends Fragment {
 
         });
 
+        binding.itemAdmin.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new AdminDashboardFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         binding.btnLogout.setOnClickListener(v -> {
             SessionManager sessionManager = new SessionManager(getContext());
             sessionManager.clearSession();
@@ -100,6 +108,13 @@ public class ProfileFragment extends Fragment {
                         .placeholder(R.drawable.ic_profile)
                         .transform(new CenterCrop(), new RoundedCorners(24))
                         .into(binding.ivAvatar);
+
+                // Show Admin Dashboard for admin users
+                if ("admin".equalsIgnoreCase(user.role) || "manager".equalsIgnoreCase(user.role)) {
+                    binding.itemAdmin.setVisibility(View.VISIBLE);
+                } else {
+                    binding.itemAdmin.setVisibility(View.GONE);
+                }
             }
         });
         mViewModel.getErrorMessage().observe(getViewLifecycleOwner(),error -> {
