@@ -19,6 +19,7 @@ public class Orders {
 
     public String shipping_address;
     public List<String> cart_item_ids;
+    public List<OrderItem> direct_items;
 
     public List<OrderItem> order_items;
 

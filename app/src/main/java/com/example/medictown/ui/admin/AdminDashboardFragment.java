@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.medictown.R;
+import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.models.Products;
 import com.google.android.material.card.MaterialCardView;
@@ -22,7 +23,7 @@ import java.util.Locale;
 public class AdminDashboardFragment extends Fragment {
 
     private AdminViewModel viewModel;
-    private TextView tvTotalRevenue, tvTotalOrders, tvLowStock, tvNewCustomers;
+    private TextView tvDashboardTitle, tvTotalRevenue, tvTotalOrders, tvLowStock, tvNewCustomers;
 
     @Nullable
     @Override
@@ -36,10 +37,17 @@ public class AdminDashboardFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(AdminViewModel.class);
 
+        tvDashboardTitle = view.findViewById(R.id.tvDashboardTitle);
         tvTotalRevenue = view.findViewById(R.id.tvTotalRevenue);
         tvTotalOrders = view.findViewById(R.id.tvTotalOrders);
         tvLowStock = view.findViewById(R.id.tvLowStock);
         tvNewCustomers = view.findViewById(R.id.tvNewCustomers);
+
+        SessionManager sessionManager = new SessionManager(requireContext());
+        String currentShopName = sessionManager.getCurrentShopName();
+        if (currentShopName != null && !currentShopName.isEmpty()) {
+            tvDashboardTitle.setText(currentShopName);
+        }
 
         MaterialCardView btnManageInventory = view.findViewById(R.id.btnManageInventory);
         MaterialCardView btnManageOrders = view.findViewById(R.id.btnManageOrders);
@@ -47,8 +55,14 @@ public class AdminDashboardFragment extends Fragment {
         viewModel.getAllOrders().observe(getViewLifecycleOwner(), this::updateOrderStats);
         viewModel.getAllProducts().observe(getViewLifecycleOwner(), this::updateProductStats);
 
-        viewModel.fetchAllOrders();
-        viewModel.fetchAllProducts();
+        String currentShopId = sessionManager.getCurrentShopId();
+        if (currentShopId != null && !currentShopId.isEmpty()) {
+            viewModel.fetchShopOrders(currentShopId);
+            viewModel.fetchShopProducts(currentShopId);
+        } else {
+            viewModel.fetchAllOrders();
+            viewModel.fetchAllProducts();
+        }
 
         btnManageInventory.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()

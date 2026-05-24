@@ -15,10 +15,19 @@ import java.util.List;
 
 public class AdminInventoryAdapter extends RecyclerView.Adapter<AdminInventoryAdapter.ViewHolder> {
     private List<Products> products = new ArrayList<>();
+    private OnProductActionListener listener;
+
+    public interface OnProductActionListener {
+        void onEditProduct(Products product);
+    }
 
     public void setProducts(List<Products> products) {
         this.products = products;
         notifyDataSetChanged();
+    }
+
+    public void setOnProductActionListener(OnProductActionListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -47,6 +56,12 @@ public class AdminInventoryAdapter extends RecyclerView.Adapter<AdminInventoryAd
                 .load(imageUrl)
                 .placeholder(R.drawable.ic_product)
                 .into(holder.ivProduct);
+
+        holder.btnEdit.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onEditProduct(product);
+            }
+        });
     }
 
     @Override
@@ -57,6 +72,7 @@ public class AdminInventoryAdapter extends RecyclerView.Adapter<AdminInventoryAd
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivProduct;
         TextView tvProductName, tvSKU, tvStockCount, tvPrice;
+        android.widget.ImageButton btnEdit;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -65,6 +81,7 @@ public class AdminInventoryAdapter extends RecyclerView.Adapter<AdminInventoryAd
             tvSKU = itemView.findViewById(R.id.tvSKU);
             tvStockCount = itemView.findViewById(R.id.tvStockCount);
             tvPrice = itemView.findViewById(R.id.tvPrice);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
         }
     }
 }

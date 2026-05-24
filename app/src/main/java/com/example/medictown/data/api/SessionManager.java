@@ -8,6 +8,9 @@ public class SessionManager {
     private static final String KEY_TOKEN = "access_token";
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USER_EMAIL = "user_email";
+    private static final String KEY_CURRENT_SHOP_ID = "current_shop_id";
+    private static final String KEY_CURRENT_SHOP_NAME = "current_shop_name";
+    private static final String KEY_CURRENT_SHOP_LOGO = "current_shop_logo";
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
@@ -34,6 +37,32 @@ public class SessionManager {
 
     public String getUserId() {
         return pref.getString(KEY_USER_ID, null);
+    }
+
+    public void saveCurrentShop(String shopId, String shopName, String logoUrl) {
+        editor.putString(KEY_CURRENT_SHOP_ID, shopId);
+        editor.putString(KEY_CURRENT_SHOP_NAME, shopName);
+        editor.putString(KEY_CURRENT_SHOP_LOGO, logoUrl);
+        editor.apply();
+    }
+
+    public String getCurrentShopId() {
+        return pref.getString(KEY_CURRENT_SHOP_ID, null);
+    }
+
+    public String getCurrentShopName() {
+        return pref.getString(KEY_CURRENT_SHOP_NAME, null);
+    }
+
+    public String getCurrentShopLogo() {
+        return pref.getString(KEY_CURRENT_SHOP_LOGO, null);
+    }
+
+    public void clearCurrentShop() {
+        editor.remove(KEY_CURRENT_SHOP_ID);
+        editor.remove(KEY_CURRENT_SHOP_NAME);
+        editor.remove(KEY_CURRENT_SHOP_LOGO);
+        editor.apply();
     }
 
     public void clearSession() {

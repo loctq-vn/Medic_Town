@@ -8,6 +8,7 @@ import com.example.medictown.data.models.GoogleAuthRequest;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.data.models.Reviews;
+import com.example.medictown.data.models.Shop;
 import com.example.medictown.data.models.Users;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
+import retrofit2.http.Path;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -97,6 +99,47 @@ public interface SupabaseApi {
     @POST("api/reviews")
     Call<Void> createReview(@Body Reviews review);
 
+    @GET("api/shops/my")
+    Call<List<Shop>> getMyShops();
+
+    @POST("api/shops")
+    Call<Shop> createShop(@Body Shop shop);
+
+    @GET("api/shops/{shop_id}")
+    Call<Shop> getShop(@Path("shop_id") String shopId);
+
+    @PATCH("api/shops/{shop_id}")
+    Call<Shop> updateShop(
+            @Path("shop_id") String shopId,
+            @Body Shop shop
+    );
+
+    @GET("api/shops/{shop_id}/products")
+    Call<List<Products>> getShopProducts(@Path("shop_id") String shopId);
+
+    @POST("api/shops/{shop_id}/products")
+    Call<Products> createShopProduct(
+            @Path("shop_id") String shopId,
+            @Body Products product
+    );
+
+    @PATCH("api/shops/{shop_id}/products/{product_id}")
+    Call<Products> updateShopProduct(
+            @Path("shop_id") String shopId,
+            @Path("product_id") String productId,
+            @Body Products product
+    );
+
+    @GET("api/shops/{shop_id}/orders")
+    Call<List<Orders>> getShopOrders(@Path("shop_id") String shopId);
+
+    @PATCH("api/shops/{shop_id}/orders/{order_id}/status")
+    Call<Orders> updateShopOrderStatus(
+            @Path("shop_id") String shopId,
+            @Path("order_id") String orderId,
+            @Body java.util.Map<String, Object> update
+    );
+
     @POST("api/auth/register")
     Call<AuthResponse> signUp(@Body AuthRequest request);
 
@@ -105,15 +148,4 @@ public interface SupabaseApi {
 
     @POST("api/auth/google")
     Call<AuthResponse> loginWithGoogle(@Body GoogleAuthRequest request);
-    @PATCH("rest/v1/orders")
-    Call<Void> updateOrderStatus(
-            @Query("id") String orderId,
-            @Body java.util.Map<String, Object> update
-    );
-
-    @PATCH("rest/v1/products")
-    Call<Void> updateProduct(
-            @Query("id") String productId,
-            @Body java.util.Map<String, Object> update
-    );
 }

@@ -15,12 +15,17 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.example.medictown.MainActivity;
 import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
+import com.example.medictown.data.models.Shop;
 import com.example.medictown.data.models.Users;
+import com.example.medictown.data.repositories.ShopRepository;
 import com.example.medictown.databinding.FragmentProfileBinding;
 import com.example.medictown.ui.admin.AdminDashboardFragment;
 import com.example.medictown.ui.auth.LoginActivity;
+import com.example.medictown.ui.shop.SellerRegisterActivity;
+import com.example.medictown.ui.shop.ShopSelectionActivity;
 
 import java.util.List;
 
@@ -32,6 +37,8 @@ public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
     private ProfileViewModel mViewModel;
+    private ShopRepository shopRepository;
+    private SessionManager sessionManager;
     private Users user;
 
     @Override
@@ -47,6 +54,8 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        shopRepository = new ShopRepository();
+        sessionManager = new SessionManager(requireContext());
 
         setupClickListeners();
         observeViewModel();
@@ -55,7 +64,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        SessionManager sessionManager = new SessionManager(getContext());
         mViewModel.fetchUserProfile(sessionManager.getUserId());
     }
     private void setupClickListeners() {
@@ -79,6 +87,8 @@ public class ProfileFragment extends Fragment {
 
         });
 
+        binding.itemSeller.setOnClickListener(v -> openSellerChannel());
+
         binding.itemAdmin.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new AdminDashboardFragment())
@@ -94,6 +104,40 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
             if (getActivity() != null) {
                 getActivity().finish();
+            }
+        });
+    }
+
+    private void openSellerChannel() {
+        binding.itemSeller.setEnabled(false);
+        shopRepository.getMyShops(new Callback<List<Shop>>() {
+            @Override
+            public void onResponse(Call<List<Shop>> call, Response<List<Shop>> response) {
+                if (binding == null) return;
+                binding.itemSeller.setEnabled(true);
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(getContext(), "Không thể tải gian hàng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                List<Shop> shops = response.body();
+                if (shops.isEmpty()) {
+                    startActivity(new Intent(getContext(), SellerRegisterActivity.class));
+                } else if (shops.size() == 1) {
+                    Shop shop = shops.get(0);
+                    sessionManager.saveCurrentShop(shop.id, shop.name, shop.logo_url);
+                    if (getActivity() instanceof MainActivity) {
+                        ((MainActivity) getActivity()).openSellerChannel();
+                    }
+                } else {
+                    startActivity(new Intent(getContext(), ShopSelectionActivity.class));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Shop>> call, Throwable t) {
+                if (binding == null) return;
+                binding.itemSeller.setEnabled(true);
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

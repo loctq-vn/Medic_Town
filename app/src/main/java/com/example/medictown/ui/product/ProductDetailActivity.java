@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.example.medictown.MainActivity;
 import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
+import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.databinding.ActivityProductDetailBinding;
 import com.example.medictown.databinding.LayoutBuyNowBottomSheetBinding;
@@ -26,6 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -233,15 +235,17 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         // Buy Now Logic
         sheetBinding.btnBuyNow.setOnClickListener(v -> {
-            cartViewModel.addToCart(
-                    sessionManager.getUserId(),
-                    product.id,
-                    buyNowQuantity,
-                    sessionManager.getToken()
-            );
+            CartItem buyNowItem = new CartItem();
+            buyNowItem.product_id = product.id;
+            buyNowItem.quantity = buyNowQuantity;
+            buyNowItem.products = product;
+
+            ArrayList<CartItem> paymentItems = new ArrayList<>();
+            paymentItems.add(buyNowItem);
 
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("open_cart", true);
+            intent.putExtra("open_payment", true);
+            intent.putExtra("payment_items", paymentItems);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             

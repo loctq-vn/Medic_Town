@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.medictown.data.models.Address;
 import com.example.medictown.data.models.CartItem;
+import com.example.medictown.data.models.OrderItem;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.repositories.OrderRepository;
 import com.example.medictown.data.repositories.ProfileRepository;
@@ -106,12 +107,19 @@ public class PaymentViewModel extends ViewModel {
         }
 
         List<String> cartItemIds = new ArrayList<>();
+        List<OrderItem> directItems = new ArrayList<>();
         for (CartItem item : items) {
-            if (item.id == null || item.id.isEmpty()) {
-                _error.setValue("Vui long them san pham vao gio hang truoc khi dat hang");
+            if (item.id != null && !item.id.isEmpty()) {
+                cartItemIds.add(item.id);
+            } else if (item.product_id != null && !item.product_id.isEmpty()) {
+                OrderItem directItem = new OrderItem();
+                directItem.product_id = item.product_id;
+                directItem.quantity = item.quantity;
+                directItems.add(directItem);
+            } else {
+                _error.setValue("San pham khong hop le");
                 return;
             }
-            cartItemIds.add(item.id);
         }
 
         _isLoading.setValue(true);
@@ -121,6 +129,7 @@ public class PaymentViewModel extends ViewModel {
         order.note = note;
         order.shipping_address = address.location;
         order.cart_item_ids = cartItemIds;
+        order.direct_items = directItems;
 
         orderRepository.createOrder(order, new Callback<List<Orders>>() {
             @Override

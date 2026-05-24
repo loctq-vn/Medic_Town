@@ -53,7 +53,7 @@ public class AdminViewModel extends ViewModel {
 
     public void fetchAllProducts() {
         isLoading.setValue(true);
-        apiService.getProducts(0, 100).enqueue(new Callback<List<Products>>() {
+        apiService.getProducts(100, 0).enqueue(new Callback<List<Products>>() {
             @Override
             public void onResponse(Call<List<Products>> call, Response<List<Products>> response) {
                 isLoading.setValue(false);
@@ -72,19 +72,63 @@ public class AdminViewModel extends ViewModel {
         });
     }
 
-    public void updateOrderStatus(String orderId, String newStatus) {
-        Map<String, Object> update = new HashMap<>();
-        update.put("status", newStatus);
-        apiService.updateOrderStatus("eq." + orderId, update).enqueue(new Callback<Void>() {
+    public void fetchShopOrders(String shopId) {
+        isLoading.setValue(true);
+        apiService.getShopOrders(shopId).enqueue(new Callback<List<Orders>>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<List<Orders>> call, Response<List<Orders>> response) {
+                isLoading.setValue(false);
                 if (response.isSuccessful()) {
-                    fetchAllOrders();
+                    allOrders.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Failed to fetch shop orders");
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<List<Orders>> call, Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchShopProducts(String shopId) {
+        isLoading.setValue(true);
+        apiService.getShopProducts(shopId).enqueue(new Callback<List<Products>>() {
+            @Override
+            public void onResponse(Call<List<Products>> call, Response<List<Products>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful()) {
+                    allProducts.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Failed to fetch shop products");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Products>> call, Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+    }
+
+    public void updateOrderStatus(String shopId, String orderId, String newStatus) {
+        Map<String, Object> update = new HashMap<>();
+        update.put("status", newStatus);
+        apiService.updateShopOrderStatus(shopId, orderId, update).enqueue(new Callback<Orders>() {
+            @Override
+            public void onResponse(Call<Orders> call, Response<Orders> response) {
+                if (response.isSuccessful()) {
+                    fetchShopOrders(shopId);
+                } else {
+                    errorMessage.setValue("Failed to update order status");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Orders> call, Throwable t) {
                 errorMessage.setValue(t.getMessage());
             }
         });

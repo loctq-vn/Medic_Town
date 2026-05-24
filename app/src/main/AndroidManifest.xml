@@ -15,6 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MedicTown">
         <activity
+            android:name=".ui.shop.ShopSelectionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.shop.SellerRegisterActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.profile.AddressEditActivity"
             android:exported="false" />
         <activity

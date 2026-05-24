@@ -21,6 +21,7 @@ public class Products implements Serializable {
     public boolean is_featured;
     public boolean is_best_seller;
     public boolean is_active;
+    public String shop_id;
     public Date created_at;
 
     public Products() {} // Required for Firebase

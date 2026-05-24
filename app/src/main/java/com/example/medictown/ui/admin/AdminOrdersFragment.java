@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.lifecycle.ViewModelProvider;
+import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.ui.admin.AdminOrdersAdapter;
 import com.example.medictown.ui.admin.AdminViewModel;
@@ -30,12 +31,14 @@ public class AdminOrdersFragment extends Fragment {
     private AdminViewModel viewModel;
     private AdminOrdersAdapter adapter;
     private List<Orders> allOrdersList = new ArrayList<>();
+    private String currentShopId;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(AdminViewModel.class);
+        currentShopId = new SessionManager(requireContext()).getCurrentShopId();
         adapter = new AdminOrdersAdapter();
 
         RecyclerView rvOrders = view.findViewById(R.id.rvOrders);
@@ -60,7 +63,9 @@ public class AdminOrdersFragment extends Fragment {
                 else if ("confirmed".equalsIgnoreCase(order.status)) nextStatus = "shipping";
                 
                 if (!nextStatus.isEmpty()) {
-                    viewModel.updateOrderStatus(order.id, nextStatus);
+                    if (currentShopId != null && !currentShopId.isEmpty()) {
+                        viewModel.updateOrderStatus(currentShopId, order.id, nextStatus);
+                    }
                 }
             }
 
@@ -75,7 +80,11 @@ public class AdminOrdersFragment extends Fragment {
             filterOrders(tabLayout.getTabAt(tabLayout.getSelectedTabPosition()).getText().toString());
         });
 
-        viewModel.fetchAllOrders();
+        if (currentShopId != null && !currentShopId.isEmpty()) {
+            viewModel.fetchShopOrders(currentShopId);
+        } else {
+            viewModel.fetchAllOrders();
+        }
     }
 
     private void filterOrders(String status) {
