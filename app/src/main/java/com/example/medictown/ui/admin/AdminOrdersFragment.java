@@ -88,13 +88,37 @@ public class AdminOrdersFragment extends Fragment {
     }
 
     private void filterOrders(String status) {
-        if ("All".equalsIgnoreCase(status)) {
-            adapter.setOrders(allOrdersList);
+        List<Orders> filtered;
+        if ("Tất cả".equalsIgnoreCase(status) || "All".equalsIgnoreCase(status)) {
+            filtered = allOrdersList;
         } else {
-            List<Orders> filtered = allOrdersList.stream()
-                    .filter(o -> status.equalsIgnoreCase(o.status))
+            String mappedStatus = mapStatus(status);
+            filtered = allOrdersList.stream()
+                    .filter(o -> mappedStatus.equalsIgnoreCase(o.status))
                     .collect(Collectors.toList());
-            adapter.setOrders(filtered);
+        }
+        adapter.setOrders(filtered);
+        updateOrderCount(filtered.size());
+    }
+
+    private String mapStatus(String tabText) {
+        switch (tabText) {
+            case "Chờ xác nhận": return "pending";
+            case "Đã xác nhận": return "confirmed";
+            case "Đang giao": return "shipping";
+            case "Hoàn thành": return "completed";
+            case "Đã hủy": return "cancelled";
+            default: return tabText.toLowerCase();
+        }
+    }
+
+    private void updateOrderCount(int count) {
+        View view = getView();
+        if (view != null) {
+            android.widget.TextView tvOrderCount = view.findViewById(R.id.tvOrderCount);
+            if (tvOrderCount != null) {
+                tvOrderCount.setText("Tổng cộng " + count + " đơn hàng");
+            }
         }
     }
 }

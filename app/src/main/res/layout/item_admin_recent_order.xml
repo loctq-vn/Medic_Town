@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvRecentOrderId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#ORD-5521"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/on_surface"/>
+
+        <TextView
+            android:id="@+id/tvRecentCustomerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lê Anh Tuấn"
+            android:textSize="12sp"
+            android:textColor="@color/text_gray"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvRecentAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1.250.000đ"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/on_surface"/>
+
+        <TextView
+            android:id="@+id/tvRecentStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:text="ĐÃ THANH TOÁN"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:background="@drawable/round_corner_item"
+            android:backgroundTint="#C6E4F4"
+            android:textColor="#2E4B57"/>
+    </LinearLayout>
+</LinearLayout>

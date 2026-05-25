@@ -41,14 +41,34 @@ public class AdminInventoryAdapter extends RecyclerView.Adapter<AdminInventoryAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Products product = products.get(position);
         holder.tvProductName.setText(product.name);
-        holder.tvSKU.setText("ID: " + product.id);
-        holder.tvStockCount.setText("Stock: " + product.stock);
-        holder.tvPrice.setText("$" + String.format("%.2f", product.price));
+        holder.tvSKU.setText("ID: " + (product.id.length() > 8 ? product.id.substring(0, 8) : product.id));
+        holder.tvStockCount.setText(String.valueOf(product.stock));
+        holder.tvPrice.setText(String.format(java.util.Locale.getDefault(), "%,.0fđ", product.price));
 
-        if (product.stock < 10) {
-            holder.tvStockCount.setTextColor(holder.itemView.getContext().getColor(R.color.error));
+        // Set status label based on stock
+        String statusText;
+        int statusColor;
+        int textColor;
+
+        if (product.stock <= 0) {
+            statusText = "HẾT HÀNG";
+            statusColor = 0xFFFFCDD2; // Light Red
+            textColor = 0xFFC62828; // Dark Red
+        } else if (product.stock < 10) {
+            statusText = "SẮP HẾT";
+            statusColor = 0xFFFFECB3; // Light Amber
+            textColor = 0xFF856404; // Dark Amber
         } else {
-            holder.tvStockCount.setTextColor(holder.itemView.getContext().getColor(R.color.on_surface));
+            statusText = "CÒN HÀNG";
+            statusColor = 0xFFC8E6C9; // Light Green
+            textColor = 0xFF2E7D32; // Dark Green
+        }
+
+        View tvStatusLabel = holder.itemView.findViewById(R.id.tvStatusLabel);
+        if (tvStatusLabel instanceof TextView) {
+            ((TextView) tvStatusLabel).setText(statusText);
+            tvStatusLabel.getBackground().setTint(statusColor);
+            ((TextView) tvStatusLabel).setTextColor(textColor);
         }
 
         String imageUrl = (product.images != null && !product.images.isEmpty()) ? product.images.get(0) : null;

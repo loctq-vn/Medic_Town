@@ -33,4 +33,12 @@
     <color name="price_color">#003D9B</color>
     <color name="primary_alpha_05">#0D003D9B</color>
     <color name="error">#BA1A1A</color>
+
+    <!-- Stock Status Colors -->
+    <color name="status_in_stock_bg">#C9E7F7</color>
+    <color name="status_in_stock_text">#001F2A</color>
+    <color name="status_low_stock_bg">#FFDBCF</color>
+    <color name="status_low_stock_text">#812800</color>
+    <color name="status_critical_bg">#FFDAD6</color>
+    <color name="status_critical_text">#93000A</color>
 </resources>

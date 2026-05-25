@@ -3,92 +3,182 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
+    app:cardElevation="2dp"
     app:strokeWidth="1dp"
-    app:strokeColor="@color/outline_variant">
+    app:strokeColor="#1A000000">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
-        <LinearLayout
+        <!-- Card Header -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tvOrderId"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="#ORD-98234"
-                android:textStyle="bold"
-                android:textColor="@color/on_surface"/>
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/tvStatus"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvOrderId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ID: #CE-89021"
+                    android:textColor="@color/primary"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"/>
+
+                <TextView
+                    android:id="@+id/tvCustomerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Trần Duy Mạnh"
+                    android:textColor="@color/on_surface"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvOrderTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Hôm nay, 14:32"
+                    android:textColor="@color/text_gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PENDING"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
+                android:layout_alignParentEnd="true"
                 android:background="@drawable/round_corner_item"
-                android:backgroundTint="@color/secondary_container"
-                android:textColor="@color/on_secondary_container"/>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvCustomerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="John Doe"
-            android:textSize="14sp"
-            android:textColor="@color/on_surface"/>
-
-        <TextView
-            android:id="@+id/tvOrderSummary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3 items • $45.00"
-            android:textSize="12sp"
-            android:textColor="@color/on_surface_variant"
-            android:layout_marginTop="2dp"/>
+                android:backgroundTint="#C6E4F4"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:text="CHỜ XÁC NHẬN"
+                android:textColor="#2E4B57"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginVertical="12dp"
-            android:background="@color/outline_variant"/>
+            android:layout_marginVertical="16dp"
+            android:background="#1A000000" />
 
+        <!-- Card Body -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDetails"
-                style="@style/Widget.Material3.Button.TonalButton"
-                android:layout_width="wrap_content"
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/surface_container_low">
+                <ImageView
+                    android:id="@+id/ivProduct"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_medicine_placeholder"
+                    app:tint="@color/primary" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Details"
-                android:textSize="12sp"
-                app:cornerRadius="8dp"/>
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnQuickAction"
+                <TextView
+                    android:id="@+id/tvProductName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Amoxicillin 500mg (x2)"
+                    android:textColor="@color/on_surface"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvOrderSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="3 sản phẩm • Prescription Verified"
+                    android:textColor="@color/text_gray"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTotalPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Confirm"
+                android:text="1.240.000đ"
+                android:textColor="@color/on_surface"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="16dp"
+            android:background="#1A000000" />
+
+        <!-- Card Footer -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnQuickAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Xác nhận"
+                android:textStyle="bold"
                 android:textSize="12sp"
-                app:cornerRadius="8dp"/>
+                app:cornerRadius="8dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDetails"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="0.5"
+                android:text="Chi tiết"
+                android:textColor="@color/on_surface"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                app:cornerRadius="8dp"
+                app:strokeColor="#4D000000"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
