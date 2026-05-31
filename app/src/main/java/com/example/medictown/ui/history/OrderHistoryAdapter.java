@@ -21,6 +21,10 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
     public interface OnOrderClickListener {
         void onDetailClick(Orders order);
+
+        default void onReorderClick(Orders order) {
+            onDetailClick(order);
+        }
     }
 
     private OnOrderClickListener listener;
@@ -69,6 +73,12 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             binding.btnDetails.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onDetailClick(order);
+                }
+            });
+
+            binding.btnReorder.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onReorderClick(order);
                 }
             });
 

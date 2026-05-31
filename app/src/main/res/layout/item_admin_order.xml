@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
     app:strokeWidth="1dp"
@@ -97,8 +98,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_medicine_placeholder"
-                    app:tint="@color/primary" />
+                    android:src="@drawable/ic_medicine_placeholder" />
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
@@ -155,22 +155,43 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnQuickAction"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_weight="1"
                 android:text="Xác nhận"
                 android:textStyle="bold"
                 android:textSize="12sp"
                 app:cornerRadius="8dp"
                 android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                android:insetBottom="0dp"
+                android:minHeight="0dp"
+                android:paddingVertical="0dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="Hủy đơn"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/error"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                app:cornerRadius="8dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="0dp"
+                android:paddingVertical="0dp"
+                android:visibility="gone"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDetails"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_marginStart="8dp"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:text="Chi tiết"
                 android:textColor="@color/on_surface"
                 android:textStyle="bold"
@@ -178,7 +199,9 @@
                 app:cornerRadius="8dp"
                 app:strokeColor="#4D000000"
                 android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                android:insetBottom="0dp"
+                android:minHeight="0dp"
+                android:paddingVertical="0dp"/>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

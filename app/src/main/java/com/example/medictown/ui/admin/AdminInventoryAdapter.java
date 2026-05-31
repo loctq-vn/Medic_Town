@@ -43,7 +43,7 @@ public class AdminInventoryAdapter extends RecyclerView.Adapter<AdminInventoryAd
         holder.tvProductName.setText(product.name);
         holder.tvSKU.setText("ID: " + (product.id.length() > 8 ? product.id.substring(0, 8) : product.id));
         holder.tvStockCount.setText(String.valueOf(product.stock));
-        holder.tvPrice.setText(String.format(java.util.Locale.getDefault(), "%,.0fđ", product.price));
+        holder.tvPrice.setText(formatPriceWithUnit(product));
 
         // Set status label based on stock
         String statusText;
@@ -87,6 +87,14 @@ public class AdminInventoryAdapter extends RecyclerView.Adapter<AdminInventoryAd
     @Override
     public int getItemCount() {
         return products.size();
+    }
+
+    private String formatPriceWithUnit(Products product) {
+        String formattedPrice = String.format(java.util.Locale.getDefault(), "%,.0fđ", product.price);
+        if (product.unit == null || product.unit.trim().isEmpty()) {
+            return formattedPrice;
+        }
+        return formattedPrice + " / " + product.unit.trim();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

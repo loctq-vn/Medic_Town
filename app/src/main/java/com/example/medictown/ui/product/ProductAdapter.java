@@ -22,6 +22,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public interface OnProductClickListener {
         void onProductClick(Products product);
+
+        default void onBuyNowClick(Products product) {
+            onProductClick(product);
+        }
     }
 
     public void setOnProductClickListener(OnProductClickListener listener) {
@@ -62,12 +66,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         public void bind(Products product, OnProductClickListener listener) {
             binding.tvProductName.setText(product.name);
             binding.tvBrand.setText(product.brand);
-            binding.tvPackaging.setText(product.usage);
 
             NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             
             if (product.sale_price != null && product.sale_price > 0 && product.sale_price < product.price) {
-                binding.tvPrice.setText(formatter.format(product.sale_price));
+                binding.tvPrice.setText(formatPriceWithUnit(formatter, product.sale_price, product));
                 binding.tvOldPrice.setVisibility(View.VISIBLE);
                 binding.tvOldPrice.setText(formatter.format(product.price));
                 binding.tvOldPrice.setPaintFlags(binding.tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -76,7 +79,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 double discountPercent = ((product.price - product.sale_price) / product.price) * 100;
                 binding.tvDiscount.setText("-" + Math.round(discountPercent) + "%");
             } else {
-                binding.tvPrice.setText(formatter.format(product.price));
+                binding.tvPrice.setText(formatPriceWithUnit(formatter, product.price, product));
                 binding.tvOldPrice.setVisibility(View.GONE);
                 binding.tvDiscount.setVisibility(View.GONE);
             }
@@ -103,10 +106,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 binding.imgProduct.setImageResource(R.drawable.ic_launcher_background);
             }
 
-            // Thiết lập sự kiện click cho nút "Xem chi tiết"
             binding.btnAddToCart.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onProductClick(product);
+                    listener.onBuyNowClick(product);
                 }
             });
 
@@ -116,6 +118,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     listener.onProductClick(product);
                 }
             });
+        }
+
+        private String formatPriceWithUnit(NumberFormat formatter, double price, Products product) {
+            String formattedPrice = formatter.format(price);
+            if (product.unit == null || product.unit.trim().isEmpty()) {
+                return formattedPrice;
+            }
+            return formattedPrice + " / " + product.unit.trim();
         }
     }
 }

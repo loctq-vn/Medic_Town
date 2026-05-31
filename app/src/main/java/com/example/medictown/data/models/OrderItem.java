@@ -1,6 +1,8 @@
 package com.example.medictown.data.models;
 
-public class OrderItem {
+import java.io.Serializable;
+
+public class OrderItem implements Serializable {
     public String id;
     public String order_id;
     public String product_id;

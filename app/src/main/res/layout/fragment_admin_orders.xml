@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Đơn hàng"
-            android:textColor="@color/on_surface"
+            android:textColor="@color/primary"
             android:textSize="32sp"
             android:textStyle="bold"
             android:letterSpacing="-0.02"/>
@@ -104,7 +104,9 @@
             app:tabTextAppearance="@style/TextAppearance.Material3.TitleSmall">
             <com.google.android.material.tabs.TabItem android:text="Tất cả"/>
             <com.google.android.material.tabs.TabItem android:text="Chờ xác nhận"/>
+            <com.google.android.material.tabs.TabItem android:text="Đã xác nhận"/>
             <com.google.android.material.tabs.TabItem android:text="Đang giao"/>
+            <com.google.android.material.tabs.TabItem android:text="Hoàn thành"/>
             <com.google.android.material.tabs.TabItem android:text="Đã hủy"/>
         </com.google.android.material.tabs.TabLayout>
     </LinearLayout>

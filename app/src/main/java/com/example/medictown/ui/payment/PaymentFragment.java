@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.example.medictown.MainActivity;
 import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.Address;
@@ -24,16 +25,41 @@ import java.util.Locale;
 
 public class PaymentFragment extends Fragment {
 
+    private static final String ARG_SELECTED_ITEMS = "selected_items";
+    private static final String ARG_PAYMENT_METHOD = "payment_method";
+    private static final String ARG_NOTE = "note";
+    private static final String ARG_SHIPPING_ADDRESS = "shipping_address";
+
     private FragmentPaymentBinding binding;
     private PaymentViewModel viewModel;
     private PaymentProductAdapter adapter;
     private SessionManager sessionManager;
     private final NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+    private String prefillShippingAddress;
+    private boolean prefillAddressApplied = false;
 
     public static PaymentFragment newInstance(List<CartItem> selectedItems) {
         PaymentFragment fragment = new PaymentFragment();
         Bundle args = new Bundle();
-        args.putSerializable("selected_items", new ArrayList<>(selectedItems));
+        args.putSerializable(ARG_SELECTED_ITEMS, new ArrayList<>(selectedItems));
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static PaymentFragment newInstance(
+            List<CartItem> selectedItems,
+            String paymentMethod,
+            String note,
+            String shippingAddress
+    ) {
+        PaymentFragment fragment = newInstance(selectedItems);
+        Bundle args = fragment.getArguments();
+        if (args == null) {
+            args = new Bundle();
+        }
+        args.putString(ARG_PAYMENT_METHOD, paymentMethod);
+        args.putString(ARG_NOTE, note);
+        args.putString(ARG_SHIPPING_ADDRESS, shippingAddress);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,10 +91,11 @@ public class PaymentFragment extends Fragment {
         
         if (getArguments() != null) {
             @SuppressWarnings("unchecked")
-            List<CartItem> items = (List<CartItem>) getArguments().getSerializable("selected_items");
+            List<CartItem> items = (List<CartItem>) getArguments().getSerializable(ARG_SELECTED_ITEMS);
             if (items != null) {
                 viewModel.setSelectedItems(items);
             }
+            prefillShippingAddress = getArguments().getString(ARG_SHIPPING_ADDRESS);
         }
 
         if (sessionManager.isLoggedIn()) {
@@ -91,6 +118,29 @@ public class PaymentFragment extends Fragment {
 
         // Xử lý chọn duy nhất 1 phương thức thanh toán
         setupPaymentMethodSelection();
+        applyOrderPrefill();
+    }
+
+    private void applyOrderPrefill() {
+        Bundle args = getArguments();
+        if (args == null) {
+            return;
+        }
+
+        String paymentMethod = args.getString(ARG_PAYMENT_METHOD);
+        if (paymentMethod != null) {
+            if ("momo".equalsIgnoreCase(paymentMethod)) {
+                binding.rbMomo.setChecked(true);
+            } else {
+                binding.rbCod.setChecked(true);
+            }
+        }
+
+        String note = args.getString(ARG_NOTE);
+        if (note != null) {
+            binding.edtNote.setText(note);
+        }
+        updatePaymentMethodUI();
     }
 
     private void navigateToHistory() {
@@ -184,6 +234,21 @@ public class PaymentFragment extends Fragment {
             }
         });
 
+        viewModel.addresses.observe(getViewLifecycleOwner(), addresses -> {
+            if (prefillAddressApplied || prefillShippingAddress == null || prefillShippingAddress.trim().isEmpty()
+                    || addresses == null || addresses.isEmpty()) {
+                return;
+            }
+            for (Address address : addresses) {
+                if (address.location != null && address.location.equals(prefillShippingAddress)) {
+                    prefillAddressApplied = true;
+                    viewModel.selectAddress(address);
+                    return;
+                }
+            }
+            prefillAddressApplied = true;
+        });
+
         viewModel.subtotal.observe(getViewLifecycleOwner(), subtotal -> {
             binding.tvSubtotalValue.setText(formatter.format(subtotal));
         });
@@ -222,5 +287,13 @@ public class PaymentFragment extends Fragment {
             if (appBar != null) appBar.setVisibility(View.VISIBLE);
         }
         binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setNavBarsVisibility(false);
+        }
     }
 }

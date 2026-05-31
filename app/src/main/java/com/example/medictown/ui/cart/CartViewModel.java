@@ -11,8 +11,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.example.medictown.data.models.CartItem;
+import com.example.medictown.data.models.ProductSubcategory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CartViewModel extends ViewModel {
     private final CartRepository cartRepository;
@@ -21,6 +24,9 @@ public class CartViewModel extends ViewModel {
 
     private final MutableLiveData<List<CartItem>> _cartItems = new MutableLiveData<>();
     public LiveData<List<CartItem>> cartItems = _cartItems;
+
+    private final MutableLiveData<Map<String, String>> _subcategoryNames = new MutableLiveData<>(new HashMap<>());
+    public LiveData<Map<String, String>> subcategoryNames = _subcategoryNames;
 
     public CartViewModel() {
         cartRepository = new CartRepository();
@@ -40,6 +46,28 @@ public class CartViewModel extends ViewModel {
             @Override
             public void onFailure(Call<List<CartItem>> call, Throwable t) {
                 _cartItems.postValue(null);
+            }
+        });
+    }
+
+    public void fetchProductSubcategories() {
+        cartRepository.getProductSubcategories(new Callback<List<ProductSubcategory>>() {
+            @Override
+            public void onResponse(Call<List<ProductSubcategory>> call, Response<List<ProductSubcategory>> response) {
+                Map<String, String> names = new HashMap<>();
+                if (response.isSuccessful() && response.body() != null) {
+                    for (ProductSubcategory subcategory : response.body()) {
+                        if (subcategory.id != null && subcategory.name != null && !subcategory.name.trim().isEmpty()) {
+                            names.put(subcategory.id, subcategory.name);
+                        }
+                    }
+                }
+                _subcategoryNames.postValue(names);
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductSubcategory>> call, Throwable t) {
+                _subcategoryNames.postValue(new HashMap<>());
             }
         });
     }

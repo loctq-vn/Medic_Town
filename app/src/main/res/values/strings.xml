@@ -23,4 +23,5 @@
     <string name="already_have_account">Bạn đã có tài khoản?</string>
     <string name="order_id_format">#MC-%s</string>
     <string name="quantity_format">Số lượng: %s</string>
+    <string name="product_image_thumbnail">Product image</string>
 </resources>

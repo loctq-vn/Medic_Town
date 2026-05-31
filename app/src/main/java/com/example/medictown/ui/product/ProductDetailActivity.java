@@ -16,12 +16,11 @@ import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.databinding.ActivityProductDetailBinding;
-import com.example.medictown.databinding.LayoutBuyNowBottomSheetBinding;
 import com.example.medictown.ui.cart.CartViewModel;
 import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.repositories.ReviewRepository;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,7 +37,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private ReviewRepository reviewRepository;
     private ProductReviewAdapter reviewAdapter;
-    private int buyNowQuantity = 1;
+    private ProductImageAdapter productImageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,15 +72,16 @@ public class ProductDetailActivity extends AppCompatActivity {
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         binding.tvProductNameDetail.setText(product.name);
         binding.tvBrandDetail.setText(product.brand);
-        binding.tvDescriptionDetail.setText(product.description);
-        binding.tvIndicationsDetail.setText(product.indications != null ? product.indications : "Chưa có thông tin");
-        binding.tvUsageDetail.setText(product.usage != null ? product.usage : "Chưa có thông tin");
-        binding.tvContraindicationsDetail.setText(product.contraindications != null ? product.contraindications : "Chưa có thông tin");
+        binding.tvUsesDetail.setText(displayText(product.uses));
+        binding.tvUsageDetail.setText(displayText(product.usage));
+        binding.tvSideEffectsDetail.setText(displayText(product.side_effects));
+        binding.tvPrecautionsDetail.setText(displayText(product.precautions));
+        binding.tvStorageDetail.setText(displayText(product.storage));
         
         if (product.sale_price != null && product.sale_price > 0 && product.sale_price < product.price) {
             binding.tvOldPriceDetail.setVisibility(View.VISIBLE);
             binding.tvOldPriceDetail.setText(formatter.format(product.price));
-            binding.tvPriceDetail.setText(formatter.format(product.sale_price));
+            binding.tvPriceDetail.setText(formatPriceWithUnit(formatter, product.sale_price));
             binding.btnBuyNowDetail.setText("Mua ngay - " + formatter.format(product.sale_price));
             
             // Tính phần trăm giảm giá
@@ -91,17 +91,54 @@ public class ProductDetailActivity extends AppCompatActivity {
         } else {
             binding.tvOldPriceDetail.setVisibility(View.GONE);
             binding.tvDiscountDetail.setVisibility(View.GONE);
-            binding.tvPriceDetail.setText(formatter.format(product.price));
+            binding.tvPriceDetail.setText(formatPriceWithUnit(formatter, product.price));
             binding.btnBuyNowDetail.setText("Mua ngay - " + formatter.format(product.price));
         }
 
-        // Load image
-        if (product.images != null && !product.images.isEmpty()) {
-            Glide.with(this)
-                    .load(product.images.get(0))
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into(binding.imgProductDetail);
+        setupProductImages();
+    }
+
+    private String displayText(String value) {
+        return value == null || value.trim().isEmpty() ? "Chưa có thông tin" : value;
+    }
+
+    private String formatPriceWithUnit(NumberFormat formatter, double price) {
+        String formattedPrice = formatter.format(price);
+        if (product == null || product.unit == null || product.unit.trim().isEmpty()) {
+            return formattedPrice;
         }
+        return formattedPrice + " / " + product.unit.trim();
+    }
+
+    private void setupProductImages() {
+        if (product.images == null || product.images.isEmpty()) {
+            binding.imgProductDetail.setImageResource(R.drawable.ic_product);
+            binding.rvProductImages.setVisibility(View.GONE);
+            return;
+        }
+
+        loadProductImage(product.images.get(0));
+
+        if (product.images.size() <= 1) {
+            binding.rvProductImages.setVisibility(View.GONE);
+            return;
+        }
+
+        binding.rvProductImages.setVisibility(View.VISIBLE);
+        binding.rvProductImages.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        );
+        productImageAdapter = new ProductImageAdapter(this::loadProductImage);
+        binding.rvProductImages.setAdapter(productImageAdapter);
+        productImageAdapter.setImages(product.images);
+    }
+
+    private void loadProductImage(String imageUrl) {
+        Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_product)
+                .error(R.drawable.ic_product)
+                .into(binding.imgProductDetail);
     }
 
     private void setupReviewRecyclerView() {
@@ -193,66 +230,33 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void showBuyNowBottomSheet() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
-        LayoutBuyNowBottomSheetBinding sheetBinding = LayoutBuyNowBottomSheetBinding.inflate(getLayoutInflater());
-        bottomSheetDialog.setContentView(sheetBinding.getRoot());
+        ProductBuyNowBottomSheet.show(this, getLayoutInflater(), product, new ProductBuyNowBottomSheet.OnProductPurchaseActionListener() {
+            @Override
+            public void onAddToCart(Products product, int quantity) {
+                cartViewModel.addToCart(sessionManager.getUserId(), product.id, quantity, sessionManager.getToken());
+            }
 
-        buyNowQuantity = 1;
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-
-        // Set Product Info
-        if (product.images != null && !product.images.isEmpty()) {
-            Glide.with(this).load(product.images.get(0)).into(sheetBinding.imgProduct);
-        }
-
-        double currentPrice = (product.sale_price != null && product.sale_price > 0) ? product.sale_price : product.price;
-        sheetBinding.tvPrice.setText(formatter.format(currentPrice));
-        
-        if (product.sale_price != null && product.sale_price > 0) {
-            sheetBinding.tvOldPrice.setVisibility(View.VISIBLE);
-            sheetBinding.tvOldPrice.setText(formatter.format(product.price));
-            sheetBinding.tvOldPrice.setPaintFlags(sheetBinding.tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
-            sheetBinding.tvOldPrice.setVisibility(View.GONE);
-        }
-
-        sheetBinding.tvStock.setText("Kho: " + product.stock);
-
-        // Quantity Logic
-        sheetBinding.btnPlus.setOnClickListener(v -> {
-            if (buyNowQuantity < product.stock) {
-                buyNowQuantity++;
-                sheetBinding.tvQuantity.setText(String.valueOf(buyNowQuantity));
+            @Override
+            public void onBuyNow(Products product, int quantity) {
+                openPayment(product, quantity);
             }
         });
+    }
 
-        sheetBinding.btnMinus.setOnClickListener(v -> {
-            if (buyNowQuantity > 1) {
-                buyNowQuantity--;
-                sheetBinding.tvQuantity.setText(String.valueOf(buyNowQuantity));
-            }
-        });
+    private void openPayment(Products product, int quantity) {
+        CartItem buyNowItem = new CartItem();
+        buyNowItem.product_id = product.id;
+        buyNowItem.quantity = quantity;
+        buyNowItem.products = product;
 
-        // Buy Now Logic
-        sheetBinding.btnBuyNow.setOnClickListener(v -> {
-            CartItem buyNowItem = new CartItem();
-            buyNowItem.product_id = product.id;
-            buyNowItem.quantity = buyNowQuantity;
-            buyNowItem.products = product;
+        ArrayList<CartItem> paymentItems = new ArrayList<>();
+        paymentItems.add(buyNowItem);
 
-            ArrayList<CartItem> paymentItems = new ArrayList<>();
-            paymentItems.add(buyNowItem);
-
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("open_payment", true);
-            intent.putExtra("payment_items", paymentItems);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            
-            bottomSheetDialog.dismiss();
-            finish();
-        });
-
-        bottomSheetDialog.show();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("open_payment", true);
+        intent.putExtra("payment_items", paymentItems);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 }

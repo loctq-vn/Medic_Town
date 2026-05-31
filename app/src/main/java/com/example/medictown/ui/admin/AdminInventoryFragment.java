@@ -15,7 +15,7 @@ import com.example.medictown.ui.admin.AdminInventoryAdapter;
 import com.example.medictown.ui.admin.AdminViewModel;
 import com.example.medictown.ui.shop.SellerProductFormFragment;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.medictown.R;
 
 public class AdminInventoryFragment extends Fragment {
@@ -52,7 +52,7 @@ public class AdminInventoryFragment extends Fragment {
             // TODO: Implement local filtering logic
         });
 
-        ExtendedFloatingActionButton fabAddProduct = view.findViewById(R.id.fabAddProduct);
+        FloatingActionButton fabAddProduct = view.findViewById(R.id.fabAddProduct);
         fabAddProduct.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new SellerProductFormFragment())

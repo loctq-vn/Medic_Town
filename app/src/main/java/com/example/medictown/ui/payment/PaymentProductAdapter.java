@@ -38,7 +38,7 @@ public class PaymentProductAdapter extends RecyclerView.Adapter<PaymentProductAd
         if (item.products == null) return;
 
         holder.binding.tvProductName.setText(item.products.name);
-        holder.binding.tvQuantity.setText("x" + item.quantity);
+        holder.binding.tvQuantity.setText(formatQuantityWithUnit(item.quantity, item.products.unit));
 
         double price = (item.products.sale_price != null && item.products.sale_price > 0)
                 ? item.products.sale_price
@@ -68,6 +68,13 @@ public class PaymentProductAdapter extends RecyclerView.Adapter<PaymentProductAd
     @Override
     public int getItemCount() {
         return itemList.size();
+    }
+
+    private String formatQuantityWithUnit(int quantity, String unit) {
+        if (unit == null || unit.trim().isEmpty()) {
+            return "x" + quantity;
+        }
+        return "x" + quantity + " / " + unit.trim();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

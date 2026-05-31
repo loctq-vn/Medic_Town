@@ -37,7 +37,7 @@ public class AdminOrdersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(this).get(AdminViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(AdminViewModel.class);
         currentShopId = new SessionManager(requireContext()).getCurrentShopId();
         adapter = new AdminOrdersAdapter();
 
@@ -58,6 +58,11 @@ public class AdminOrdersFragment extends Fragment {
         adapter.setOnOrderActionListener(new AdminOrdersAdapter.OnOrderActionListener() {
             @Override
             public void onQuickAction(Orders order) {
+                if ("shipping".equalsIgnoreCase(order.status)) {
+                    onDetails(order);
+                    return;
+                }
+
                 String nextStatus = "";
                 if ("pending".equalsIgnoreCase(order.status)) nextStatus = "confirmed";
                 else if ("confirmed".equalsIgnoreCase(order.status)) nextStatus = "shipping";
@@ -71,7 +76,17 @@ public class AdminOrdersFragment extends Fragment {
 
             @Override
             public void onDetails(Orders order) {
-                // Navigate to existing order detail if applicable or admin specific detail
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, AdminOrderDetailFragment.newInstance(order, currentShopId))
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+            @Override
+            public void onCancel(Orders order) {
+                if (currentShopId != null && !currentShopId.isEmpty()) {
+                    viewModel.updateOrderStatus(currentShopId, order.id, "cancelled");
+                }
             }
         });
 

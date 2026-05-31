@@ -10,18 +10,21 @@ public class Products implements Serializable {
     public String brand;
     public double price;
     public Double sale_price;
+    public String unit;
     public int stock;
     public List<String> images;
-    public String description;
     public String usage;
-    public String indications;
-    public String contraindications;
+    public String uses;
+    public String side_effects;
+    public String precautions;
+    public String storage;
     public String manufacturer;
     public boolean requires_prescription;
     public boolean is_featured;
     public boolean is_best_seller;
     public boolean is_active;
     public String shop_id;
+    public String subcategory_id;
     public Date created_at;
 
     public Products() {} // Required for Firebase

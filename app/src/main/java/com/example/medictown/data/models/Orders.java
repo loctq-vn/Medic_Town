@@ -1,9 +1,10 @@
 package com.example.medictown.data.models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Orders {
+public class Orders implements Serializable {
     public String id;
     public String user_id;
     public String status; // pending, confirmed, shipping, completed, cancelled
@@ -22,6 +23,7 @@ public class Orders {
     public List<OrderItem> direct_items;
 
     public List<OrderItem> order_items;
+    public List<Payments> payments;
 
     public Orders() {}
 }

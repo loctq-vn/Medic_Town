@@ -3,6 +3,7 @@ package com.example.medictown.data.repositories;
 import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SupabaseApi;
 import com.example.medictown.data.models.CartItem;
+import com.example.medictown.data.models.ProductSubcategory;
 
 import java.util.List;
 
@@ -19,6 +20,10 @@ public class CartRepository {
     public void getCartItems(String userId, String token, Callback<List<CartItem>> callback) {
         RetrofitClient.setAuthToken(token);
         apiService.getCartItems(null).enqueue(callback);
+    }
+
+    public void getProductSubcategories(Callback<List<ProductSubcategory>> callback) {
+        apiService.getProductSubcategories(null).enqueue(callback);
     }
 
     public void addToCart(String userId, String productId, int quantity, String token, Callback<Void> callback) {

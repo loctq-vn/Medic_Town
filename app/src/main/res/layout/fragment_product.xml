@@ -13,21 +13,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Search Bar (moved from header to content body) -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardBackgroundColor="#F1F3F5"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeColor="@color/main_blue"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -50,189 +52,256 @@
                         android:textColor="@color/text_gray"
                         android:textSize="14sp" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Categories Section -->
-            <GridLayout
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="3"
-                android:rowCount="2">
+                android:background="@color/white"
+                android:fillViewport="false"
+                android:overScrollMode="never"
+                android:paddingHorizontal="8dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="12dp"
+                android:scrollbars="none">
 
-                <!-- Left Column: Large "Thuốc" Card -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="180dp"
-                    android:layout_rowSpan="2"
-                    android:layout_columnWeight="1.5"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_category_medicine"
+                    android:layout_width="108dp"
+                    android:layout_height="138dp"
                     android:layout_margin="4dp"
-                    app:cardBackgroundColor="#D1E9F6"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp">
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/main_blue"
+                    app:strokeWidth="2dp">
 
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="16dp">
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="4dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="10dp">
 
                         <ImageView
-                            android:id="@+id/ic_pill"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_product"
-                            app:tint="@color/main_blue" />
+                            android:layout_width="68dp"
+                            android:layout_height="68dp"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/category_medicine" />
 
                         <TextView
-                            android:id="@+id/tv_thuoc_label"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/ic_pill"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:maxLines="2"
                             android:text="Thuốc"
                             android:textColor="@color/black"
-                            android:textSize="22sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/tv_thuoc_label"
-                            android:text="Kê đơn &amp; không kê đơn"
-                            android:textColor="@color/text_gray"
-                            android:textSize="12sp" />
-
-                        <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentBottom="true"
-                            android:alpha="0.2"
-                            android:src="@android:drawable/ic_input_add"
-                            app:tint="@color/main_blue" />
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Right Top Left: Thực phẩm chức năng -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_columnWeight="1"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_category_supplement"
+                    android:layout_width="108dp"
+                    android:layout_height="138dp"
                     android:layout_margin="4dp"
-                    app:cardBackgroundColor="#F8F9FA"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp">
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/main_blue"
+                    app:strokeWidth="2dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:paddingHorizontal="4dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="10dp">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_hotro"
-                            app:tint="#D32F2F" />
+                            android:layout_width="68dp"
+                            android:layout_height="68dp"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/category_supplement" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="4dp"
                             android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:maxLines="2"
                             android:text="Thực phẩm\nchức năng"
                             android:textColor="@color/black"
-                            android:textSize="11sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <!-- Right Top Right: Dược mỹ phẩm -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_columnWeight="1"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_category_cosmetic"
+                    android:layout_width="108dp"
+                    android:layout_height="138dp"
                     android:layout_margin="4dp"
-                    app:cardBackgroundColor="#F8F9FA"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp">
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/main_blue"
+                    app:strokeWidth="2dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:paddingHorizontal="4dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="10dp">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_profile"
-                            app:tint="@color/main_blue" />
+                            android:layout_width="68dp"
+                            android:layout_height="68dp"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/category_cosmetic" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="4dp"
                             android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:maxLines="2"
                             android:text="Dược mỹ\nphẩm"
                             android:textColor="@color/black"
-                            android:textSize="11sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <!-- Right Bottom: Thiết bị y tế -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="52dp"
-                    android:layout_columnSpan="2"
-                    android:layout_columnWeight="2"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_category_device"
+                    android:layout_width="108dp"
+                    android:layout_height="138dp"
                     android:layout_margin="4dp"
-                    app:cardBackgroundColor="#E9ECEF"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp">
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/main_blue"
+                    app:strokeWidth="2dp">
 
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingHorizontal="12dp">
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="4dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="10dp">
 
                         <ImageView
-                            android:id="@+id/ic_stetho"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_sotaysuckhoe"
-                            app:tint="@color/black" />
+                            android:layout_width="68dp"
+                            android:layout_height="68dp"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/category_device" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="8dp"
-                            android:layout_toEndOf="@id/ic_stetho"
-                            android:text="Thiết bị y tế"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:maxLines="2"
+                            android:text="Thiết bị\ny tế"
                             android:textColor="@color/black"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cv_category_personal_care"
+                    android:layout_width="108dp"
+                    android:layout_height="138dp"
+                    android:layout_margin="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/main_blue"
+                    app:strokeWidth="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="4dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="10dp">
 
                         <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:src="@android:drawable/ic_media_play"
-                            app:tint="@color/black" />
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
+                            android:layout_width="68dp"
+                            android:layout_height="68dp"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/category_personal_care" />
 
-            </GridLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:maxLines="2"
+                            android:text="Chăm sóc\ncá nhân"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </HorizontalScrollView>
 
-            <!-- Featured Products Header -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="16dp">
 
@@ -267,11 +336,11 @@
                     android:textStyle="bold" />
             </RelativeLayout>
 
-            <!-- Product Grid -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="2"

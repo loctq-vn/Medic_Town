@@ -1,9 +1,10 @@
 package com.example.medictown.data.models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
-public class Payments {
+public class Payments implements Serializable {
     public String id;
     public String order_id;
     public String method; // cash, wallet, vnpay, momo

@@ -49,6 +49,10 @@ public class RecentOrdersAdapter extends RecyclerView.Adapter<RecentOrdersAdapte
                 bgColor = 0xFFFFCDD2; // Light Red
                 textColor = 0xFFC62828; // Dark Red
                 break;
+            case "CONFIRMED":
+                bgColor = 0xFFFFE0B2; // Light Orange
+                textColor = 0xFFE65100; // Dark Orange
+                break;
             default:
                 bgColor = 0xFFC6E4F4; // Light Blue
                 textColor = 0xFF2E4B57; // Dark Blue

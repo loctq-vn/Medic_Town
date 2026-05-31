@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AdminFormSectionTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AdminFormLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="AdminFormInput">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/bg_admin_input</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="android:textColorHint">@color/form_hint</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AdminFormSpinner">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/bg_admin_input</item>
+        <item name="android:popupBackground">@drawable/bg_admin_spinner_dropdown</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+    </style>
+
+    <style name="AdminFormTextArea">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">104dp</item>
+        <item name="android:background">@drawable/bg_admin_input</item>
+        <item name="android:gravity">top</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:textColor">@color/on_surface</item>
+        <item name="android:textColorHint">@color/form_hint</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+</resources>

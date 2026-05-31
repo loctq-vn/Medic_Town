@@ -6,6 +6,8 @@ import com.example.medictown.data.models.AuthResponse;
 import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.GoogleAuthRequest;
 import com.example.medictown.data.models.Orders;
+import com.example.medictown.data.models.ProductCategory;
+import com.example.medictown.data.models.ProductSubcategory;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.models.Shop;
@@ -25,6 +27,8 @@ import retrofit2.http.Query;
 public interface SupabaseApi {
     @GET("api/products")
     Call<List<Products>> getProducts(
+            @Query("category_id") String categoryId,
+            @Query("subcategory_id") String subcategoryId,
             @Query("limit") int limit,
             @Query("offset") int offset
     );
@@ -38,8 +42,18 @@ public interface SupabaseApi {
     @GET("api/products")
     Call<List<Products>> searchProducts(
             @Query("search") String search,
+            @Query("category_id") String categoryId,
+            @Query("subcategory_id") String subcategoryId,
             @Query("limit") int limit,
             @Query("offset") int offset
+    );
+
+    @GET("api/products/categories")
+    Call<List<ProductCategory>> getProductCategories();
+
+    @GET("api/products/subcategories")
+    Call<List<ProductSubcategory>> getProductSubcategories(
+            @Query("category_id") String categoryId
     );
 
     @GET("api/users/me")

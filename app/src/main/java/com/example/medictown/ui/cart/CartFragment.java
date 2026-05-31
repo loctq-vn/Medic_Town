@@ -135,10 +135,15 @@ public class CartFragment extends Fragment {
                 updateTotals(new ArrayList<>());
             }
         });
+
+        mViewModel.subcategoryNames.observe(getViewLifecycleOwner(), names -> {
+            adapter.setSubcategoryNames(names);
+        });
     }
 
     private void loadCartData() {
         if (sessionManager.isLoggedIn()) {
+            mViewModel.fetchProductSubcategories();
             mViewModel.fetchCartItems(sessionManager.getUserId(), sessionManager.getToken());
         } else {
             Toast.makeText(getContext(), "Vui lòng đăng nhập để xem giỏ hàng", Toast.LENGTH_SHORT).show();

@@ -13,11 +13,13 @@ import android.view.View;
 import com.example.medictown.MainActivity;
 import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
+import com.example.medictown.data.models.CartItem;
 import com.example.medictown.databinding.FragmentOrderDetailBinding;
-import com.example.medictown.ui.cart.CartAdapter; // Reusing CartAdapter for product list if suitable
 import com.example.medictown.data.models.OrderItem;
+import com.example.medictown.data.models.Products;
 import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.repositories.ReviewRepository;
+import com.example.medictown.ui.payment.PaymentFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.RatingBar;
 import android.widget.EditText;
@@ -26,6 +28,8 @@ import android.widget.Toast;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import java.text.SimpleDateFormat;
@@ -129,6 +133,7 @@ public class OrderDetailFragment extends Fragment {
         OrderDetailProductAdapter adapter = new OrderDetailProductAdapter(order.order_items);
         adapter.setOnReviewClickListener(order.status, this::showReviewDialog);
         binding.rvOrderItems.setAdapter(adapter);
+        binding.btnReorder.setOnClickListener(v -> openPaymentForReorder(order));
 
         // Check which items are already reviewed
         if ("completed".equals(order.status) && order.order_items != null && !order.order_items.isEmpty()) {
@@ -154,6 +159,55 @@ public class OrderDetailFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void openPaymentForReorder(com.example.medictown.data.models.Orders order) {
+        if (order.order_items == null || order.order_items.isEmpty()) {
+            Toast.makeText(getContext(), "Đơn hàng không có sản phẩm để mua lại", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ArrayList<CartItem> paymentItems = new ArrayList<>();
+        for (OrderItem orderItem : order.order_items) {
+            if (orderItem.product_id == null || orderItem.product_id.trim().isEmpty()) {
+                continue;
+            }
+
+            CartItem cartItem = new CartItem();
+            cartItem.product_id = orderItem.product_id;
+            cartItem.quantity = Math.max(orderItem.quantity, 1);
+            cartItem.products = buildProductFromOrderItem(orderItem);
+            paymentItems.add(cartItem);
+        }
+
+        if (paymentItems.isEmpty()) {
+            Toast.makeText(getContext(), "Không thể mua lại đơn hàng này", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, PaymentFragment.newInstance(
+                        paymentItems,
+                        order.payment_method,
+                        order.note,
+                        order.shipping_address
+                ))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private Products buildProductFromOrderItem(OrderItem orderItem) {
+        Products product = new Products();
+        product.id = orderItem.product_id;
+        product.name = orderItem.product_name != null ? orderItem.product_name : "Sản phẩm";
+        product.price = orderItem.price;
+        product.sale_price = null;
+        product.unit = null;
+        product.stock = Integer.MAX_VALUE;
+        product.images = orderItem.product_image != null && !orderItem.product_image.trim().isEmpty()
+                ? Collections.singletonList(orderItem.product_image)
+                : new ArrayList<>();
+        return product;
     }
 
     private void showReviewDialog(OrderItem item) {
@@ -245,6 +299,14 @@ public class OrderDetailFragment extends Fragment {
         
         binding.orderProgressIndicator.setProgress(progress);
         binding.tvProgressStatus.setText(statusText);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setNavBarsVisibility(false);
+        }
     }
 
     @Override

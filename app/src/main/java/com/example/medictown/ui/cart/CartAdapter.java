@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,12 +18,15 @@ import com.example.medictown.data.models.CartItem;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
     private List<CartItem> cartItems = new ArrayList<>();
+    private Map<String, String> subcategoryNames = new HashMap<>();
     private OnCartItemInteractionListener listener;
 
     public interface OnCartItemInteractionListener {
@@ -41,6 +45,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         notifyDataSetChanged();
     }
 
+    public void setSubcategoryNames(Map<String, String> subcategoryNames) {
+        this.subcategoryNames = subcategoryNames != null ? subcategoryNames : new HashMap<>();
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -55,8 +64,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
         if (item.products != null) {
             holder.tvProductName.setText(item.products.name);
-            holder.tvBrand.setText("Hãng: " + item.products.brand);
-            
+            String categoryName = item.products.subcategory_id != null
+                    ? subcategoryNames.get(item.products.subcategory_id)
+                    : null;
+            if (categoryName != null && !categoryName.trim().isEmpty()) {
+                holder.layoutTags.setVisibility(View.VISIBLE);
+                holder.tvCategoryTag.setText(categoryName);
+            } else {
+                holder.layoutTags.setVisibility(View.GONE);
+            }
+            holder.tvBrand.setText(buildBrandAndUnitText(item.products.brand, item.products.unit));
+
             double unitPrice = (item.products.sale_price != null && item.products.sale_price > 0) 
                 ? item.products.sale_price 
                 : item.products.price;
@@ -77,6 +95,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                         .placeholder(R.drawable.ic_launcher_background)
                         .into(holder.imgProduct);
             }
+        } else {
+            holder.layoutTags.setVisibility(View.GONE);
         }
 
         holder.tvQuantity.setText(String.format(Locale.getDefault(), "%02d", item.quantity));
@@ -108,9 +128,24 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         return cartItems.size();
     }
 
+    private String buildBrandAndUnitText(String brand, String unit) {
+        StringBuilder text = new StringBuilder();
+        if (brand != null && !brand.trim().isEmpty()) {
+            text.append("Hãng: ").append(brand.trim());
+        }
+        if (unit != null && !unit.trim().isEmpty()) {
+            if (text.length() > 0) {
+                text.append(" - ");
+            }
+            text.append("Đơn vị: ").append(unit.trim());
+        }
+        return text.length() > 0 ? text.toString() : "Đơn vị chưa cập nhật";
+    }
+
     static class CartViewHolder extends RecyclerView.ViewHolder {
         ImageView imgProduct, btnDelete;
-        TextView tvProductName, tvBrand, tvPrice, tvOldPrice, tvQuantity, btnMinus, btnPlus;
+        LinearLayout layoutTags;
+        TextView tvProductName, tvBrand, tvPrice, tvOldPrice, tvQuantity, tvCategoryTag, btnMinus, btnPlus;
         CheckBox cbSelect;
 
         public CartViewHolder(@NonNull View itemView) {
@@ -122,6 +157,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             tvPrice = itemView.findViewById(R.id.tvPrice);
             tvOldPrice = itemView.findViewById(R.id.tvOldPrice);
             tvQuantity = itemView.findViewById(R.id.tvQuantity);
+            tvCategoryTag = itemView.findViewById(R.id.tvCategoryTag);
+            layoutTags = itemView.findViewById(R.id.layoutTags);
             btnMinus = itemView.findViewById(R.id.btnMinus);
             btnPlus = itemView.findViewById(R.id.btnPlus);
             cbSelect = itemView.findViewById(R.id.cbSelect);
