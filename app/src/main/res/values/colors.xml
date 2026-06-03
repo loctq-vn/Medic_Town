@@ -39,6 +39,14 @@
     <color name="price_color">#003D9B</color>
     <color name="primary_alpha_05">#0D003D9B</color>
     <color name="error">#BA1A1A</color>
+    <color name="inventory_inactive_bg">#EEF0F5</color>
+    <color name="inventory_inactive_text">#20242C</color>
+    <color name="inventory_inactive_subtext">#AEB5C3</color>
+    <color name="inventory_inactive_stroke">#D8DDE8</color>
+    <color name="inventory_inactive_alert">#D23B3B</color>
+    <color name="inventory_stock_available">#2E7D32</color>
+    <color name="inventory_stock_low">#B7791F</color>
+    <color name="inventory_stock_empty">#D23B3B</color>
 
     <!-- Stock Status Colors -->
     <color name="status_in_stock_bg">#C9E7F7</color>

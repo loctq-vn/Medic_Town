@@ -49,6 +49,7 @@ import retrofit2.Response;
 
 public class SellerProductFormFragment extends Fragment {
     private static final String ARG_PRODUCT = "product";
+    private static final String ARG_CLONE_MODE = "clone_mode";
     private static final int MIN_PRODUCT_NAME_LENGTH = 3;
     private static final int MAX_PRODUCT_NAME_LENGTH = 120;
     private static final int MAX_PRODUCT_TEXT_LENGTH = 2000;
@@ -57,6 +58,8 @@ public class SellerProductFormFragment extends Fragment {
     private ShopRepository repository;
     private SessionManager sessionManager;
     private Products editingProduct;
+    private Products initialProduct;
+    private boolean cloneMode = false;
     private final List<ProductCategory> categories = new ArrayList<>();
     private final List<ProductSubcategory> allSubcategories = new ArrayList<>();
     private final List<ProductSubcategory> visibleSubcategories = new ArrayList<>();
@@ -75,6 +78,51 @@ public class SellerProductFormFragment extends Fragment {
         args.putSerializable(ARG_PRODUCT, product);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static SellerProductFormFragment newCloneInstance(Products product) {
+        SellerProductFormFragment fragment = new SellerProductFormFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_PRODUCT, buildCloneDraft(product));
+        args.putBoolean(ARG_CLONE_MODE, true);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private static Products buildCloneDraft(Products source) {
+        Products clone = new Products();
+        if (source == null) {
+            return clone;
+        }
+        clone.name = buildCloneName(source.name);
+        clone.brand = source.brand;
+        clone.price = source.price;
+        clone.sale_price = source.sale_price;
+        clone.unit = source.unit;
+        clone.stock = 0;
+        clone.images = source.images == null ? null : new ArrayList<>(source.images);
+        clone.usage = source.usage;
+        clone.uses = source.uses;
+        clone.side_effects = source.side_effects;
+        clone.precautions = source.precautions;
+        clone.storage = source.storage;
+        clone.manufacturer = source.manufacturer;
+        clone.requires_prescription = source.requires_prescription;
+        clone.is_featured = false;
+        clone.is_best_seller = false;
+        clone.is_active = false;
+        clone.subcategory_id = source.subcategory_id;
+        return clone;
+    }
+
+    private static String buildCloneName(String sourceName) {
+        String baseName = sourceName == null || sourceName.trim().isEmpty() ? "S\u1ea3n ph\u1ea9m" : sourceName.trim();
+        String suffix = " - b\u1ea3n sao";
+        int maxBaseLength = Math.max(0, MAX_PRODUCT_NAME_LENGTH - suffix.length());
+        if (baseName.length() > maxBaseLength) {
+            baseName = baseName.substring(0, maxBaseLength).trim();
+        }
+        return baseName + suffix;
     }
 
     @Override
@@ -110,15 +158,23 @@ public class SellerProductFormFragment extends Fragment {
         }
 
         if (getArguments() != null) {
-            editingProduct = (Products) getArguments().getSerializable(ARG_PRODUCT);
+            cloneMode = getArguments().getBoolean(ARG_CLONE_MODE, false);
+            initialProduct = (Products) getArguments().getSerializable(ARG_PRODUCT);
+            editingProduct = cloneMode ? null : initialProduct;
         }
 
         setupProductImages();
         binding.cbActive.setChecked(true);
+        if (initialProduct != null) {
+            bindProduct(initialProduct);
+        }
         if (editingProduct != null) {
-            bindProduct(editingProduct);
             binding.tvFormTitle.setText("Cập nhật sản phẩm");
             binding.btnAddProduct.setText("Lưu thay đổi");
+        }
+        if (cloneMode) {
+            binding.tvFormTitle.setText("T\u1ea1o b\u1ea3n sao s\u1ea3n ph\u1ea9m");
+            binding.btnAddProduct.setText("T\u1ea1o b\u1ea3n sao");
         }
 
         setupCategorySpinners();
@@ -362,7 +418,7 @@ public class SellerProductFormFragment extends Fragment {
         binding.spSubcategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (editingProduct == null && position >= 0 && position < visibleSubcategories.size()) {
+                if (initialProduct == null && position >= 0 && position < visibleSubcategories.size()) {
                     binding.cbRequiresPrescription.setChecked(
                             visibleSubcategories.get(position).requires_prescription_default
                     );
@@ -431,8 +487,8 @@ public class SellerProductFormFragment extends Fragment {
             return;
         }
 
-        if (editingProduct != null && editingProduct.subcategory_id != null) {
-            ProductSubcategory productSubcategory = findSubcategory(editingProduct.subcategory_id);
+        if (initialProduct != null && initialProduct.subcategory_id != null) {
+            ProductSubcategory productSubcategory = findSubcategory(initialProduct.subcategory_id);
             if (productSubcategory != null) {
                 int categoryIndex = findCategoryIndex(productSubcategory.category_id);
                 if (categoryIndex >= 0) {
@@ -463,10 +519,10 @@ public class SellerProductFormFragment extends Fragment {
     }
 
     private void selectEditingSubcategoryIfNeeded() {
-        if (editingProduct == null || editingProduct.subcategory_id == null) {
+        if (initialProduct == null || initialProduct.subcategory_id == null) {
             return;
         }
-        int subcategoryIndex = findVisibleSubcategoryIndex(editingProduct.subcategory_id);
+        int subcategoryIndex = findVisibleSubcategoryIndex(initialProduct.subcategory_id);
         if (subcategoryIndex >= 0) {
             binding.spSubcategory.setSelection(subcategoryIndex);
         }

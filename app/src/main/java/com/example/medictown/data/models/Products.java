@@ -27,5 +27,5 @@ public class Products implements Serializable {
     public String subcategory_id;
     public Date created_at;
 
-    public Products() {} // Required for Firebase
+    public Products() {}
 }

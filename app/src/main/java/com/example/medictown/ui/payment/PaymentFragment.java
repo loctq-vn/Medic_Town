@@ -272,9 +272,9 @@ public class PaymentFragment extends Fragment {
             }
         });
 
-        viewModel.momoPaymentUrl.observe(getViewLifecycleOwner(), paymentUrl -> {
-            if (paymentUrl != null && !paymentUrl.isEmpty()) {
-                openMomoPayment(paymentUrl);
+        viewModel.momoPaymentTarget.observe(getViewLifecycleOwner(), paymentTarget -> {
+            if (paymentTarget != null) {
+                openMomoPayment(paymentTarget);
             }
         });
 
@@ -285,14 +285,30 @@ public class PaymentFragment extends Fragment {
         });
     }
 
-    private void openMomoPayment(String paymentUrl) {
+    private void openMomoPayment(PaymentViewModel.MomoPaymentTarget paymentTarget) {
+        if (tryOpenPaymentUrl(paymentTarget.primaryUrl)) {
+            Toast.makeText(getContext(), "Dang chuyen sang MoMo de thanh toan", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (paymentTarget.fallbackUrl != null && tryOpenPaymentUrl(paymentTarget.fallbackUrl)) {
+            Toast.makeText(getContext(), "Dang mo trang thanh toan MoMo", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(getContext(), "Khong mo duoc ung dung/link MoMo", Toast.LENGTH_LONG).show();
+    }
+
+    private boolean tryOpenPaymentUrl(String paymentUrl) {
+        if (paymentUrl == null || paymentUrl.trim().isEmpty()) {
+            return false;
+        }
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl));
             startActivity(intent);
-            Toast.makeText(getContext(), "Thanh toan MoMo thanh cong!", Toast.LENGTH_SHORT).show();
-            navigateToHistory();
+            return true;
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(getContext(), "Khong mo duoc ung dung/link MoMo", Toast.LENGTH_LONG).show();
+            return false;
         }
     }
 

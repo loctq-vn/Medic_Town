@@ -173,4 +173,24 @@ public class AdminViewModel extends ViewModel {
             }
         });
     }
+
+    public void updateProductActive(String shopId, String productId, boolean isActive) {
+        Map<String, Object> update = new HashMap<>();
+        update.put("is_active", isActive);
+        apiService.updateShopProductFields(shopId, productId, update).enqueue(new Callback<Products>() {
+            @Override
+            public void onResponse(Call<Products> call, Response<Products> response) {
+                if (response.isSuccessful()) {
+                    fetchShopProducts(shopId);
+                } else {
+                    errorMessage.setValue("Failed to update product status");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Products> call, Throwable t) {
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+    }
 }

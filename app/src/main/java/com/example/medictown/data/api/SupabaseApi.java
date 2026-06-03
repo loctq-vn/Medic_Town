@@ -7,6 +7,7 @@ import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.GoogleAuthRequest;
 import com.example.medictown.data.models.OrderCreateRequest;
 import com.example.medictown.data.models.Orders;
+import com.example.medictown.data.models.Payments;
 import com.example.medictown.data.models.ProductCategory;
 import com.example.medictown.data.models.ProductSubcategory;
 import com.example.medictown.data.models.Products;
@@ -99,6 +100,9 @@ public interface SupabaseApi {
     @POST("api/orders")
     Call<List<Orders>> createOrder(@Body OrderCreateRequest order);
 
+    @POST("api/payments/momo/checkout")
+    Call<Payments> createMomoCheckout(@Body OrderCreateRequest order);
+
     @GET("api/orders")
     Call<List<Orders>> getOrders();
 
@@ -143,6 +147,13 @@ public interface SupabaseApi {
             @Path("shop_id") String shopId,
             @Path("product_id") String productId,
             @Body Products product
+    );
+
+    @PATCH("api/shops/{shop_id}/products/{product_id}")
+    Call<Products> updateShopProductFields(
+            @Path("shop_id") String shopId,
+            @Path("product_id") String productId,
+            @Body java.util.Map<String, Object> update
     );
 
     @GET("api/shops/{shop_id}/orders")

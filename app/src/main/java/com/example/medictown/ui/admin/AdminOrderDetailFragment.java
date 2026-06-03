@@ -204,16 +204,22 @@ public class AdminOrderDetailFragment extends Fragment {
     }
 
     private String getPaymentStatusText(List<Payments> payments) {
-        if (payments == null || payments.isEmpty() || payments.get(0).status == null) {
+        Orders paymentOrder = new Orders();
+        paymentOrder.payments = payments;
+        return getPaymentStatusText(paymentOrder.getPrimaryPayment());
+    }
+
+    private String getPaymentStatusText(Payments payment) {
+        if (payment == null || payment.status == null) {
             return "Chưa có thông tin";
         }
-        switch (payments.get(0).status.toLowerCase()) {
+        switch (payment.status.toLowerCase()) {
             case "pending": return "Chưa thanh toán";
             case "processing": return "Đang xử lý";
             case "completed": return "Đã thanh toán";
             case "failed": return "Thất bại";
             case "refunded": return "Đã hoàn tiền";
-            default: return payments.get(0).status;
+            default: return payment.status;
         }
     }
 

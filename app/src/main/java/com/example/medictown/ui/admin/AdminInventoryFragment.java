@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -78,11 +80,24 @@ public class AdminInventoryFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(AdminViewModel.class);
         adapter = new AdminInventoryAdapter();
-        adapter.setOnProductActionListener(product -> {
-            requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, SellerProductFormFragment.newInstance(product))
-                    .addToBackStack(null)
-                    .commit();
+        adapter.setOnProductActionListener(new AdminInventoryAdapter.OnProductActionListener() {
+            @Override
+            public void onEditProduct(Products product) {
+                openEditProduct(product);
+            }
+
+            @Override
+            public void onCloneProduct(Products product) {
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, SellerProductFormFragment.newCloneInstance(product))
+                        .addToBackStack(null)
+                        .commit();
+            }
+
+            @Override
+            public void onStopSellingProduct(Products product) {
+                confirmStopSelling(product);
+            }
         });
 
         RecyclerView rvInventory = view.findViewById(R.id.rvInventory);
@@ -96,6 +111,38 @@ public class AdminInventoryFragment extends Fragment {
         SessionManager sessionManager = new SessionManager(requireContext());
         currentShopId = sessionManager.getCurrentShopId();
         viewModel.fetchProductTaxonomy();
+    }
+
+    private void openEditProduct(Products product) {
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, SellerProductFormFragment.newInstance(product))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void confirmStopSelling(Products product) {
+        if (product == null || isBlank(product.id)) {
+            Toast.makeText(getContext(), "Kh\u00f4ng t\u00ecm th\u1ea5y s\u1ea3n ph\u1ea9m", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!product.is_active) {
+            Toast.makeText(getContext(), "S\u1ea3n ph\u1ea9m \u0111\u00e3 ng\u1eebng b\u00e1n", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (isBlank(currentShopId)) {
+            Toast.makeText(getContext(), "Ch\u01b0a ch\u1ecdn gian h\u00e0ng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Ng\u1eebng b\u00e1n s\u1ea3n ph\u1ea9m")
+                .setMessage("S\u1ea3n ph\u1ea9m s\u1ebd kh\u00f4ng c\u00f2n hi\u1ec3n th\u1ecb \u0111\u1ec3 kh\u00e1ch mua. B\u1ea1n v\u1eabn c\u00f3 th\u1ec3 b\u1eadt b\u00e1n l\u1ea1i trong form ch\u1ec9nh s\u1eeda.")
+                .setNegativeButton("H\u1ee7y", null)
+                .setPositiveButton("Ng\u1eebng b\u00e1n", (dialog, which) -> {
+                    viewModel.updateProductActive(currentShopId, product.id, false);
+                    Toast.makeText(getContext(), "\u0110\u00e3 ng\u1eebng b\u00e1n s\u1ea3n ph\u1ea9m", Toast.LENGTH_SHORT).show();
+                })
+                .show();
     }
 
     @Override
