@@ -113,7 +113,7 @@ public class AdminOrderDetailFragment extends Fragment {
         binding.tvPhone.setText("Số điện thoại: " + display(order.shipping_phone));
         binding.tvShippingAddress.setText("Địa chỉ: " + display(order.shipping_address));
         binding.tvNote.setText("Ghi chú: " + display(order.note));
-        binding.tvPaymentMethod.setText("Phương thức: " + displayPaymentMethod(order.payment_method));
+        binding.tvPaymentMethod.setText("Phương thức: " + displayPaymentMethod(order.getPaymentMethod()));
         binding.tvPaymentStatus.setText("Trạng thái thanh toán: " + getPaymentStatusText(order.payments));
         binding.tvTotalAmount.setText(formatter.format(order.total_amount != null ? order.total_amount : 0));
         adapter.setItems(order.order_items);
@@ -221,7 +221,7 @@ public class AdminOrderDetailFragment extends Fragment {
         if (method == null || method.trim().isEmpty()) {
             return "Chưa có thông tin";
         }
-        if ("cod".equalsIgnoreCase(method)) return "Tiền mặt khi nhận hàng";
+        if ("cash".equalsIgnoreCase(method) || "cod".equalsIgnoreCase(method)) return "Tiền mặt khi nhận hàng";
         if ("momo".equalsIgnoreCase(method)) return "MoMo";
         if ("vnpay".equalsIgnoreCase(method)) return "VNPay";
         return method;

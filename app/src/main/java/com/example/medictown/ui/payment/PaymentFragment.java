@@ -1,5 +1,8 @@
 package com.example.medictown.ui.payment;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -269,11 +272,28 @@ public class PaymentFragment extends Fragment {
             }
         });
 
+        viewModel.momoPaymentUrl.observe(getViewLifecycleOwner(), paymentUrl -> {
+            if (paymentUrl != null && !paymentUrl.isEmpty()) {
+                openMomoPayment(paymentUrl);
+            }
+        });
+
         viewModel.error.observe(getViewLifecycleOwner(), error -> {
             if (error != null) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void openMomoPayment(String paymentUrl) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl));
+            startActivity(intent);
+            Toast.makeText(getContext(), "Thanh toan MoMo thanh cong!", Toast.LENGTH_SHORT).show();
+            navigateToHistory();
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getContext(), "Khong mo duoc ung dung/link MoMo", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

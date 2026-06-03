@@ -127,7 +127,7 @@ public class OrderDetailFragment extends Fragment {
         binding.tvRecipientName.setText(order.shipping_name != null ? order.shipping_name : "N/A");
         binding.tvRecipientPhone.setText(order.shipping_phone != null ? order.shipping_phone : "N/A");
         binding.tvShippingAddress.setText(order.shipping_address != null ? order.shipping_address : "N/A");
-        binding.tvPaymentMethod.setText(order.payment_method != null ? order.payment_method.toUpperCase() : "COD");
+        binding.tvPaymentMethod.setText(displayPaymentMethod(order.getPaymentMethod()));
 
         // Setup product list
         OrderDetailProductAdapter adapter = new OrderDetailProductAdapter(order.order_items);
@@ -188,7 +188,7 @@ public class OrderDetailFragment extends Fragment {
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, PaymentFragment.newInstance(
                         paymentItems,
-                        order.payment_method,
+                        order.getPaymentMethod(),
                         order.note,
                         order.shipping_address
                 ))
@@ -299,6 +299,16 @@ public class OrderDetailFragment extends Fragment {
         
         binding.orderProgressIndicator.setProgress(progress);
         binding.tvProgressStatus.setText(statusText);
+    }
+
+    private String displayPaymentMethod(String method) {
+        if (method == null || method.trim().isEmpty()) {
+            return "COD";
+        }
+        if ("cash".equalsIgnoreCase(method) || "cod".equalsIgnoreCase(method)) {
+            return "COD";
+        }
+        return method.toUpperCase();
     }
 
     @Override

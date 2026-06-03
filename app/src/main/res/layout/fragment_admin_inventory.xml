@@ -6,7 +6,6 @@
     android:background="@color/surface"
     android:orientation="vertical">
 
-    <!-- Header Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,95 +15,229 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kho hàng"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary"
-            android:letterSpacing="-0.02"/>
+            android:letterSpacing="-0.02"
+            android:text="Qu&#7843;n l&#253; kho h&#224;ng"
+            android:textColor="@color/on_surface"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/searchLayout"
-            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="4dp"
+            android:text="Qu&#7843;n l&#253; danh m&#7909;c s&#7843;n ph&#7849;m, s&#7889; l&#432;&#7907;ng t&#7891;n kho v&#224; gi&#225; b&#225;n c&#7911;a gian h&#224;ng."
+            android:textColor="@color/on_surface_variant"
+            android:textSize="14sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNewProduct"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/primary"
+            android:paddingHorizontal="16dp"
+            android:text="S&#7843;n ph&#7849;m m&#7899;i"
+            app:cornerRadius="8dp"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconSize="18dp" />
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:hintEnabled="false"
-            app:startIconDrawable="@android:drawable/ic_menu_search"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="0dp"
-            app:boxBackgroundColor="@color/surface_container_low">
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E4E9EF"
+            app:strokeWidth="1dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSearch"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tìm kiếm dược phẩm, vật tư..."
-                android:paddingVertical="12dp"
-                android:inputType="text"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:orientation="vertical"
+                android:padding="12dp">
 
-        <!-- Toggle Row (Tồn kho / Giá bán) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_tab_unselected"
-            android:backgroundTint="@color/surface_container_low"
-            android:padding="4dp">
-
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.Material3.Button.TonalButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Tồn kho"
-                app:cornerRadius="8dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Giá bán"
-                android:textColor="@color/on_surface_variant"/>
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:scrollbars="none">
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupFilters"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:selectionRequired="true">
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipAll"
-                    style="@style/Widget.Material3.Chip.Filter"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/searchLayout"
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tất cả"
-                    android:checked="true"/>
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipLowStock"
-                    style="@style/Widget.Material3.Chip.Filter"
-                    android:layout_width="wrap_content"
+                    app:boxBackgroundColor="@color/surface_container_low"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_search_thin"
+                    app:startIconTint="#9AA6B2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="T&#236;m theo t&#234;n, SKU ho&#7863;c ho&#7841;t ch&#7845;t"
+                        android:inputType="text"
+                        android:paddingVertical="8dp"
+                        android:textColor="@color/on_surface"
+                        android:textColorHint="#9AA6B2"
+                        android:textSize="13sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sắp hết"/>
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipOut"
-                    style="@style/Widget.Material3.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hết hàng"/>
-            </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>
+                    android:layout_marginTop="8dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnFilterCategory"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:minHeight="0dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="10dp"
+                            android:text="T&#7845;t c&#7843; danh m&#7909;c"
+                            android:textAllCaps="false"
+                            android:textColor="@color/on_surface"
+                            android:textSize="12sp"
+                            app:backgroundTint="#F4F6F8"
+                            app:cornerRadius="6dp"
+                            app:icon="@drawable/ic_chevron_down_thin"
+                            app:iconGravity="end"
+                            app:iconPadding="6dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/on_surface_variant" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnFilterActive"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:layout_marginStart="8dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:minHeight="0dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="10dp"
+                            android:text="B&#225;n: T&#7845;t c&#7843;"
+                            android:textAllCaps="false"
+                            android:textColor="@color/on_surface"
+                            android:textSize="12sp"
+                            app:backgroundTint="#F4F6F8"
+                            app:cornerRadius="6dp"
+                            app:icon="@drawable/ic_chevron_down_thin"
+                            app:iconGravity="end"
+                            app:iconPadding="6dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/on_surface_variant" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnFilterPrescription"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:layout_marginStart="8dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:minHeight="0dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="10dp"
+                            android:text="K&#234; &#273;&#417;n: T&#7845;t c&#7843;"
+                            android:textAllCaps="false"
+                            android:textColor="@color/on_surface"
+                            android:textSize="12sp"
+                            app:backgroundTint="#F4F6F8"
+                            app:cornerRadius="6dp"
+                            app:icon="@drawable/ic_chevron_down_thin"
+                            app:iconGravity="end"
+                            app:iconPadding="6dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/on_surface_variant" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnFilterFeatured"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:layout_marginStart="8dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:minHeight="0dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="10dp"
+                            android:text="N&#7893;i b&#7853;t: T&#7845;t c&#7843;"
+                            android:textAllCaps="false"
+                            android:textColor="@color/on_surface"
+                            android:textSize="12sp"
+                            app:backgroundTint="#F4F6F8"
+                            app:cornerRadius="6dp"
+                            app:icon="@drawable/ic_chevron_down_thin"
+                            app:iconGravity="end"
+                            app:iconPadding="6dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/on_surface_variant" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnFilterBestSeller"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:layout_marginStart="8dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:minHeight="0dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="10dp"
+                            android:text="B&#225;n ch&#7841;y: T&#7845;t c&#7843;"
+                            android:textAllCaps="false"
+                            android:textColor="@color/on_surface"
+                            android:textSize="12sp"
+                            app:backgroundTint="#F4F6F8"
+                            app:cornerRadius="6dp"
+                            app:icon="@drawable/ic_chevron_down_thin"
+                            app:iconGravity="end"
+                            app:iconPadding="6dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/on_surface_variant" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnFilterStock"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:layout_marginStart="8dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:minHeight="0dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="10dp"
+                            android:text="T&#7891;n kho: T&#7845;t c&#7843;"
+                            android:textAllCaps="false"
+                            android:textColor="@color/on_surface"
+                            android:textSize="12sp"
+                            app:backgroundTint="#F4F6F8"
+                            app:cornerRadius="6dp"
+                            app:icon="@drawable/ic_chevron_down_thin"
+                            app:iconGravity="end"
+                            app:iconPadding="6dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/on_surface_variant" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <FrameLayout
@@ -117,20 +250,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingHorizontal="16dp"
-            android:paddingBottom="80dp"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddProduct"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="24dp"
-            android:contentDescription="Thêm sản phẩm"
-            app:srcCompat="@android:drawable/ic_input_add"
-            app:tint="@color/white"
-            app:backgroundTint="@color/primary"
-            app:shapeAppearanceOverlay="@style/RoundedSquare"/>
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="20dp" />
     </FrameLayout>
-
 </LinearLayout>

@@ -5,6 +5,7 @@ import com.example.medictown.data.models.AuthRequest;
 import com.example.medictown.data.models.AuthResponse;
 import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.GoogleAuthRequest;
+import com.example.medictown.data.models.OrderCreateRequest;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.models.ProductCategory;
 import com.example.medictown.data.models.ProductSubcategory;
@@ -96,7 +97,7 @@ public interface SupabaseApi {
     );
 
     @POST("api/orders")
-    Call<List<Orders>> createOrder(@Body Orders order);
+    Call<List<Orders>> createOrder(@Body OrderCreateRequest order);
 
     @GET("api/orders")
     Call<List<Orders>> getOrders();

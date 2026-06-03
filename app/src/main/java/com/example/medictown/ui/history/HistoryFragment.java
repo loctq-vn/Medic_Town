@@ -112,7 +112,7 @@ public class HistoryFragment extends Fragment {
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, PaymentFragment.newInstance(
                         paymentItems,
-                        order.payment_method,
+                        order.getPaymentMethod(),
                         order.note,
                         order.shipping_address
                 ))

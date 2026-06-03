@@ -61,7 +61,7 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
         bindStatus(holder, order.status);
         bindProduct(holder, order, itemCount, orderId);
 
-        String paymentMethod = order.payment_method != null ? order.payment_method : "COD";
+        String paymentMethod = displayPaymentMethod(order.getPaymentMethod());
         holder.tvOrderSummary.setText(String.format(Locale.getDefault(), "%d sản phẩm • %s", itemCount, paymentMethod));
         holder.tvTotalPrice.setText(String.format(Locale.getDefault(), "%,.0fđ", order.total_amount != null ? order.total_amount : 0));
 
@@ -153,6 +153,16 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
                 .placeholder(R.drawable.ic_medicine_placeholder)
                 .error(R.drawable.ic_medicine_placeholder)
                 .into(holder.ivProduct);
+    }
+
+    private String displayPaymentMethod(String method) {
+        if (method == null || method.trim().isEmpty()) {
+            return "COD";
+        }
+        if ("cash".equalsIgnoreCase(method) || "cod".equalsIgnoreCase(method)) {
+            return "COD";
+        }
+        return method.toUpperCase();
     }
 
     @Override

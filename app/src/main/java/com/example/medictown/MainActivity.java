@@ -1,6 +1,7 @@
 package com.example.medictown;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -133,7 +134,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleIntent(Intent intent) {
         if (intent != null) {
-            if (intent.getBooleanExtra("open_cart", false)) {
+            Uri data = intent.getData();
+            if (data != null && "medictown".equals(data.getScheme()) && "payment".equals(data.getHost())) {
+                if (sellerMode) {
+                    openBuyerChannel();
+                }
+                bottomNav.setSelectedItemId(R.id.nav_history);
+            } else if (intent.getBooleanExtra("open_cart", false)) {
                 if (sellerMode) {
                     openBuyerChannel();
                 }

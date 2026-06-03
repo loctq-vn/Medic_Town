@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel;
 import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SupabaseApi;
 import com.example.medictown.data.models.Orders;
+import com.example.medictown.data.models.ProductCategory;
+import com.example.medictown.data.models.ProductSubcategory;
 import com.example.medictown.data.models.Products;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +20,8 @@ public class AdminViewModel extends ViewModel {
     private final SupabaseApi apiService;
     private final MutableLiveData<List<Orders>> allOrders = new MutableLiveData<>();
     private final MutableLiveData<List<Products>> allProducts = new MutableLiveData<>();
+    private final MutableLiveData<List<ProductCategory>> productCategories = new MutableLiveData<>();
+    private final MutableLiveData<List<ProductSubcategory>> productSubcategories = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
@@ -27,6 +31,8 @@ public class AdminViewModel extends ViewModel {
 
     public LiveData<List<Orders>> getAllOrders() { return allOrders; }
     public LiveData<List<Products>> getAllProducts() { return allProducts; }
+    public LiveData<List<ProductCategory>> getProductCategories() { return productCategories; }
+    public LiveData<List<ProductSubcategory>> getProductSubcategories() { return productSubcategories; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<String> getErrorMessage() { return errorMessage; }
 
@@ -109,6 +115,40 @@ public class AdminViewModel extends ViewModel {
             @Override
             public void onFailure(Call<List<Products>> call, Throwable t) {
                 isLoading.setValue(false);
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchProductTaxonomy() {
+        apiService.getProductCategories().enqueue(new Callback<List<ProductCategory>>() {
+            @Override
+            public void onResponse(Call<List<ProductCategory>> call, Response<List<ProductCategory>> response) {
+                if (response.isSuccessful()) {
+                    productCategories.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Failed to fetch product categories");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductCategory>> call, Throwable t) {
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+
+        apiService.getProductSubcategories(null).enqueue(new Callback<List<ProductSubcategory>>() {
+            @Override
+            public void onResponse(Call<List<ProductSubcategory>> call, Response<List<ProductSubcategory>> response) {
+                if (response.isSuccessful()) {
+                    productSubcategories.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Failed to fetch product subcategories");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductSubcategory>> call, Throwable t) {
                 errorMessage.setValue(t.getMessage());
             }
         });

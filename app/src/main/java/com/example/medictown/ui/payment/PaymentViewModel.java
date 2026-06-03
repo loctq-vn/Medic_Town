@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.medictown.data.models.Address;
 import com.example.medictown.data.models.CartItem;
+import com.example.medictown.data.models.OrderCreateRequest;
 import com.example.medictown.data.models.OrderItem;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.repositories.OrderRepository;
@@ -13,6 +14,7 @@ import com.example.medictown.data.repositories.ProfileRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,6 +41,9 @@ public class PaymentViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> _orderSuccess = new MutableLiveData<>();
     public LiveData<Boolean> orderSuccess = _orderSuccess;
+
+    private final MutableLiveData<String> _momoPaymentUrl = new MutableLiveData<>();
+    public LiveData<String> momoPaymentUrl = _momoPaymentUrl;
 
     private final MutableLiveData<String> _error = new MutableLiveData<>();
     public LiveData<String> error = _error;
@@ -124,7 +129,7 @@ public class PaymentViewModel extends ViewModel {
 
         _isLoading.setValue(true);
 
-        Orders order = new Orders();
+        OrderCreateRequest order = new OrderCreateRequest();
         order.payment_method = paymentMethod;
         order.note = note;
         order.shipping_address = address.location;
@@ -136,9 +141,17 @@ public class PaymentViewModel extends ViewModel {
             public void onResponse(Call<List<Orders>> call, Response<List<Orders>> response) {
                 _isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    _orderSuccess.setValue(true);
+                    String momoUrl = findMomoPaymentUrl(response.body());
+                    if (momoUrl != null && !momoUrl.isEmpty()) {
+                        _momoPaymentUrl.setValue(momoUrl);
+                    } else if ("Momo".equalsIgnoreCase(paymentMethod)) {
+                        String momoError = findMomoPaymentError(response.body());
+                        _error.setValue(momoError != null ? momoError : "Khong tao duoc lien ket thanh toan MoMo");
+                    } else {
+                        _orderSuccess.setValue(true);
+                    }
                 } else {
-                    _error.setValue("Loi khi tao don hang: " + response.code());
+                    _error.setValue("Loi khi tao don hang: " + response.code() + " - " + readErrorBody(response));
                 }
             }
 
@@ -148,5 +161,67 @@ public class PaymentViewModel extends ViewModel {
                 _error.setValue("Loi ket noi: " + t.getMessage());
             }
         });
+    }
+
+    private String findMomoPaymentUrl(List<Orders> orders) {
+        for (Orders order : orders) {
+            if (order.payments == null) {
+                continue;
+            }
+            for (com.example.medictown.data.models.Payments payment : order.payments) {
+                if (payment == null || !"momo".equalsIgnoreCase(payment.method) || payment.payment_data == null) {
+                    continue;
+                }
+                String deeplink = getStringValue(payment.payment_data, "deeplink");
+                if (deeplink != null && !deeplink.isEmpty()) {
+                    return deeplink;
+                }
+                String payUrl = getStringValue(payment.payment_data, "payUrl");
+                if (payUrl != null && !payUrl.isEmpty()) {
+                    return payUrl;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String findMomoPaymentError(List<Orders> orders) {
+        for (Orders order : orders) {
+            if (order.payments == null) {
+                continue;
+            }
+            for (com.example.medictown.data.models.Payments payment : order.payments) {
+                if (payment == null || !"momo".equalsIgnoreCase(payment.method) || payment.payment_data == null) {
+                    continue;
+                }
+                Object response = payment.payment_data.get("momo_create_response");
+                if (!(response instanceof Map)) {
+                    continue;
+                }
+                @SuppressWarnings("unchecked")
+                Map<String, Object> momoResponse = (Map<String, Object>) response;
+                String message = getStringValue(momoResponse, "message");
+                if (message != null && !message.isEmpty()) {
+                    return "MoMo: " + message;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getStringValue(Map<String, Object> data, String key) {
+        Object value = data.get(key);
+        return value instanceof String ? (String) value : null;
+    }
+
+    private String readErrorBody(Response<?> response) {
+        if (response.errorBody() == null) {
+            return "Khong co chi tiet loi";
+        }
+        try {
+            return response.errorBody().string();
+        } catch (Exception e) {
+            return "Khong doc duoc chi tiet loi";
+        }
     }
 }

@@ -8,7 +8,6 @@ public class Orders implements Serializable {
     public String id;
     public String user_id;
     public String status; // pending, confirmed, shipping, completed, cancelled
-    public String payment_method;
     public Double total_amount;
     public String prescription_url;
     public String note;
@@ -26,4 +25,16 @@ public class Orders implements Serializable {
     public List<Payments> payments;
 
     public Orders() {}
+
+    public Payments getPrimaryPayment() {
+        if (payments == null || payments.isEmpty()) {
+            return null;
+        }
+        return payments.get(0);
+    }
+
+    public String getPaymentMethod() {
+        Payments payment = getPrimaryPayment();
+        return payment != null ? payment.method : null;
+    }
 }
