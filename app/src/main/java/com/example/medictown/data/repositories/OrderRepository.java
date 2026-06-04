@@ -2,6 +2,7 @@ package com.example.medictown.data.repositories;
 
 import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SupabaseApi;
+import com.example.medictown.data.models.FakePaymentMethodRequest;
 import com.example.medictown.data.models.OrderCreateRequest;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.models.Payments;
@@ -23,5 +24,9 @@ public class OrderRepository {
 
     public void createMomoCheckout(OrderCreateRequest order, Callback<Payments> callback) {
         apiService.createMomoCheckout(order).enqueue(callback);
+    }
+
+    public void createFakePaymentMethod(FakePaymentMethodRequest request, Callback<Payments> callback) {
+        apiService.createFakePaymentMethod(request).enqueue(callback);
     }
 }

@@ -114,7 +114,7 @@ public class PaymentFragment extends Fragment {
         });
 
         binding.btnConfirmPayment.setOnClickListener(v -> {
-            String paymentMethod = binding.rbCod.isChecked() ? "COD" : "Momo";
+            String paymentMethod = getSelectedPaymentMethod();
             String note = binding.edtNote.getText() != null ? binding.edtNote.getText().toString() : "";
             viewModel.placeOrder(sessionManager.getUserId(), paymentMethod, note);
         });
@@ -132,7 +132,11 @@ public class PaymentFragment extends Fragment {
 
         String paymentMethod = args.getString(ARG_PAYMENT_METHOD);
         if (paymentMethod != null) {
-            if ("momo".equalsIgnoreCase(paymentMethod)) {
+            if ("fake_momo".equalsIgnoreCase(paymentMethod)) {
+                binding.rbFakeMomo.setChecked(true);
+            } else if ("fake_vnpay".equalsIgnoreCase(paymentMethod)) {
+                binding.rbFakeVnpay.setChecked(true);
+            } else if ("momo".equalsIgnoreCase(paymentMethod)) {
                 binding.rbMomo.setChecked(true);
             } else {
                 binding.rbCod.setChecked(true);
@@ -163,6 +167,8 @@ public class PaymentFragment extends Fragment {
         binding.rbCod.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 binding.rbMomo.setChecked(false);
+                binding.rbFakeMomo.setChecked(false);
+                binding.rbFakeVnpay.setChecked(false);
                 updatePaymentMethodUI();
             }
         });
@@ -170,6 +176,26 @@ public class PaymentFragment extends Fragment {
         binding.rbMomo.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 binding.rbCod.setChecked(false);
+                binding.rbFakeMomo.setChecked(false);
+                binding.rbFakeVnpay.setChecked(false);
+                updatePaymentMethodUI();
+            }
+        });
+
+        binding.rbFakeMomo.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                binding.rbCod.setChecked(false);
+                binding.rbMomo.setChecked(false);
+                binding.rbFakeVnpay.setChecked(false);
+                updatePaymentMethodUI();
+            }
+        });
+
+        binding.rbFakeVnpay.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                binding.rbCod.setChecked(false);
+                binding.rbMomo.setChecked(false);
+                binding.rbFakeMomo.setChecked(false);
                 updatePaymentMethodUI();
             }
         });
@@ -177,9 +203,24 @@ public class PaymentFragment extends Fragment {
         // Cho phép bấm vào cả vùng Card để chọn
         binding.cardCod.setOnClickListener(v -> binding.rbCod.setChecked(true));
         binding.cardMomo.setOnClickListener(v -> binding.rbMomo.setChecked(true));
+        binding.cardFakeMomo.setOnClickListener(v -> binding.rbFakeMomo.setChecked(true));
+        binding.cardFakeVnpay.setOnClickListener(v -> binding.rbFakeVnpay.setChecked(true));
         
         // Khởi tạo UI ban đầu
         updatePaymentMethodUI();
+    }
+
+    private String getSelectedPaymentMethod() {
+        if (binding.rbFakeMomo.isChecked()) {
+            return "fake_momo";
+        }
+        if (binding.rbFakeVnpay.isChecked()) {
+            return "fake_vnpay";
+        }
+        if (binding.rbMomo.isChecked()) {
+            return "Momo";
+        }
+        return "COD";
     }
 
     private void updatePaymentMethodUI() {
@@ -193,6 +234,12 @@ public class PaymentFragment extends Fragment {
 
         binding.cardMomo.setStrokeColor(binding.rbMomo.isChecked() ? primaryColor : outlineColor);
         binding.cardMomo.setStrokeWidth(binding.rbMomo.isChecked() ? 4 : 2);
+
+        binding.cardFakeMomo.setStrokeColor(binding.rbFakeMomo.isChecked() ? primaryColor : outlineColor);
+        binding.cardFakeMomo.setStrokeWidth(binding.rbFakeMomo.isChecked() ? 4 : 2);
+
+        binding.cardFakeVnpay.setStrokeColor(binding.rbFakeVnpay.isChecked() ? primaryColor : outlineColor);
+        binding.cardFakeVnpay.setStrokeWidth(binding.rbFakeVnpay.isChecked() ? 4 : 2);
     }
 
     private void showAddressSelectionDialog() {

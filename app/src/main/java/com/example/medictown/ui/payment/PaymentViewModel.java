@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.medictown.data.models.Address;
 import com.example.medictown.data.models.CartItem;
+import com.example.medictown.data.models.FakePaymentMethodRequest;
 import com.example.medictown.data.models.OrderCreateRequest;
 import com.example.medictown.data.models.OrderItem;
 import com.example.medictown.data.models.Orders;
@@ -151,7 +152,7 @@ public class PaymentViewModel extends ViewModel {
         order.cart_item_ids = cartItemIds;
         order.direct_items = directItems;
 
-        if ("Momo".equalsIgnoreCase(paymentMethod) || "momo".equalsIgnoreCase(paymentMethod)) {
+        if (isRealMomoPayment(paymentMethod)) {
             createMomoCheckout(order);
             return;
         }
@@ -159,10 +160,15 @@ public class PaymentViewModel extends ViewModel {
         orderRepository.createOrder(order, new Callback<List<Orders>>() {
             @Override
             public void onResponse(Call<List<Orders>> call, Response<List<Orders>> response) {
-                _isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    _orderSuccess.setValue(true);
+                    if (isFakePaymentMethod(paymentMethod)) {
+                        createFakePayments(response.body(), paymentMethod);
+                    } else {
+                        _isLoading.setValue(false);
+                        _orderSuccess.setValue(true);
+                    }
                 } else {
+                    _isLoading.setValue(false);
                     _error.setValue("Loi khi tao don hang: " + response.code() + " - " + readErrorBody(response));
                 }
             }
@@ -173,6 +179,63 @@ public class PaymentViewModel extends ViewModel {
                 _error.setValue("Loi ket noi: " + t.getMessage());
             }
         });
+    }
+
+    private boolean isRealMomoPayment(String paymentMethod) {
+        return "Momo".equalsIgnoreCase(paymentMethod) || "momo".equalsIgnoreCase(paymentMethod);
+    }
+
+    private boolean isFakePaymentMethod(String paymentMethod) {
+        return "fake_momo".equalsIgnoreCase(paymentMethod) || "fake_vnpay".equalsIgnoreCase(paymentMethod);
+    }
+
+    private void createFakePayments(List<Orders> orders, String paymentMethod) {
+        if (orders == null || orders.isEmpty()) {
+            _isLoading.setValue(false);
+            _error.setValue("Khong tim thay don hang de tao thanh toan fake");
+            return;
+        }
+
+        final int[] remaining = {orders.size()};
+        final boolean[] hasFailure = {false};
+
+        for (Orders order : orders) {
+            if (order == null || order.id == null || order.id.trim().isEmpty()) {
+                hasFailure[0] = true;
+                finishFakePaymentRequest(remaining, hasFailure);
+                continue;
+            }
+
+            FakePaymentMethodRequest request = new FakePaymentMethodRequest(order.id, paymentMethod);
+            orderRepository.createFakePaymentMethod(request, new Callback<Payments>() {
+                @Override
+                public void onResponse(Call<Payments> call, Response<Payments> response) {
+                    if (!response.isSuccessful() || response.body() == null) {
+                        hasFailure[0] = true;
+                        _error.setValue("Loi khi tao thanh toan fake: " + response.code() + " - " + readErrorBody(response));
+                    }
+                    finishFakePaymentRequest(remaining, hasFailure);
+                }
+
+                @Override
+                public void onFailure(Call<Payments> call, Throwable t) {
+                    hasFailure[0] = true;
+                    _error.setValue("Loi ket noi: " + t.getMessage());
+                    finishFakePaymentRequest(remaining, hasFailure);
+                }
+            });
+        }
+    }
+
+    private void finishFakePaymentRequest(int[] remaining, boolean[] hasFailure) {
+        remaining[0]--;
+        if (remaining[0] > 0) {
+            return;
+        }
+        _isLoading.setValue(false);
+        if (!hasFailure[0]) {
+            _orderSuccess.setValue(true);
+        }
     }
 
     private void createMomoCheckout(OrderCreateRequest order) {

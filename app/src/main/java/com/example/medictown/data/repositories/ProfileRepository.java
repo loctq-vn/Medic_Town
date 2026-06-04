@@ -70,6 +70,7 @@ public class ProfileRepository {
                     .url(SupabaseConfig.BACKEND_URL + "api/users/me/avatar?filename=" + fileName)
                     .post(requestBody)
                     .addHeader("Authorization", "Bearer " + token)
+                    .addHeader("ngrok-skip-browser-warning", "true")
                     .addHeader("Content-Type", mimeType)
                     .build();
             client.newCall(request).enqueue(callback);

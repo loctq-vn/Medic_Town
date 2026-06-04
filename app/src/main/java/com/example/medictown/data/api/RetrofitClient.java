@@ -34,7 +34,8 @@ public class RetrofitClient {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     okhttp3.Request original = chain.request();
-                    okhttp3.Request.Builder builder = original.newBuilder();
+                    okhttp3.Request.Builder builder = original.newBuilder()
+                            .addHeader("ngrok-skip-browser-warning", "true");
                     if (authToken != null && !authToken.isEmpty() && original.header("Authorization") == null) {
                         builder.addHeader("Authorization", "Bearer " + authToken);
                     }

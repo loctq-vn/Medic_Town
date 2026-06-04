@@ -4,6 +4,7 @@ import com.example.medictown.data.models.Address;
 import com.example.medictown.data.models.AuthRequest;
 import com.example.medictown.data.models.AuthResponse;
 import com.example.medictown.data.models.CartItem;
+import com.example.medictown.data.models.FakePaymentMethodRequest;
 import com.example.medictown.data.models.GoogleAuthRequest;
 import com.example.medictown.data.models.OrderCreateRequest;
 import com.example.medictown.data.models.Orders;
@@ -11,6 +12,7 @@ import com.example.medictown.data.models.Payments;
 import com.example.medictown.data.models.ProductCategory;
 import com.example.medictown.data.models.ProductSubcategory;
 import com.example.medictown.data.models.Products;
+import com.example.medictown.data.models.RevenueDashboard;
 import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.models.Shop;
 import com.example.medictown.data.models.Users;
@@ -103,6 +105,9 @@ public interface SupabaseApi {
     @POST("api/payments/momo/checkout")
     Call<Payments> createMomoCheckout(@Body OrderCreateRequest order);
 
+    @POST("api/payments/fake/method")
+    Call<Payments> createFakePaymentMethod(@Body FakePaymentMethodRequest request);
+
     @GET("api/orders")
     Call<List<Orders>> getOrders();
 
@@ -164,6 +169,14 @@ public interface SupabaseApi {
             @Path("shop_id") String shopId,
             @Path("order_id") String orderId,
             @Body java.util.Map<String, Object> update
+    );
+
+    @GET("api/revenue/dashboard")
+    Call<RevenueDashboard> getRevenueDashboard(
+            @Query("shop_id") String shopId,
+            @Query("from") String fromDate,
+            @Query("to") String toDate,
+            @Query("groupBy") String groupBy
     );
 
     @POST("api/auth/register")

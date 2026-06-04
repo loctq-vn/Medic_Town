@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp"
     android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground">
 
@@ -16,8 +17,11 @@
 
         <TextView
             android:id="@+id/tvRecentOrderId"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
             android:text="#ORD-5521"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -25,16 +29,21 @@
 
         <TextView
             android:id="@+id/tvRecentCustomerName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
             android:text="Lê Anh Tuấn"
             android:textSize="12sp"
             android:textColor="@color/text_gray"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="108dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:gravity="end"
         android:orientation="vertical">
 
@@ -42,6 +51,9 @@
             android:id="@+id/tvRecentAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
             android:text="1.250.000đ"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -51,7 +63,10 @@
             android:id="@+id/tvRecentStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="3dp"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
             android:paddingHorizontal="6dp"
             android:paddingVertical="2dp"
             android:text="ĐÃ THANH TOÁN"

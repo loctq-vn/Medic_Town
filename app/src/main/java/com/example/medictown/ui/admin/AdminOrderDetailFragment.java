@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.example.medictown.MainActivity;
 import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.Orders;
@@ -59,6 +60,10 @@ public class AdminOrderDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setNavBarsVisibility(false);
+        }
+
         viewModel = new ViewModelProvider(requireActivity()).get(AdminViewModel.class);
         shopId = getArguments() != null ? getArguments().getString(ARG_SHOP_ID) : null;
         if (shopId == null || shopId.isEmpty()) {
@@ -279,8 +284,19 @@ public class AdminOrderDetailFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setNavBarsVisibility(false);
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setNavBarsVisibility(true);
+        }
         binding = null;
     }
 }
