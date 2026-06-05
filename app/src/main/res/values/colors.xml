@@ -55,4 +55,14 @@
     <color name="status_low_stock_text">#812800</color>
     <color name="status_critical_bg">#FFDAD6</color>
     <color name="status_critical_text">#93000A</color>
+
+    <!-- Admin Revenue/Green Theme Colors (Premium Modern Green) -->
+    <color name="admin_primary">#00A76F</color>
+    <color name="admin_accent">#34D399</color>
+    <color name="admin_bg">#F8FAFC</color>
+    <color name="admin_on_accent">#002113</color>
+    <color name="admin_light_green">#E8F5F1</color>
+    <color name="admin_text_main">#1C252E</color>
+    <color name="admin_text_secondary">#637381</color>
+    <color name="admin_card_stroke">#1400A76F</color>
 </resources>

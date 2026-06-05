@@ -148,13 +148,13 @@ public class AdminInventoryAdapter extends RecyclerView.Adapter<AdminInventoryAd
         if (product.is_active) {
             holder.cardInventoryItem.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.white));
             holder.cardInventoryItem.setStrokeColor(holder.itemView.getContext().getColor(android.R.color.transparent));
-            holder.tvProductName.setTextColor(holder.itemView.getContext().getColor(R.color.on_surface));
+            holder.tvProductName.setTextColor(holder.itemView.getContext().getColor(R.color.admin_text_main));
             holder.tvDescription.setTextColor(holder.itemView.getContext().getColor(R.color.on_surface_variant));
             holder.tvSKU.setTextColor(0xFFBAC0D6);
-            holder.tvStockCount.setTextColor(holder.itemView.getContext().getColor(R.color.on_surface));
+            holder.tvStockCount.setTextColor(holder.itemView.getContext().getColor(R.color.admin_text_main));
             holder.tvUnit.setTextColor(holder.itemView.getContext().getColor(R.color.on_surface_variant));
             holder.tvPrice.setTextColor(holder.itemView.getContext().getColor(R.color.on_surface_variant));
-            holder.tvSalePrice.setTextColor(holder.itemView.getContext().getColor(R.color.primary));
+            holder.tvSalePrice.setTextColor(holder.itemView.getContext().getColor(R.color.admin_primary));
             holder.ivProduct.setAlpha(1.0f);
             return;
         }
@@ -167,7 +167,7 @@ public class AdminInventoryAdapter extends RecyclerView.Adapter<AdminInventoryAd
         holder.tvStockCount.setTextColor(holder.itemView.getContext().getColor(R.color.inventory_inactive_alert));
         holder.tvUnit.setTextColor(holder.itemView.getContext().getColor(R.color.inventory_inactive_alert));
         holder.tvPrice.setTextColor(holder.itemView.getContext().getColor(R.color.inventory_inactive_subtext));
-        holder.tvSalePrice.setTextColor(holder.itemView.getContext().getColor(R.color.primary));
+        holder.tvSalePrice.setTextColor(holder.itemView.getContext().getColor(R.color.admin_primary));
         holder.ivProduct.setAlpha(0.58f);
     }
 

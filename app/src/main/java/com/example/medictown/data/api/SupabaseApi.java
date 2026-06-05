@@ -12,6 +12,7 @@ import com.example.medictown.data.models.Payments;
 import com.example.medictown.data.models.ProductCategory;
 import com.example.medictown.data.models.ProductSubcategory;
 import com.example.medictown.data.models.Products;
+import com.example.medictown.data.models.RevenueDailySummary;
 import com.example.medictown.data.models.RevenueDashboard;
 import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.models.Shop;
@@ -177,6 +178,20 @@ public interface SupabaseApi {
             @Query("from") String fromDate,
             @Query("to") String toDate,
             @Query("groupBy") String groupBy
+    );
+
+    @GET("api/revenue/daily-summary")
+    Call<RevenueDailySummary> getRevenueDailySummary(
+            @Query("shop_id") String shopId,
+            @Query("from") String fromDate,
+            @Query("to") String toDate
+    );
+
+    @GET("api/revenue/top-products")
+    Call<List<RevenueDashboard.TopProduct>> getRevenueTopProducts(
+            @Query("shop_id") String shopId,
+            @Query("from") String fromDate,
+            @Query("to") String toDate
     );
 
     @POST("api/auth/register")

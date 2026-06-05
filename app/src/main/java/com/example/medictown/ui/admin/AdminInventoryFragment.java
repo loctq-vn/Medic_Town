@@ -238,7 +238,7 @@ public class AdminInventoryFragment extends Fragment {
         btnFilterCategory.setOnClickListener(v -> showCategoryMenu());
         btnFilterActive.setOnClickListener(v -> showThreeStateMenu(
                 btnFilterActive,
-                new String[]{"Bán: Tất cả", "Đang bán", "Ngừng bán"},
+                new String[]{"Trạng thái", "Đang bán", "Ngừng bán"},
                 value -> activeFilter = value
         ));
         btnFilterPrescription.setOnClickListener(v -> showThreeStateMenu(
@@ -387,42 +387,66 @@ public class AdminInventoryFragment extends Fragment {
         if (btnFilterCategory != null) {
             if (filterUncategorized) {
                 btnFilterCategory.setText("Chưa phân loại");
+                btnFilterCategory.setBackgroundTintList(android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.admin_primary)));
+                btnFilterCategory.setTextColor(Color.WHITE);
+                btnFilterCategory.setIconTintResource(R.color.white);
             } else if (selectedCategoryId == null) {
-                btnFilterCategory.setText("Tất cả danh mục");
+                btnFilterCategory.setText("Danh mục");
+                btnFilterCategory.setBackgroundTintList(android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.admin_light_green)));
+                btnFilterCategory.setTextColor(requireContext().getColor(R.color.admin_text_main));
+                btnFilterCategory.setIconTintResource(R.color.admin_primary);
             } else {
                 ProductCategory category = findCategory(selectedCategoryId);
                 btnFilterCategory.setText(category != null ? category.name : "Danh mục");
+                btnFilterCategory.setBackgroundTintList(android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.admin_primary)));
+                btnFilterCategory.setTextColor(Color.WHITE);
+                btnFilterCategory.setIconTintResource(R.color.white);
             }
         }
-        setThreeStateLabel(btnFilterActive, activeFilter, "Bán", "Đang bán", "Ngừng bán");
+        setThreeStateLabel(btnFilterActive, activeFilter, "Trạng thái", "Đang bán", "Ngừng bán");
         setThreeStateLabel(btnFilterPrescription, prescriptionFilter, "Kê đơn", "Cần kê đơn", "Không cần kê đơn");
         setThreeStateLabel(btnFilterFeatured, featuredFilter, "Nổi bật", "Nổi bật", "Không nổi bật");
         setThreeStateLabel(btnFilterBestSeller, bestSellerFilter, "Bán chạy", "Bán chạy", "Không bán chạy");
-        btnFilterStock.setText(getStockLabel());
+        
+        if (stockFilter == STOCK_ALL) {
+            btnFilterStock.setText("Tồn kho");
+            btnFilterStock.setBackgroundTintList(android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.admin_light_green)));
+            btnFilterStock.setTextColor(requireContext().getColor(R.color.admin_text_main));
+            btnFilterStock.setIconTintResource(R.color.admin_primary);
+        } else {
+            btnFilterStock.setText(getStockLabelOnly());
+            btnFilterStock.setBackgroundTintList(android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.admin_primary)));
+            btnFilterStock.setTextColor(Color.WHITE);
+            btnFilterStock.setIconTintResource(R.color.white);
+        }
+    }
+
+    private String getStockLabelOnly() {
+        switch (stockFilter) {
+            case STOCK_IN_STOCK: return "Còn hàng";
+            case STOCK_LOW: return "Sắp hết";
+            case STOCK_OUT: return "Hết hàng";
+            default: return "Tồn kho";
+        }
     }
 
     private void setThreeStateLabel(MaterialButton button, int filter, String prefix, String yesLabel, String noLabel) {
         if (button == null) return;
         if (filter == FILTER_YES) {
-            button.setText(prefix + ": " + yesLabel);
+            button.setText(yesLabel);
+            button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.admin_primary)));
+            button.setTextColor(Color.WHITE);
+            button.setIconTintResource(R.color.white);
         } else if (filter == FILTER_NO) {
-            button.setText(prefix + ": " + noLabel);
+            button.setText(noLabel);
+            button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.admin_primary)));
+            button.setTextColor(Color.WHITE);
+            button.setIconTintResource(R.color.white);
         } else {
-            button.setText(prefix + ": Tất cả");
-        }
-    }
-
-    private String getStockLabel() {
-        switch (stockFilter) {
-            case STOCK_IN_STOCK:
-                return "Tồn kho: Còn hàng";
-            case STOCK_LOW:
-                return "Tồn kho: Sắp hết";
-            case STOCK_OUT:
-                return "Tồn kho: Hết hàng";
-            case STOCK_ALL:
-            default:
-                return "Tồn kho: Tất cả";
+            button.setText(prefix);
+            button.setBackgroundTintList(android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.admin_light_green)));
+            button.setTextColor(requireContext().getColor(R.color.admin_text_main));
+            button.setIconTintResource(R.color.admin_primary);
         }
     }
 

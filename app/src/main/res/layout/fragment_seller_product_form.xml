@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface"
+    android:background="@color/admin_bg"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,7 +21,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Quay lại"
             android:src="@drawable/ic_back"
-            app:tint="@color/on_surface" />
+            app:tint="@color/admin_text_main" />
 
         <TextView
             android:layout_width="0dp"
@@ -29,7 +29,7 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:text="Quản lý sản phẩm"
-            android:textColor="@color/on_surface"
+            android:textColor="@color/admin_text_main"
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Đăng ký sản phẩm"
-                android:textColor="@color/on_surface"
+                android:textColor="@color/admin_text_main"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -99,7 +99,7 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:src="@android:drawable/ic_menu_gallery"
-                        app:tint="@color/primary" />
+                        app:tint="@color/admin_primary" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -172,7 +172,9 @@
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/cbActive"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            app:thumbTint="@color/admin_switch_thumb"
+                            app:trackTint="@color/admin_switch_track" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -521,7 +523,7 @@
                 android:text="Lưu sản phẩm"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                app:backgroundTint="@color/primary"
+                app:backgroundTint="@color/admin_primary"
                 app:cornerRadius="6dp" />
 
             <ProgressBar

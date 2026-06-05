@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import androidx.appcompat.content.res.AppCompatResources;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.CartItem;
 import com.example.medictown.ui.admin.AdminDashboardFragment;
@@ -112,6 +113,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         bottomNav.getMenu().clear();
         bottomNav.inflateMenu(R.menu.seller_bottom_nav_menu);
+
+        // Đổi màu thanh navigation sang màu admin (xanh lá)
+        bottomNav.setItemBackgroundResource(R.drawable.seller_nav_indicator_background);
+        bottomNav.setItemIconTintList(AppCompatResources.getColorStateList(this, R.color.seller_nav_item_color_state));
+        bottomNav.setItemTextColor(AppCompatResources.getColorStateList(this, R.color.seller_nav_item_color_state));
+
         setupBottomNavigation();
         bottomNav.setSelectedItemId(R.id.nav_seller_inventory);
     }
@@ -121,6 +128,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         bottomNav.getMenu().clear();
         bottomNav.inflateMenu(R.menu.bottom_nav_menu);
+
+        // Đổi màu thanh navigation về màu mặc định (xanh dương)
+        bottomNav.setItemBackgroundResource(R.drawable.nav_indicator_background);
+        bottomNav.setItemIconTintList(AppCompatResources.getColorStateList(this, R.color.nav_item_color_state));
+        bottomNav.setItemTextColor(AppCompatResources.getColorStateList(this, R.color.nav_item_color_state));
+
         setupBottomNavigation();
         bottomNav.setSelectedItemId(R.id.nav_product);
     }

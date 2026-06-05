@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface"
+    android:background="@color/admin_bg"
     android:orientation="vertical">
 
     <LinearLayout
@@ -16,9 +16,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đơn hàng"
-            android:textColor="@color/primary"
-            android:textSize="32sp"
+            android:text="Quản lý đơn hàng"
+            android:textColor="@color/admin_text_main"
+            android:textSize="28sp"
             android:textStyle="bold"
             android:letterSpacing="-0.02"/>
 
@@ -26,28 +26,29 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/surface_container_low">
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/white"
+            app:strokeColor="@color/admin_card_stroke"
+            app:strokeWidth="1dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp">
+                android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="KHOẢNG THỜI GIAN"
-                        android:textColor="@color/text_gray"
+                        android:textColor="@color/admin_text_secondary"
                         android:textSize="10sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.1"/>
@@ -56,34 +57,41 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp">
 
                         <TextView
                             android:id="@+id/tvDateRange"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="12 Th10 - 19 Th10, 2023"
-                            android:textColor="@color/on_surface"
+                            android:textColor="@color/admin_text_main"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:layout_marginStart="4dp"
+                            android:layout_marginStart="6dp"
                             android:src="@android:drawable/ic_menu_today"
-                            app:tint="@color/on_surface" />
+                            app:tint="@color/admin_primary" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnFilter"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_alignParentEnd="true"
-                    android:text="Lọc"
+                    android:layout_centerVertical="true"
+                    android:text="Lọc dữ liệu"
+                    android:textAllCaps="false"
                     android:textStyle="bold"
-                    app:cornerRadius="8dp" />
+                    android:backgroundTint="@color/admin_primary"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:minHeight="0dp"
+                    app:cornerRadius="10dp" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -96,10 +104,10 @@
             app:tabMode="scrollable"
             app:tabGravity="fill"
             app:tabRippleColor="@null"
-            app:tabSelectedTextColor="@color/primary"
-            app:tabTextColor="@color/text_gray"
-            app:tabIndicatorColor="@color/primary"
-            app:tabIndicatorHeight="2dp"
+            app:tabSelectedTextColor="@color/admin_primary"
+            app:tabTextColor="@color/admin_text_secondary"
+            app:tabIndicatorColor="@color/admin_primary"
+            app:tabIndicatorHeight="3dp"
             app:tabIndicatorFullWidth="false"
             app:tabTextAppearance="@style/TextAppearance.Material3.TitleSmall">
             <com.google.android.material.tabs.TabItem android:text="Tất cả"/>

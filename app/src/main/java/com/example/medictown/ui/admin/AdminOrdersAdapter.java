@@ -83,7 +83,7 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
         String statusDisplay = "CHỜ XÁC NHẬN";
         int statusColor = 0xFFC6E4F4;
         int textColor = 0xFF2E4B57;
-        int actionBtnColor = 0xFF003D9B;
+        int actionBtnColor = holder.itemView.getContext().getColor(R.color.admin_primary);
 
         switch (status) {
             case "pending":

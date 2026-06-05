@@ -49,6 +49,7 @@ public class RevenueDashboard {
         public String productName;
         public String productImage;
         public int quantitySold;
+        public int stock;
         public double revenue;
     }
 

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,9 +17,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.medictown.R;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.Products;
+import com.example.medictown.data.models.RevenueDailySummary;
 import com.example.medictown.data.models.RevenueDashboard;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -28,6 +32,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,8 +47,15 @@ public class AdminDashboardFragment extends Fragment {
     private AdminViewModel viewModel;
     private TextView tvDashboardTitle;
     private TextView tvTotalRevenue;
+    private TextView tvRevenueTrend;
     private TextView tvTodayRevenue;
+    private TextView tvTodayRevenueTrend;
+    private TextView tvWeekRevenue;
+    private TextView tvWeekRevenueTrend;
     private TextView tvMonthRevenue;
+    private TextView tvMonthRevenueTrend;
+    private TextView tvYearRevenue;
+    private TextView tvYearRevenueTrend;
     private TextView tvNetRevenue;
     private TextView tvRefundAmount;
     private TextView tvTotalOrders;
@@ -56,12 +68,14 @@ public class AdminDashboardFragment extends Fragment {
     private TextView chartGroupMonth;
     private RevenueChartView revenueChartView;
     private LinearLayout paymentMethodsContainer;
+    private GridLayout topProductsContainer;
     private RecyclerView rvRecentOrders;
     private RecentOrdersAdapter recentOrdersAdapter;
     private String currentShopId;
     private LocalDate currentFromDate;
     private LocalDate currentToDate;
     private String currentChartGroupBy = "day";
+    private List<RevenueDailySummary.Item> dailySummaryItems = new ArrayList<>();
 
     private enum RevenueRange {
         TODAY,
@@ -88,10 +102,17 @@ public class AdminDashboardFragment extends Fragment {
 
         tvDashboardTitle = view.findViewById(R.id.tvDashboardTitle);
         tvTotalRevenue = view.findViewById(R.id.tvTotalRevenue);
+        tvRevenueTrend = view.findViewById(R.id.tvRevenueTrend);
         tvTodayRevenue = view.findViewById(R.id.tvTodayRevenue);
+        tvTodayRevenueTrend = view.findViewById(R.id.tvTodayRevenueTrend);
+        tvWeekRevenue = view.findViewById(R.id.tvWeekRevenue);
+        tvWeekRevenueTrend = view.findViewById(R.id.tvWeekRevenueTrend);
         tvMonthRevenue = view.findViewById(R.id.tvMonthRevenue);
-        tvNetRevenue = view.findViewById(R.id.tvNewCustomers);
-        tvRefundAmount = view.findViewById(R.id.tvLowStock);
+        tvMonthRevenueTrend = view.findViewById(R.id.tvMonthRevenueTrend);
+        tvYearRevenue = view.findViewById(R.id.tvYearRevenue);
+        tvYearRevenueTrend = view.findViewById(R.id.tvYearRevenueTrend);
+        tvNetRevenue = view.findViewById(R.id.tvNetRevenue);
+        tvRefundAmount = view.findViewById(R.id.tvRefundAmount);
         tvTotalOrders = view.findViewById(R.id.tvTotalOrders);
         filterToday = view.findViewById(R.id.filterToday);
         filterSevenDays = view.findViewById(R.id.filterSevenDays);
@@ -102,10 +123,12 @@ public class AdminDashboardFragment extends Fragment {
         chartGroupMonth = view.findViewById(R.id.chartGroupMonth);
         revenueChartView = view.findViewById(R.id.revenueChartView);
         paymentMethodsContainer = view.findViewById(R.id.paymentMethodsContainer);
+        topProductsContainer = view.findViewById(R.id.inventory_grid);
         rvRecentOrders = view.findViewById(R.id.rvRecentOrders);
 
         recentOrdersAdapter = new RecentOrdersAdapter();
         rvRecentOrders.setAdapter(recentOrdersAdapter);
+        renderTopProducts(null);
 
         SessionManager sessionManager = new SessionManager(requireContext());
         String currentShopName = sessionManager.getCurrentShopName();
@@ -113,13 +136,13 @@ public class AdminDashboardFragment extends Fragment {
             tvDashboardTitle.setText(currentShopName);
         }
 
-        MaterialCardView btnManageInventory = view.findViewById(R.id.btnManageInventory);
         MaterialCardView btnManageOrders = view.findViewById(R.id.btnManageOrders);
         MaterialButton btnViewAllOrders = view.findViewById(R.id.btnViewAllOrders);
         MaterialButton btnQuickAddProduct = view.findViewById(R.id.btnQuickAddProduct);
 
-        viewModel.getRevenueDashboard().observe(getViewLifecycleOwner(), this::updateRevenueDashboard);
-        viewModel.getAllProducts().observe(getViewLifecycleOwner(), this::updateProductStats);
+        viewModel.getRevenueDailySummary().observe(getViewLifecycleOwner(), this::updateRevenueDailySummary);
+        viewModel.getRevenueTopProducts().observe(getViewLifecycleOwner(), this::renderTopProducts);
+        viewModel.getAllOrders().observe(getViewLifecycleOwner(), recentOrdersAdapter::setOrders);
 
         setupRevenueFilters();
         setupChartGroupFilters();
@@ -127,17 +150,25 @@ public class AdminDashboardFragment extends Fragment {
 
         currentShopId = sessionManager.getCurrentShopId();
         if (currentShopId != null && !currentShopId.isEmpty()) {
-            selectRevenueRange(RevenueRange.SEVEN_DAYS);
-            viewModel.fetchShopProducts(currentShopId);
+            viewModel.fetchRevenueDailySummary(currentShopId);
+            viewModel.fetchShopOrders(currentShopId);
+            selectRevenueRange(RevenueRange.TODAY);
         } else {
             renderEmptyRevenue();
-            viewModel.fetchAllProducts();
         }
 
-        btnManageInventory.setOnClickListener(v -> navigateTo(new AdminInventoryFragment()));
         btnManageOrders.setOnClickListener(v -> navigateTo(new AdminOrdersFragment()));
         btnViewAllOrders.setOnClickListener(v -> navigateTo(new AdminOrdersFragment()));
-        btnQuickAddProduct.setOnClickListener(v -> navigateTo(new AdminInventoryFragment()));
+        btnQuickAddProduct.setOnClickListener(v -> {
+            if (currentFromDate != null && currentToDate != null) {
+                navigateTo(AdminTopProductsFragment.newInstance(
+                        currentFromDate.format(API_DATE_FORMAT),
+                        currentToDate.format(API_DATE_FORMAT)
+                ));
+            } else {
+                navigateTo(new AdminInventoryFragment());
+            }
+        });
     }
 
     private void setupRevenueFilters() {
@@ -157,7 +188,7 @@ public class AdminDashboardFragment extends Fragment {
         currentChartGroupBy = groupBy;
         updateChartGroupStyle();
         if (currentFromDate != null && currentToDate != null) {
-            fetchRevenueDashboard(currentFromDate, currentToDate);
+            updateRevenueFromDailySummary();
         }
     }
 
@@ -215,11 +246,11 @@ public class AdminDashboardFragment extends Fragment {
             return;
         }
 
-        viewModel.fetchRevenueDashboard(
+        updateRevenueFromDailySummary();
+        viewModel.fetchRevenueTopProducts(
                 currentShopId,
                 fromDate.format(API_DATE_FORMAT),
-                toDate.format(API_DATE_FORMAT),
-                currentChartGroupBy
+                toDate.format(API_DATE_FORMAT)
         );
     }
 
@@ -293,6 +324,188 @@ public class AdminDashboardFragment extends Fragment {
                 .commit();
     }
 
+    private void updateRevenueDailySummary(RevenueDailySummary summary) {
+        dailySummaryItems = summary != null && summary.items != null
+                ? summary.items
+                : new ArrayList<>();
+        updateRevenueFromDailySummary();
+    }
+
+    private void updateRevenueFromDailySummary() {
+        if (currentFromDate == null || currentToDate == null) {
+            return;
+        }
+
+        LocalDate today = LocalDate.now();
+        LocalDate weekStart = today.minusDays(today.getDayOfWeek().getValue() - 1L);
+        LocalDate monthStart = today.withDayOfMonth(1);
+        LocalDate yearStart = today.withDayOfYear(1);
+
+        LocalDate yesterday = today.minusDays(1);
+        LocalDate lastWeekStart = weekStart.minusWeeks(1);
+        LocalDate lastWeekEnd = weekStart.minusDays(1);
+        LocalDate lastMonthStart = monthStart.minusMonths(1);
+        LocalDate lastMonthEnd = monthStart.minusDays(1);
+        LocalDate lastYearStart = yearStart.minusYears(1);
+        LocalDate lastYearEnd = yearStart.minusDays(1);
+
+        double todayRevenue = 0;
+        double yesterdayRevenue = 0;
+        double weekRevenue = 0;
+        double lastWeekRevenue = 0;
+        double monthRevenue = 0;
+        double lastMonthRevenue = 0;
+        double yearRevenue = 0;
+        double lastYearRevenue = 0;
+        double grossRevenue = 0;
+        double previousGrossRevenue = 0;
+        double refundAmount = 0;
+        double netRevenue = 0;
+        int totalOrders = 0;
+        int completedOrders = 0;
+        int pendingOrders = 0;
+        int cancelledOrders = 0;
+        Map<String, RevenueDashboard.PaymentMethod> paymentMethodTotals = new HashMap<>();
+
+        long daysCount = ChronoUnit.DAYS.between(currentFromDate, currentToDate) + 1;
+        LocalDate prevFromDate = currentFromDate.minusDays(daysCount);
+        LocalDate prevToDate = currentFromDate.minusDays(1);
+
+        for (RevenueDailySummary.Item item : dailySummaryItems) {
+            LocalDate itemDate = parseSummaryDate(item);
+            if (itemDate == null) {
+                continue;
+            }
+
+            if (itemDate.isEqual(today)) {
+                todayRevenue += item.grossRevenue;
+            }
+            if (itemDate.isEqual(yesterday)) {
+                yesterdayRevenue += item.grossRevenue;
+            }
+            if (!itemDate.isBefore(weekStart) && !itemDate.isAfter(today)) {
+                weekRevenue += item.grossRevenue;
+            }
+            if (!itemDate.isBefore(lastWeekStart) && !itemDate.isAfter(lastWeekEnd)) {
+                lastWeekRevenue += item.grossRevenue;
+            }
+            if (!itemDate.isBefore(monthStart) && !itemDate.isAfter(today)) {
+                monthRevenue += item.grossRevenue;
+            }
+            if (!itemDate.isBefore(lastMonthStart) && !itemDate.isAfter(lastMonthEnd)) {
+                lastMonthRevenue += item.grossRevenue;
+            }
+            if (!itemDate.isBefore(yearStart) && !itemDate.isAfter(today)) {
+                yearRevenue += item.grossRevenue;
+            }
+            if (!itemDate.isBefore(lastYearStart) && !itemDate.isAfter(lastYearEnd)) {
+                lastYearRevenue += item.grossRevenue;
+            }
+
+            // Tính doanh thu kỳ trước
+            if (!itemDate.isBefore(prevFromDate) && !itemDate.isAfter(prevToDate)) {
+                previousGrossRevenue += item.grossRevenue;
+            }
+
+            if (itemDate.isBefore(currentFromDate) || itemDate.isAfter(currentToDate)) {
+                continue;
+            }
+
+            grossRevenue += item.grossRevenue;
+            refundAmount += item.refundAmount;
+            netRevenue += item.netRevenue;
+            totalOrders += item.totalOrders;
+            completedOrders += item.completedOrders;
+            pendingOrders += item.pendingOrders;
+            cancelledOrders += item.cancelledOrders;
+            addPaymentMethods(paymentMethodTotals, item.paymentMethods);
+        }
+
+        tvTodayRevenue.setText(formatCurrency(todayRevenue));
+        updateTrendView(tvTodayRevenueTrend, todayRevenue, yesterdayRevenue);
+
+        tvWeekRevenue.setText(formatCurrency(weekRevenue));
+        updateTrendView(tvWeekRevenueTrend, weekRevenue, lastWeekRevenue);
+
+        tvMonthRevenue.setText(formatCurrency(monthRevenue));
+        updateTrendView(tvMonthRevenueTrend, monthRevenue, lastMonthRevenue);
+
+        tvYearRevenue.setText(formatCurrency(yearRevenue));
+        updateTrendView(tvYearRevenueTrend, yearRevenue, lastYearRevenue);
+
+        tvTotalRevenue.setText(formatCurrency(grossRevenue));
+
+        // Cập nhật xu hướng doanh thu
+        if (previousGrossRevenue > 0) {
+            double percentageChange = ((grossRevenue - previousGrossRevenue) / previousGrossRevenue) * 100;
+            tvRevenueTrend.setVisibility(View.VISIBLE);
+            
+            if (percentageChange > 0) {
+                tvRevenueTrend.setText(String.format(Locale.getDefault(), "↗ +%.0f%% so với kỳ trước", percentageChange));
+            } else if (percentageChange < 0) {
+                tvRevenueTrend.setText(String.format(Locale.getDefault(), "↘ %.0f%% so với kỳ trước", Math.abs(percentageChange)));
+            } else {
+                tvRevenueTrend.setText("0% so với kỳ trước");
+            }
+        } else {
+            tvRevenueTrend.setVisibility(View.GONE);
+        }
+
+        tvNetRevenue.setText(formatCurrency(netRevenue));
+        tvRefundAmount.setText(formatCurrency(refundAmount));
+        tvTotalOrders.setText(String.format(Locale.getDefault(), "%,d \u0111\u01a1n", totalOrders));
+
+        revenueChartView.setPoints(buildChartPointsFromDailySummary());
+        renderPaymentMethods(buildPaymentMethodSummary(paymentMethodTotals, grossRevenue));
+    }
+
+    private LocalDate parseSummaryDate(RevenueDailySummary.Item item) {
+        if (item == null || item.date == null) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(item.date, API_DATE_FORMAT);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private void addPaymentMethods(
+            Map<String, RevenueDashboard.PaymentMethod> totals,
+            List<RevenueDashboard.PaymentMethod> paymentMethods
+    ) {
+        if (paymentMethods == null) {
+            return;
+        }
+
+        for (RevenueDashboard.PaymentMethod method : paymentMethods) {
+            if (method == null) {
+                continue;
+            }
+            String key = method.method != null ? method.method : "unknown";
+            RevenueDashboard.PaymentMethod total = totals.get(key);
+            if (total == null) {
+                total = new RevenueDashboard.PaymentMethod();
+                total.method = key;
+                totals.put(key, total);
+            }
+            total.revenue += method.revenue;
+            total.transactionCount += method.transactionCount;
+        }
+    }
+
+    private List<RevenueDashboard.PaymentMethod> buildPaymentMethodSummary(
+            Map<String, RevenueDashboard.PaymentMethod> totals,
+            double totalRevenue
+    ) {
+        List<RevenueDashboard.PaymentMethod> result = new ArrayList<>(totals.values());
+        for (RevenueDashboard.PaymentMethod method : result) {
+            method.percentage = totalRevenue > 0 ? (method.revenue / totalRevenue) * 100 : 0;
+        }
+        result.sort((left, right) -> Double.compare(right.revenue, left.revenue));
+        return result;
+    }
+
     private void updateRevenueDashboard(RevenueDashboard dashboard) {
         if (dashboard == null) {
             renderEmptyRevenue();
@@ -303,7 +516,9 @@ public class AdminDashboardFragment extends Fragment {
         RevenueDashboard.FilteredSummary summary = dashboard.filteredSummary;
 
         tvTodayRevenue.setText(formatCurrency(fixedKpis != null ? fixedKpis.todayRevenue : 0));
+        tvWeekRevenue.setText(formatCurrency(0));
         tvMonthRevenue.setText(formatCurrency(fixedKpis != null ? fixedKpis.monthRevenue : 0));
+        tvYearRevenue.setText(formatCurrency(0));
         tvTotalRevenue.setText(formatCurrency(summary != null ? summary.grossRevenue : 0));
         tvNetRevenue.setText(formatCurrency(summary != null ? summary.netRevenue : 0));
         tvRefundAmount.setText(formatCurrency(summary != null ? summary.refundAmount : 0));
@@ -314,20 +529,45 @@ public class AdminDashboardFragment extends Fragment {
         ));
 
         renderRevenueChart(dashboard.chart);
-        recentOrdersAdapter.setOrders(dashboard.recentOrders);
         renderPaymentMethods(dashboard.paymentMethods);
+        renderTopProducts(dashboard.topProducts);
+    }
+
+    private void updateTrendView(TextView trendView, double current, double previous) {
+        if (trendView == null) return;
+        if (previous > 0) {
+            double percentageChange = ((current - previous) / previous) * 100;
+            trendView.setVisibility(View.VISIBLE);
+            if (percentageChange > 0) {
+                trendView.setText(String.format(Locale.getDefault(), "↑ +%.0f%%", percentageChange));
+            } else if (percentageChange < 0) {
+                trendView.setText(String.format(Locale.getDefault(), "↓ %.0f%%", Math.abs(percentageChange)));
+            } else {
+                trendView.setText("0%");
+            }
+        } else {
+            trendView.setVisibility(View.GONE);
+        }
     }
 
     private void renderEmptyRevenue() {
         tvTodayRevenue.setText(formatCurrency(0));
+        if (tvTodayRevenueTrend != null) tvTodayRevenueTrend.setVisibility(View.GONE);
+        tvWeekRevenue.setText(formatCurrency(0));
+        if (tvWeekRevenueTrend != null) tvWeekRevenueTrend.setVisibility(View.GONE);
         tvMonthRevenue.setText(formatCurrency(0));
+        if (tvMonthRevenueTrend != null) tvMonthRevenueTrend.setVisibility(View.GONE);
+        tvYearRevenue.setText(formatCurrency(0));
+        if (tvYearRevenueTrend != null) tvYearRevenueTrend.setVisibility(View.GONE);
         tvTotalRevenue.setText(formatCurrency(0));
+        if (tvRevenueTrend != null) tvRevenueTrend.setVisibility(View.GONE);
         tvNetRevenue.setText(formatCurrency(0));
         tvRefundAmount.setText(formatCurrency(0));
         tvTotalOrders.setText("0 đơn");
         revenueChartView.setPoints(null);
         recentOrdersAdapter.setOrders(null);
         renderPaymentMethods(null);
+        renderTopProducts(null);
     }
 
     private void renderRevenueChart(RevenueDashboard.Chart chart) {
@@ -363,6 +603,111 @@ public class AdminDashboardFragment extends Fragment {
                 break;
         }
         return result;
+    }
+
+    private List<RevenueChartView.ChartPoint> buildChartPointsFromDailySummary() {
+        List<RevenueChartView.ChartPoint> result = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        LocalDate chartStart;
+        LocalDate chartEnd;
+
+        Map<String, Double> revenueByPeriod = new HashMap<>();
+        switch (currentChartGroupBy) {
+            case "week":
+                chartEnd = weekStart(today);
+                chartStart = chartEnd.minusWeeks(3);
+                break;
+            case "month":
+                chartEnd = today.withDayOfMonth(1);
+                chartStart = chartEnd.minusMonths(11);
+                break;
+            case "day":
+            default:
+                chartEnd = today;
+                chartStart = today.minusDays(6);
+                break;
+        }
+
+        for (RevenueDailySummary.Item item : dailySummaryItems) {
+            LocalDate itemDate = parseSummaryDate(item);
+            if (itemDate == null || itemDate.isBefore(chartStart) || itemDate.isAfter(today)) {
+                continue;
+            }
+
+            String key = chartPeriodKey(itemDate);
+            revenueByPeriod.put(key, revenueByPeriod.getOrDefault(key, 0.0) + item.grossRevenue);
+        }
+
+        switch (currentChartGroupBy) {
+            case "week":
+                addFixedWeeklyChartPoints(result, revenueByPeriod, chartStart, chartEnd);
+                break;
+            case "month":
+                addFixedMonthlyChartPoints(result, revenueByPeriod, chartStart, chartEnd);
+                break;
+            case "day":
+            default:
+                addFixedDailyChartPoints(result, revenueByPeriod, chartStart, chartEnd);
+                break;
+        }
+        return result;
+    }
+
+    private String chartPeriodKey(LocalDate date) {
+        switch (currentChartGroupBy) {
+            case "week":
+                return weekStart(date).format(API_DATE_FORMAT);
+            case "month":
+                return date.withDayOfMonth(1).format(API_DATE_FORMAT);
+            case "day":
+            default:
+                return date.format(API_DATE_FORMAT);
+        }
+    }
+
+    private LocalDate weekStart(LocalDate date) {
+        return date.minusDays(date.getDayOfWeek().getValue() - 1L);
+    }
+
+    private void addFixedDailyChartPoints(
+            List<RevenueChartView.ChartPoint> result,
+            Map<String, Double> revenueByPeriod,
+            LocalDate start,
+            LocalDate end
+    ) {
+        for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
+            String key = date.format(API_DATE_FORMAT);
+            result.add(new RevenueChartView.ChartPoint(
+                    weekdayLabel(date),
+                    revenueByPeriod.getOrDefault(key, 0.0)
+            ));
+        }
+    }
+
+    private void addFixedWeeklyChartPoints(
+            List<RevenueChartView.ChartPoint> result,
+            Map<String, Double> revenueByPeriod,
+            LocalDate start,
+            LocalDate end
+    ) {
+        for (LocalDate date = start; !date.isAfter(end); date = date.plusWeeks(1)) {
+            String key = date.format(API_DATE_FORMAT);
+            String label = date.format(DateTimeFormatter.ofPattern("dd/MM"));
+            result.add(new RevenueChartView.ChartPoint(label, revenueByPeriod.getOrDefault(key, 0.0)));
+        }
+    }
+
+    private void addFixedMonthlyChartPoints(
+            List<RevenueChartView.ChartPoint> result,
+            Map<String, Double> revenueByPeriod,
+            LocalDate start,
+            LocalDate end
+    ) {
+        for (LocalDate date = start; !date.isAfter(end); date = date.plusMonths(1)) {
+            String key = date.format(API_DATE_FORMAT);
+            String label = date.format(DateTimeFormatter.ofPattern("MM/yyyy"));
+            result.add(new RevenueChartView.ChartPoint(label, revenueByPeriod.getOrDefault(key, 0.0)));
+        }
     }
 
     private void addDailyChartPoints(
@@ -512,6 +857,122 @@ public class AdminDashboardFragment extends Fragment {
         valueRow.addView(transactions);
         row.addView(valueRow, valueParams);
 
+        return row;
+    }
+
+    private void renderTopProducts(List<RevenueDashboard.TopProduct> topProducts) {
+        if (topProductsContainer == null) return;
+
+        topProductsContainer.removeAllViews();
+        if (topProducts == null || topProducts.isEmpty()) {
+            TextView emptyView = new TextView(requireContext());
+            emptyView.setText("Ch\u01b0a c\u00f3 s\u1ea3n ph\u1ea9m b\u00e1n trong kho\u1ea3ng n\u00e0y");
+            emptyView.setTextColor(Color.parseColor("#6C7A71"));
+            emptyView.setTextSize(12);
+            topProductsContainer.addView(emptyView, new GridLayout.LayoutParams());
+            return;
+        }
+
+        for (int index = 0; index < topProducts.size(); index++) {
+            topProductsContainer.addView(createTopProductRow(topProducts.get(index), index + 1));
+        }
+    }
+
+    private View createTopProductRow(RevenueDashboard.TopProduct product, int rank) {
+        LinearLayout row = new LinearLayout(requireContext());
+        row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+
+        GridLayout.LayoutParams rowParams = new GridLayout.LayoutParams();
+        rowParams.width = GridLayout.LayoutParams.MATCH_PARENT;
+        rowParams.height = dp(64);
+        if (rank > 1) {
+            rowParams.topMargin = dp(6);
+        }
+        row.setLayoutParams(rowParams);
+
+        ImageView image = new ImageView(requireContext());
+        image.setBackgroundResource(R.drawable.bg_buy_sheet_image);
+        image.setClipToOutline(true);
+        image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        Glide.with(this)
+                .load(product.productImage)
+                .placeholder(R.drawable.ic_medicine_placeholder)
+                .error(R.drawable.ic_medicine_placeholder)
+                .into(image);
+        row.addView(image, new LinearLayout.LayoutParams(dp(48), dp(48)));
+
+        LinearLayout textColumn = new LinearLayout(requireContext());
+        textColumn.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1
+        );
+        textParams.setMargins(dp(12), 0, dp(10), 0);
+
+        TextView name = new TextView(requireContext());
+        name.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        name.setIncludeFontPadding(false);
+        name.setMaxLines(1);
+        name.setText(product.productName != null && !product.productName.trim().isEmpty()
+                ? product.productName
+                : "S\u1ea3n ph\u1ea9m");
+        name.setTextColor(Color.parseColor("#0B1C30"));
+        name.setTextSize(13);
+        textColumn.addView(name, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+
+        TextView stock = new TextView(requireContext());
+        stock.setIncludeFontPadding(false);
+        stock.setMaxLines(1);
+        stock.setText(String.format(Locale.getDefault(), "Kho: %,d", product.stock));
+        stock.setTextColor(Color.parseColor("#8A9990"));
+        stock.setTextSize(11);
+        LinearLayout.LayoutParams stockParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        stockParams.topMargin = dp(3);
+        textColumn.addView(stock, stockParams);
+        row.addView(textColumn, textParams);
+
+        LinearLayout valueColumn = new LinearLayout(requireContext());
+        valueColumn.setGravity(android.view.Gravity.END);
+        valueColumn.setOrientation(LinearLayout.VERTICAL);
+
+        TextView revenue = new TextView(requireContext());
+        revenue.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        revenue.setIncludeFontPadding(false);
+        revenue.setMaxLines(1);
+        revenue.setText(formatCurrency(product.revenue));
+        revenue.setTextColor(Color.parseColor("#0B1C30"));
+        revenue.setTextSize(12);
+        revenue.setTypeface(null, android.graphics.Typeface.BOLD);
+        valueColumn.addView(revenue, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+
+        TextView sold = new TextView(requireContext());
+        sold.setBackgroundResource(R.drawable.round_corner_item);
+        sold.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#D8F8E8")));
+        sold.setIncludeFontPadding(false);
+        sold.setMaxLines(1);
+        sold.setPadding(dp(8), dp(3), dp(8), dp(3));
+        sold.setText(String.format(Locale.getDefault(), "\u0110\u00e3 b\u00e1n %,d", product.quantitySold));
+        sold.setTextColor(Color.parseColor("#006C49"));
+        sold.setTextSize(10);
+        LinearLayout.LayoutParams soldParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        soldParams.topMargin = dp(3);
+        valueColumn.addView(sold, soldParams);
+
+        row.addView(valueColumn, new LinearLayout.LayoutParams(dp(104), LinearLayout.LayoutParams.WRAP_CONTENT));
         return row;
     }
 

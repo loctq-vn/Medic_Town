@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface">
+    android:background="@color/admin_bg">
 
     <RelativeLayout
         android:id="@+id/layoutHeader"
@@ -25,14 +25,14 @@
             android:contentDescription="Quay lại"
             android:padding="12dp"
             android:src="@drawable/ic_back"
-            app:tint="@color/on_surface" />
+            app:tint="@color/admin_text_main" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Chi tiết đơn hàng"
-            android:textColor="@color/on_surface"
+            android:textColor="@color/admin_text_main"
             android:textSize="18sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -55,9 +55,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/outline_variant"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/admin_card_stroke"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -83,7 +83,7 @@
                             android:id="@+id/tvOrderId"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/primary"
+                            android:textColor="@color/admin_primary"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             tools:text="#CE-89021" />
@@ -126,7 +126,7 @@
                             android:textAllCaps="false"
                             android:textStyle="bold"
                             android:textSize="13sp"
-                            app:backgroundTint="@color/primary"
+                            app:backgroundTint="@color/admin_primary"
                             app:cornerRadius="8dp"
                             android:insetTop="0dp"
                             android:insetBottom="0dp"
@@ -159,11 +159,11 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/outline_variant"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/admin_card_stroke"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -239,11 +239,11 @@
                 android:id="@+id/cardPrescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/outline_variant"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/admin_card_stroke"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -293,11 +293,11 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/outline_variant"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/admin_card_stroke"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -353,7 +353,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:textColor="@color/primary"
+                            android:textColor="@color/admin_primary"
                             android:textSize="20sp"
                             android:textStyle="bold"
                             tools:text="470.000đ" />

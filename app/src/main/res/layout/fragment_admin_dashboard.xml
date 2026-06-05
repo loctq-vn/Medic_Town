@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA"
+    android:background="@color/admin_bg"
     android:clipToPadding="false"
     android:paddingBottom="96dp"
     android:theme="@style/ThemeOverlay.MedicTown.Revenue">
@@ -41,13 +41,14 @@
                     android:layout_height="34dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/round_corner_item"
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="@color/admin_primary"
                     android:gravity="center"
                     android:minWidth="72dp"
                     android:paddingHorizontal="16dp"
                     android:text="Hôm nay"
-                    android:textColor="#0B1C30"
-                    android:textSize="12sp" />
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/filterSevenDays"
@@ -55,14 +56,13 @@
                     android:layout_height="34dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/round_corner_item"
-                    android:backgroundTint="#10B981"
+                    android:backgroundTint="@color/white"
                     android:gravity="center"
                     android:minWidth="72dp"
                     android:paddingHorizontal="16dp"
                     android:text="7 ngày"
-                    android:textColor="#002113"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:textColor="#0B1C30"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/filterThirtyDays"
@@ -154,6 +154,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvRevenueTrend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -173,200 +174,149 @@
             android:alignmentMode="alignMargins"
             android:columnCount="2"
             android:columnOrderPreserved="false"
-            android:rowCount="2">
+            android:rowCount="1">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="88dp"
-                android:layout_columnWeight="1"
-                android:layout_marginEnd="6dp"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="7dp"
-                        android:text="HÔM NAY"
-                        android:textColor="#6C7A71"
-                        android:textSize="10sp" />
-
-                    <TextView
-                    android:id="@+id/tvTodayRevenue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:autoSizeMaxTextSize="17sp"
-                    android:autoSizeMinTextSize="13sp"
-                    android:autoSizeStepGranularity="1sp"
-                    android:autoSizeTextType="uniform"
-                    android:ellipsize="end"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:text="4.250.000đ"
-                    android:textColor="#0B1C30"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:includeFontPadding="false"
-                        android:maxLines="1"
-                        android:text="↑ +5%"
-                        android:textColor="#006C49"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="88dp"
-                android:layout_columnWeight="1"
-                android:layout_marginStart="6dp"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="7dp"
-                        android:text="THÁNG NÀY"
-                        android:textColor="#6C7A71"
-                        android:textSize="10sp" />
-
-                    <TextView
-                    android:id="@+id/tvMonthRevenue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:autoSizeMaxTextSize="17sp"
-                    android:autoSizeMinTextSize="13sp"
-                    android:autoSizeStepGranularity="1sp"
-                    android:autoSizeTextType="uniform"
-                    android:ellipsize="end"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:text="48.900.000đ"
-                    android:textColor="#0B1C30"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:includeFontPadding="false"
-                        android:maxLines="1"
-                        android:text="↑ +8%"
-                        android:textColor="#006C49"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="78dp"
+                android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_marginEnd="6dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#006C49"
-                app:strokeWidth="2dp">
+                app:strokeWidth="0dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="14dp">
+                    android:layout_height="wrap_content"
+                    android:minHeight="76dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="THỰC NHẬN"
-                        android:textColor="#6C7A71"
-                        android:textSize="10sp" />
+                    <!-- Mẹo tạo viền trái bo cong: Dùng một View bo góc và đẩy lệch sang phải -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@+id/llNetRevenue"
+                        android:layout_alignBottom="@+id/llNetRevenue"
+                        android:layout_marginEnd="-20dp"
+                        android:background="@drawable/round_corner_item"
+                        android:backgroundTint="@color/admin_primary" />
 
-                    <TextView
-                        android:id="@+id/tvNewCustomers"
+                    <!-- Phần đè lên để chỉ còn lại viền trái 3dp -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@+id/llNetRevenue"
+                        android:layout_alignBottom="@+id/llNetRevenue"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="-20dp"
+                        android:background="@drawable/round_corner_item"
+                        android:backgroundTint="@color/white" />
+
+                    <LinearLayout
+                        android:id="@+id/llNetRevenue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:autoSizeMaxTextSize="16sp"
-                        android:autoSizeMinTextSize="12sp"
-                        android:autoSizeStepGranularity="1sp"
-                        android:autoSizeTextType="uniform"
-                        android:ellipsize="end"
-                        android:includeFontPadding="false"
-                        android:maxLines="1"
-                        android:text="112.300.000đ"
-                        android:textColor="#0B1C30"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:orientation="vertical"
+                        android:paddingHorizontal="14dp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="THỰC NHẬN"
+                            android:textColor="#6C7A71"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvNetRevenue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:autoSizeMaxTextSize="17sp"
+                            android:autoSizeMinTextSize="13sp"
+                            android:autoSizeStepGranularity="1sp"
+                            android:autoSizeTextType="uniform"
+                            android:ellipsize="end"
+                            android:includeFontPadding="false"
+                            android:maxLines="1"
+                            android:text="112.300.000đ"
+                            android:textColor="#0B1C30"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="78dp"
+                android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_marginStart="6dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/error"
-                app:strokeWidth="2dp">
+                app:strokeWidth="0dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="14dp">
+                    android:layout_height="wrap_content"
+                    android:minHeight="76dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="HOÀN TRẢ"
-                        android:textColor="#6C7A71"
-                        android:textSize="10sp" />
+                    <!-- Viền trái bo cong màu đỏ -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@+id/llRefundAmount"
+                        android:layout_alignBottom="@+id/llRefundAmount"
+                        android:layout_marginEnd="-20dp"
+                        android:background="@drawable/round_corner_item"
+                        android:backgroundTint="@color/error" />
 
-                    <TextView
-                        android:id="@+id/tvLowStock"
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@+id/llRefundAmount"
+                        android:layout_alignBottom="@+id/llRefundAmount"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="-20dp"
+                        android:background="@drawable/round_corner_item"
+                        android:backgroundTint="@color/white" />
+
+                    <LinearLayout
+                        android:id="@+id/llRefundAmount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:autoSizeMaxTextSize="16sp"
-                        android:autoSizeMinTextSize="12sp"
-                        android:autoSizeStepGranularity="1sp"
-                        android:autoSizeTextType="uniform"
-                        android:ellipsize="end"
-                        android:includeFontPadding="false"
-                        android:maxLines="1"
-                        android:text="2.100.000đ"
-                        android:textColor="#0B1C30"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:orientation="vertical"
+                        android:paddingHorizontal="14dp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="HOÀN TRẢ"
+                            android:textColor="#6C7A71"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvRefundAmount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:autoSizeMaxTextSize="17sp"
+                            android:autoSizeMinTextSize="13sp"
+                            android:autoSizeStepGranularity="1sp"
+                            android:autoSizeTextType="uniform"
+                            android:ellipsize="end"
+                            android:includeFontPadding="false"
+                            android:maxLines="1"
+                            android:text="2.100.000đ"
+                            android:textColor="#0B1C30"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
         </GridLayout>
 
@@ -464,7 +414,7 @@
                             android:backgroundTint="@color/white"
                             android:gravity="center"
                             android:text="Ngày"
-                            android:textColor="#006C49"
+                            android:textColor="@color/admin_primary"
                             android:textSize="11sp" />
 
                         <TextView
@@ -499,6 +449,236 @@
                 </FrameLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:alignmentMode="alignMargins"
+            android:columnCount="2"
+            android:columnOrderPreserved="false"
+            android:rowCount="2">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="88dp"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="7dp"
+                        android:text="H&#212;M NAY"
+                        android:textColor="#6C7A71"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/tvTodayRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:autoSizeMaxTextSize="17sp"
+                        android:autoSizeMinTextSize="13sp"
+                        android:autoSizeStepGranularity="1sp"
+                        android:autoSizeTextType="uniform"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:text="4.250.000&#273;"
+                        android:textColor="#0B1C30"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTodayRevenueTrend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:text="↑ +5%"
+                        android:textColor="#006C49"
+                        android:textSize="10sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="88dp"
+                android:layout_columnWeight="1"
+                android:layout_marginStart="6dp"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="7dp"
+                        android:text="TU&#7846;N N&#192;Y"
+                        android:textColor="#6C7A71"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/tvWeekRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:autoSizeMaxTextSize="17sp"
+                        android:autoSizeMinTextSize="13sp"
+                        android:autoSizeStepGranularity="1sp"
+                        android:autoSizeTextType="uniform"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:text="48.900.000&#273;"
+                        android:textColor="#0B1C30"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvWeekRevenueTrend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:text="↑ +8%"
+                        android:textColor="#006C49"
+                        android:textSize="10sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="88dp"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="6dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TH&#193;NG N&#192;Y"
+                        android:textColor="#6C7A71"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/tvMonthRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:autoSizeMaxTextSize="17sp"
+                        android:autoSizeMinTextSize="13sp"
+                        android:autoSizeStepGranularity="1sp"
+                        android:autoSizeTextType="uniform"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:text="112.300.000&#273;"
+                        android:textColor="#0B1C30"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvMonthRevenueTrend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="#006C49"
+                        android:textSize="10sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="88dp"
+                android:layout_columnWeight="1"
+                android:layout_marginStart="6dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N&#258;M N&#192;Y"
+                        android:textColor="#6C7A71"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/tvYearRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:autoSizeMaxTextSize="17sp"
+                        android:autoSizeMinTextSize="13sp"
+                        android:autoSizeStepGranularity="1sp"
+                        android:autoSizeTextType="uniform"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:text="2.100.000&#273;"
+                        android:textColor="#0B1C30"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvYearRevenueTrend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="#006C49"
+                        android:textSize="10sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </GridLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -576,7 +756,7 @@
                         android:paddingHorizontal="0dp"
                         android:text="Xem tất cả"
                         android:textAllCaps="false"
-                        android:textColor="#006C49"
+                        android:textColor="@color/admin_primary"
                         android:textSize="12sp"
                         app:cornerRadius="8dp" />
                 </RelativeLayout>
@@ -601,7 +781,7 @@
                             android:background="@drawable/bg_buy_sheet_image"
                             android:gravity="center"
                             android:text="SP"
-                            android:textColor="#006C49"
+                            android:textColor="@color/admin_primary"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -664,7 +844,7 @@
                                 android:includeFontPadding="false"
                                 android:maxLines="1"
                                 android:text="Đã bán 120"
-                                android:textColor="#006C49"
+                                android:textColor="@color/admin_primary"
                                 android:textSize="10sp" />
                         </LinearLayout>
                     </LinearLayout>
@@ -681,7 +861,7 @@
                             android:background="@drawable/bg_buy_sheet_image"
                             android:gravity="center"
                             android:text="SP"
-                            android:textColor="#006C49"
+                            android:textColor="@color/admin_primary"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -741,7 +921,7 @@
                                 android:includeFontPadding="false"
                                 android:maxLines="1"
                                 android:text="Đã bán 85"
-                                android:textColor="#006C49"
+                                android:textColor="@color/admin_primary"
                                 android:textSize="10sp" />
                         </LinearLayout>
                     </LinearLayout>
@@ -804,30 +984,10 @@
                     android:layout_marginBottom="12dp"
                     android:text="Xem tất cả đơn hàng"
                     android:textAllCaps="false"
-                    android:textColor="#006C49" />
+                    android:textColor="@color/admin_primary" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnManageInventory"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardBackgroundColor="#006C49"
-            app:cardCornerRadius="18dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Quản lý sản phẩm"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

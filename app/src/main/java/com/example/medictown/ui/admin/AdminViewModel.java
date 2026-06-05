@@ -9,6 +9,7 @@ import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.models.ProductCategory;
 import com.example.medictown.data.models.ProductSubcategory;
 import com.example.medictown.data.models.Products;
+import com.example.medictown.data.models.RevenueDailySummary;
 import com.example.medictown.data.models.RevenueDashboard;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,8 @@ public class AdminViewModel extends ViewModel {
     private final MutableLiveData<List<ProductCategory>> productCategories = new MutableLiveData<>();
     private final MutableLiveData<List<ProductSubcategory>> productSubcategories = new MutableLiveData<>();
     private final MutableLiveData<RevenueDashboard> revenueDashboard = new MutableLiveData<>();
+    private final MutableLiveData<RevenueDailySummary> revenueDailySummary = new MutableLiveData<>();
+    private final MutableLiveData<List<RevenueDashboard.TopProduct>> revenueTopProducts = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
@@ -36,6 +39,8 @@ public class AdminViewModel extends ViewModel {
     public LiveData<List<ProductCategory>> getProductCategories() { return productCategories; }
     public LiveData<List<ProductSubcategory>> getProductSubcategories() { return productSubcategories; }
     public LiveData<RevenueDashboard> getRevenueDashboard() { return revenueDashboard; }
+    public LiveData<RevenueDailySummary> getRevenueDailySummary() { return revenueDailySummary; }
+    public LiveData<List<RevenueDashboard.TopProduct>> getRevenueTopProducts() { return revenueTopProducts; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<String> getErrorMessage() { return errorMessage; }
 
@@ -139,6 +144,45 @@ public class AdminViewModel extends ViewModel {
             @Override
             public void onFailure(Call<RevenueDashboard> call, Throwable t) {
                 isLoading.setValue(false);
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchRevenueDailySummary(String shopId) {
+        isLoading.setValue(true);
+        apiService.getRevenueDailySummary(shopId, null, null).enqueue(new Callback<RevenueDailySummary>() {
+            @Override
+            public void onResponse(Call<RevenueDailySummary> call, Response<RevenueDailySummary> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful()) {
+                    revenueDailySummary.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Failed to fetch revenue daily summary");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RevenueDailySummary> call, Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchRevenueTopProducts(String shopId, String fromDate, String toDate) {
+        apiService.getRevenueTopProducts(shopId, fromDate, toDate).enqueue(new Callback<List<RevenueDashboard.TopProduct>>() {
+            @Override
+            public void onResponse(Call<List<RevenueDashboard.TopProduct>> call, Response<List<RevenueDashboard.TopProduct>> response) {
+                if (response.isSuccessful()) {
+                    revenueTopProducts.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Failed to fetch revenue top products");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RevenueDashboard.TopProduct>> call, Throwable t) {
                 errorMessage.setValue(t.getMessage());
             }
         });
