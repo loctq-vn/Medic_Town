@@ -17,6 +17,7 @@ import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.databinding.ActivityProductDetailBinding;
 import com.example.medictown.ui.cart.CartViewModel;
+import com.example.medictown.ui.chat.ChatActivity;
 import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.repositories.ReviewRepository;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -218,6 +219,18 @@ public class ProductDetailActivity extends AppCompatActivity {
             intent.putExtra("open_cart", true);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+        });
+
+        binding.btnChatDetail.setOnClickListener(v -> {
+            if (sessionManager.isLoggedIn()) {
+                startActivity(new Intent(this, ChatActivity.class));
+            } else {
+                Toast.makeText(
+                        this,
+                        "Vui lòng đăng nhập để chat với shop",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
         });
 
         binding.btnBuyNowDetail.setOnClickListener(v -> {

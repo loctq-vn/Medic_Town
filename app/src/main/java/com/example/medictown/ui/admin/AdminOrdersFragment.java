@@ -92,14 +92,10 @@ public class AdminOrdersFragment extends Fragment {
         adapter.setOnOrderActionListener(new AdminOrdersAdapter.OnOrderActionListener() {
             @Override
             public void onQuickAction(Orders order) {
-                if ("shipping".equalsIgnoreCase(order.status)) {
-                    onDetails(order);
-                    return;
-                }
-
                 String nextStatus = "";
                 if ("pending".equalsIgnoreCase(order.status)) nextStatus = "confirmed";
                 else if ("confirmed".equalsIgnoreCase(order.status)) nextStatus = "shipping";
+                else if ("shipping".equalsIgnoreCase(order.status)) nextStatus = "completed";
                 
                 if (!nextStatus.isEmpty()) {
                     if (currentShopId != null && !currentShopId.isEmpty()) {

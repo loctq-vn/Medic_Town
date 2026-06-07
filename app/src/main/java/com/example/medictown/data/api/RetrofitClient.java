@@ -10,7 +10,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     private static Retrofit retrofit = null;
-    private static String authToken = null;
+    private static volatile String authToken = null;
+    private static OkHttpClient httpClient = null;
+    private static Gson gson = null;
 
     public static void setAuthToken(String token) {
         authToken = token;
@@ -27,11 +29,35 @@ public class RetrofitClient {
         return getApiService();
     }
 
+    public static synchronized OkHttpClient getHttpClient() {
+        if (httpClient == null) {
+            httpClient = createHttpClient();
+        }
+        return httpClient;
+    }
+
+    public static synchronized Gson getGson() {
+        if (gson == null) {
+            gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                    .create();
+        }
+        return gson;
+    }
+
     private static Retrofit createRetrofit(String baseUrl) {
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(getHttpClient())
+                .addConverterFactory(GsonConverterFactory.create(getGson()))
+                .build();
+    }
+
+    private static OkHttpClient createHttpClient() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient client = new OkHttpClient.Builder()
+        return new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     okhttp3.Request original = chain.request();
                     okhttp3.Request.Builder builder = original.newBuilder()
@@ -42,16 +68,6 @@ public class RetrofitClient {
                     return chain.proceed(builder.build());
                 })
                 .addInterceptor(loggingInterceptor)
-                .build();
-
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-                .create();
-
-        return new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }
 }

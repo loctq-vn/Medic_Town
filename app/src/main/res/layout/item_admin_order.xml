@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/tvStatus"
+                android:layout_toStartOf="@+id/tvPaymentStatus"
                 android:orientation="vertical">
 
                 <TextView
@@ -58,6 +58,21 @@
                     android:textColor="@color/text_gray"
                     android:textSize="12sp" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvPaymentStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:layout_toStartOf="@+id/tvStatus"
+                android:background="@drawable/round_corner_item"
+                android:backgroundTint="#FFF3CD"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="CHƯA THANH TOÁN"
+                android:textColor="#7A4D00"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvStatus"

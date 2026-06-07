@@ -21,6 +21,8 @@ import com.example.medictown.ui.admin.AdminDashboardFragment;
 import com.example.medictown.ui.admin.AdminInventoryFragment;
 import com.example.medictown.ui.admin.AdminOrdersFragment;
 import com.example.medictown.ui.cart.CartFragment;
+import com.example.medictown.ui.chat.ChatActivity;
+import com.example.medictown.ui.chat.SellerConversationFragment;
 import com.example.medictown.ui.history.HistoryFragment;
 import com.example.medictown.ui.payment.PaymentFragment;
 import com.example.medictown.ui.product.ProductFragment;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNav;
     private View appBarMain;
+    private View topChatButton;
     private boolean sellerMode = false;
 
     @Override
@@ -45,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
         appBarMain = findViewById(R.id.app_bar_main);
         bottomNav = findViewById(R.id.bottom_navigation);
+        topChatButton = findViewById(R.id.btn_top_chat);
+        topChatButton.setOnClickListener(view ->
+                startActivity(new Intent(this, ChatActivity.class))
+        );
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -72,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new AdminInventoryFragment();
                 } else if (itemId == R.id.nav_seller_orders) {
                     selectedFragment = new AdminOrdersFragment();
+                } else if (itemId == R.id.nav_seller_messages) {
+                    selectedFragment = new SellerConversationFragment();
                 } else if (itemId == R.id.nav_seller_revenue) {
                     selectedFragment = new AdminDashboardFragment();
                 } else if (itemId == R.id.nav_seller_profile) {
@@ -110,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openSellerChannel() {
         sellerMode = true;
+        topChatButton.setVisibility(View.GONE);
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         bottomNav.getMenu().clear();
         bottomNav.inflateMenu(R.menu.seller_bottom_nav_menu);
@@ -125,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openBuyerChannel() {
         sellerMode = false;
+        topChatButton.setVisibility(View.VISIBLE);
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         bottomNav.getMenu().clear();
         bottomNav.inflateMenu(R.menu.bottom_nav_menu);

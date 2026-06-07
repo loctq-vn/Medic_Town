@@ -4,6 +4,12 @@ import com.example.medictown.data.models.Address;
 import com.example.medictown.data.models.AuthRequest;
 import com.example.medictown.data.models.AuthResponse;
 import com.example.medictown.data.models.CartItem;
+import com.example.medictown.data.models.ChatMessage;
+import com.example.medictown.data.models.ChatMessagePage;
+import com.example.medictown.data.models.ChatMessageRequest;
+import com.example.medictown.data.models.ChatReadRequest;
+import com.example.medictown.data.models.ChatReadResult;
+import com.example.medictown.data.models.Conversation;
 import com.example.medictown.data.models.FakePaymentMethodRequest;
 import com.example.medictown.data.models.GoogleAuthRequest;
 import com.example.medictown.data.models.OrderCreateRequest;
@@ -16,6 +22,7 @@ import com.example.medictown.data.models.RevenueDailySummary;
 import com.example.medictown.data.models.RevenueDashboard;
 import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.models.Shop;
+import com.example.medictown.data.models.SellerConversationItem;
 import com.example.medictown.data.models.Users;
 
 import java.util.List;
@@ -202,4 +209,26 @@ public interface SupabaseApi {
 
     @POST("api/auth/google")
     Call<AuthResponse> loginWithGoogle(@Body GoogleAuthRequest request);
+
+    @POST("api/chat/conversation")
+    Call<Conversation> getOrCreateChatConversation();
+
+    @GET("api/chat/messages")
+    Call<ChatMessagePage> getChatMessages(
+            @Query("conversation_id") String conversationId,
+            @Query("before") String before,
+            @Query("before_id") String beforeId,
+            @Query("after") String after,
+            @Query("after_id") String afterId,
+            @Query("limit") int limit
+    );
+
+    @POST("api/chat/messages")
+    Call<ChatMessage> sendChatMessage(@Body ChatMessageRequest request);
+
+    @PATCH("api/chat/read")
+    Call<ChatReadResult> markChatRead(@Body ChatReadRequest request);
+
+    @GET("api/chat/seller/conversations")
+    Call<List<SellerConversationItem>> getSellerChatConversations();
 }

@@ -1,5 +1,6 @@
 *.iml
 .gradle
+.gradle-chat*/
 .gradle-codex/
 .gradle-codex-build/
 /local.properties
@@ -11,6 +12,8 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+/build-codex-verify/
+/app/build-codex/
 /captures
 .externalNativeBuild
 .cxx

@@ -148,8 +148,10 @@ public class AdminOrderDetailFragment extends Fragment {
                 binding.btnCancelOrder.setOnClickListener(v -> updateStatus("cancelled"));
                 break;
             case "shipping":
-                // Đang giao: Không có nút bấm hoàn thành theo yêu cầu
-                binding.layoutActions.setVisibility(View.GONE);
+                binding.btnPrimaryAction.setText("Hoàn thành");
+                binding.btnPrimaryAction.setOnClickListener(v -> updateStatus("completed"));
+                binding.btnCancelOrder.setText("Hủy đơn");
+                binding.btnCancelOrder.setOnClickListener(v -> updateStatus("cancelled"));
                 break;
             default:
                 binding.layoutActions.setVisibility(View.GONE);

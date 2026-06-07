@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.medictown.R;
 import com.example.medictown.data.models.Orders;
+import com.example.medictown.data.models.Payments;
 import com.google.android.material.button.MaterialButton;
 
 import java.text.SimpleDateFormat;
@@ -59,6 +60,7 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
         holder.tvOrderTime.setText(order.created_at != null ? dateFormat.format(order.created_at) : "Vừa xong");
 
         bindStatus(holder, order.status);
+        bindPaymentStatus(holder, order.getPrimaryPayment());
         bindProduct(holder, order, itemCount, orderId);
 
         String paymentMethod = displayPaymentMethod(order.getPaymentMethod());
@@ -103,10 +105,10 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
                 break;
             case "shipping":
                 statusDisplay = "ĐANG GIAO";
-                holder.btnQuickAction.setText("Theo dõi");
+                holder.btnQuickAction.setText("Hoàn thành");
                 holder.btnQuickAction.setVisibility(View.VISIBLE);
                 holder.btnCancel.setVisibility(View.GONE);
-                holder.btnDetails.setVisibility(View.GONE);
+                holder.btnDetails.setVisibility(View.VISIBLE);
                 statusColor = 0xFF0052CC;
                 textColor = 0xFFFFFFFF;
                 break;
@@ -135,6 +137,51 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
 
         holder.btnQuickAction.setBackgroundTintList(ColorStateList.valueOf(actionBtnColor));
         holder.btnQuickAction.setTextColor(0xFFFFFFFF);
+    }
+
+    private void bindPaymentStatus(ViewHolder holder, Payments payment) {
+        String status = payment != null && payment.status != null
+                ? payment.status.toLowerCase()
+                : "pending";
+        String statusDisplay = "CHƯA THANH TOÁN";
+        int statusColor = 0xFFFFF3CD;
+        int textColor = 0xFF7A4D00;
+
+        switch (status) {
+            case "completed":
+                statusDisplay = "ĐÃ THANH TOÁN";
+                statusColor = 0xFFC8E6C9;
+                textColor = 0xFF2E7D32;
+                break;
+            case "processing":
+                statusDisplay = "ĐANG XỬ LÝ";
+                statusColor = 0xFFE3F2FD;
+                textColor = 0xFF0D47A1;
+                break;
+            case "failed":
+                statusDisplay = "THANH TOÁN LỖI";
+                statusColor = 0xFFFFDAD6;
+                textColor = 0xFF93000A;
+                break;
+            case "refunded":
+                statusDisplay = "ĐÃ HOÀN TIỀN";
+                statusColor = 0xFFE8DEF8;
+                textColor = 0xFF4A1D7A;
+                break;
+            case "expired":
+            case "cancelled":
+                statusDisplay = "ĐÃ HỦY TT";
+                statusColor = 0xFFE5E7EB;
+                textColor = 0xFF374151;
+                break;
+            case "pending":
+            default:
+                break;
+        }
+
+        holder.tvPaymentStatus.setText(statusDisplay);
+        holder.tvPaymentStatus.getBackground().setTint(statusColor);
+        holder.tvPaymentStatus.setTextColor(textColor);
     }
 
     private void bindProduct(ViewHolder holder, Orders order, int itemCount, String orderId) {
@@ -171,7 +218,7 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvOrderId, tvStatus, tvCustomerName, tvOrderTime, tvProductName, tvOrderSummary, tvTotalPrice;
+        TextView tvOrderId, tvStatus, tvPaymentStatus, tvCustomerName, tvOrderTime, tvProductName, tvOrderSummary, tvTotalPrice;
         MaterialButton btnDetails, btnQuickAction, btnCancel;
         ImageView ivProduct;
 
@@ -179,6 +226,7 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
             super(itemView);
             tvOrderId = itemView.findViewById(R.id.tvOrderId);
             tvStatus = itemView.findViewById(R.id.tvStatus);
+            tvPaymentStatus = itemView.findViewById(R.id.tvPaymentStatus);
             tvCustomerName = itemView.findViewById(R.id.tvCustomerName);
             tvOrderTime = itemView.findViewById(R.id.tvOrderTime);
             tvProductName = itemView.findViewById(R.id.tvProductName);
