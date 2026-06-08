@@ -223,7 +223,9 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         binding.btnChatDetail.setOnClickListener(v -> {
             if (sessionManager.isLoggedIn()) {
-                startActivity(new Intent(this, ChatActivity.class));
+                Intent intent = new Intent(this, ChatActivity.class);
+                intent.putExtra(ChatActivity.EXTRA_PRODUCT_ATTACHMENT, product);
+                startActivity(intent);
             } else {
                 Toast.makeText(
                         this,

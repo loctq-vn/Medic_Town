@@ -1,6 +1,9 @@
 package com.example.medictown.ui.chat;
 
 import android.app.Application;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,12 +12,16 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.models.ChatMessage;
+import com.example.medictown.data.models.ChatMessageMetadata;
 import com.example.medictown.data.models.ChatMessagePage;
 import com.example.medictown.data.models.ChatMessageUi;
 import com.example.medictown.data.models.ChatReadResult;
 import com.example.medictown.data.models.ChatSocketEvent;
 import com.example.medictown.data.models.Conversation;
 import com.example.medictown.data.models.MessageSendState;
+import com.example.medictown.data.models.OrderItem;
+import com.example.medictown.data.models.Orders;
+import com.example.medictown.data.models.Products;
 import com.example.medictown.data.repositories.ChatRepository;
 
 import java.time.Instant;
@@ -26,6 +33,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,6 +45,7 @@ public class ChatViewModel extends AndroidViewModel {
     private static final int PAGE_SIZE = 50;
 
     private final ChatRepository repository;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final Object messageLock = new Object();
     private final MutableLiveData<Conversation> conversation = new MutableLiveData<>();
     private final MutableLiveData<List<ChatMessageUi>> messages =
@@ -171,6 +183,144 @@ public class ChatViewModel extends AndroidViewModel {
                 current,
                 clientMessageId,
                 content
+        );
+        upsertUiMessage(new ChatMessageUi(optimistic, MessageSendState.SENDING));
+        sendPendingMessage(optimistic);
+    }
+
+    public void uploadAndSendImage(Uri imageUri) {
+        Conversation current = conversation.getValue();
+        if (current == null || current.id == null) {
+            error.setValue("Cuoc tro chuyen chua san sang");
+            return;
+        }
+        if (imageUri == null) {
+            return;
+        }
+
+        loading.setValue(true);
+        repository.uploadChatImage(getApplication(), current.id, imageUri, new okhttp3.Callback() {
+            @Override
+            public void onFailure(@NonNull okhttp3.Call call, @NonNull IOException e) {
+                mainHandler.post(() -> {
+                    loading.setValue(false);
+                    error.setValue(connectionError(e));
+                });
+            }
+
+            @Override
+            public void onResponse(
+                    @NonNull okhttp3.Call call,
+                    @NonNull okhttp3.Response response
+            ) throws IOException {
+                String responseBody = response.body() != null ? response.body().string() : "";
+                mainHandler.post(() -> {
+                    loading.setValue(false);
+                    if (!response.isSuccessful()) {
+                        error.setValue("Khong the tai anh chat: " + response.code());
+                        return;
+                    }
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        ChatMessageMetadata metadata = new ChatMessageMetadata();
+                        metadata.url = jsonObject.getString("url");
+                        metadata.mime_type = jsonObject.optString("mime_type", null);
+                        sendImageMessage(metadata);
+                    } catch (Exception exception) {
+                        error.setValue("Khong doc duoc duong dan anh");
+                    }
+                });
+            }
+        });
+    }
+
+    public void sendImageMessage(ChatMessageMetadata metadata) {
+        Conversation current = conversation.getValue();
+        if (current == null || current.id == null) {
+            error.setValue("Cuoc tro chuyen chua san sang");
+            return;
+        }
+        if (metadata == null || metadata.url == null || metadata.url.trim().isEmpty()) {
+            error.setValue("Anh chat khong hop le");
+            return;
+        }
+
+        String clientMessageId = UUID.randomUUID().toString();
+        ChatMessage optimistic = createOptimisticImageMessage(
+                current,
+                clientMessageId,
+                metadata
+        );
+        upsertUiMessage(new ChatMessageUi(optimistic, MessageSendState.SENDING));
+        sendPendingMessage(optimistic);
+    }
+
+    public void sendProductMessage(Products product) {
+        Conversation current = conversation.getValue();
+        if (current == null || current.id == null) {
+            error.setValue("Cuoc tro chuyen chua san sang");
+            return;
+        }
+        if (product == null || product.id == null || product.id.trim().isEmpty()) {
+            error.setValue("San pham khong hop le");
+            return;
+        }
+
+        ChatMessageMetadata metadata = new ChatMessageMetadata();
+        metadata.product_id = product.id;
+        metadata.product_name = product.name;
+        metadata.brand = product.brand;
+        metadata.price = product.price;
+        metadata.sale_price = product.sale_price;
+        metadata.unit = product.unit;
+        metadata.requires_prescription = product.requires_prescription;
+        if (product.images != null && !product.images.isEmpty()) {
+            metadata.product_image = product.images.get(0);
+        }
+
+        String clientMessageId = UUID.randomUUID().toString();
+        ChatMessage optimistic = createOptimisticRichMessage(
+                current,
+                clientMessageId,
+                "product",
+                "San pham duoc dinh kem",
+                metadata
+        );
+        upsertUiMessage(new ChatMessageUi(optimistic, MessageSendState.SENDING));
+        sendPendingMessage(optimistic);
+    }
+
+    public void sendOrderMessage(Orders order) {
+        Conversation current = conversation.getValue();
+        if (current == null || current.id == null) {
+            error.setValue("Cuoc tro chuyen chua san sang");
+            return;
+        }
+        if (order == null || order.id == null || order.id.trim().isEmpty()) {
+            error.setValue("Don hang khong hop le");
+            return;
+        }
+
+        ChatMessageMetadata metadata = new ChatMessageMetadata();
+        metadata.order_id = order.id;
+        metadata.order_code = order.id.length() > 8 ? order.id.substring(0, 8) : order.id;
+        metadata.status = order.status;
+        metadata.total = order.total_amount;
+        metadata.items_count = order.order_items == null ? 0 : order.order_items.size();
+        if (order.order_items != null && !order.order_items.isEmpty()) {
+            OrderItem firstItem = order.order_items.get(0);
+            if (firstItem != null) {
+                metadata.product_image = firstItem.product_image;
+            }
+        }
+
+        String clientMessageId = UUID.randomUUID().toString();
+        ChatMessage optimistic = createOptimisticRichMessage(
+                current,
+                clientMessageId,
+                "order",
+                "Don hang duoc dinh kem",
+                metadata
         );
         upsertUiMessage(new ChatMessageUi(optimistic, MessageSendState.SENDING));
         sendPendingMessage(optimistic);
@@ -456,6 +606,8 @@ public class ChatViewModel extends AndroidViewModel {
                 pending.conversation_id,
                 pending.client_message_id,
                 pending.content,
+                pending.message_type,
+                pending.metadata,
                 new Callback<ChatMessage>() {
                     @Override
                     public void onResponse(
@@ -499,6 +651,49 @@ public class ChatViewModel extends AndroidViewModel {
                 : "seller";
         message.content = content;
         message.message_type = "text";
+        message.metadata = new ChatMessageMetadata();
+        message.client_message_id = clientMessageId;
+        message.created_at = Instant.now().toString();
+        return message;
+    }
+
+    private ChatMessage createOptimisticImageMessage(
+            Conversation current,
+            String clientMessageId,
+            ChatMessageMetadata metadata
+    ) {
+        ChatMessage message = new ChatMessage();
+        message.conversation_id = current.id;
+        message.sender_id = currentUserId;
+        message.sender_type = currentUserId != null
+                && currentUserId.equals(current.customer_id)
+                ? "customer"
+                : "seller";
+        message.content = null;
+        message.message_type = "image";
+        message.metadata = metadata;
+        message.client_message_id = clientMessageId;
+        message.created_at = Instant.now().toString();
+        return message;
+    }
+
+    private ChatMessage createOptimisticRichMessage(
+            Conversation current,
+            String clientMessageId,
+            String messageType,
+            String content,
+            ChatMessageMetadata metadata
+    ) {
+        ChatMessage message = new ChatMessage();
+        message.conversation_id = current.id;
+        message.sender_id = currentUserId;
+        message.sender_type = currentUserId != null
+                && currentUserId.equals(current.customer_id)
+                ? "customer"
+                : "seller";
+        message.content = content;
+        message.message_type = messageType;
+        message.metadata = metadata;
         message.client_message_id = clientMessageId;
         message.created_at = Instant.now().toString();
         return message;

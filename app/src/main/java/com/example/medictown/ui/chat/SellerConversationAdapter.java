@@ -126,7 +126,19 @@ public class SellerConversationAdapter extends
         }
 
         private String lastMessageText(ChatMessage message) {
-            if (message == null || message.content == null) {
+            if (message == null) {
+                return "Chưa có tin nhắn";
+            }
+            if ("image".equals(message.message_type)) {
+                return ("seller".equals(message.sender_type) ? "Bạn: " : "") + "Đã gửi ảnh";
+            }
+            if ("product".equals(message.message_type)) {
+                return ("seller".equals(message.sender_type) ? "Bạn: " : "") + "Đã gửi sản phẩm";
+            }
+            if ("order".equals(message.message_type)) {
+                return ("seller".equals(message.sender_type) ? "Bạn: " : "") + "Đã gửi đơn hàng";
+            }
+            if (message.content == null) {
                 return "Chưa có tin nhắn";
             }
             String prefix = "seller".equals(message.sender_type) ? "Bạn: " : "";

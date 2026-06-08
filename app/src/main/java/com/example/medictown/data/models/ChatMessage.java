@@ -7,6 +7,7 @@ public class ChatMessage {
     public String sender_type;
     public String content;
     public String message_type;
+    public ChatMessageMetadata metadata;
     public String client_message_id;
     public String read_at;
     public String created_at;

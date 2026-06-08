@@ -1,5 +1,6 @@
 package com.example.medictown.ui.history;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.example.medictown.data.models.OrderItem;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.repositories.ReviewRepository;
+import com.example.medictown.ui.chat.ChatActivity;
 import com.example.medictown.ui.payment.PaymentFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.RatingBar;
@@ -41,6 +43,7 @@ public class OrderDetailFragment extends Fragment {
     private FragmentOrderDetailBinding binding;
     private HistoryViewModel viewModel;
     private ReviewRepository reviewRepository;
+    private com.example.medictown.data.models.Orders currentOrder;
     private static final String ARG_ORDER_ID = "order_id";
 
     public static OrderDetailFragment newInstance(String orderId) {
@@ -106,6 +109,7 @@ public class OrderDetailFragment extends Fragment {
     }
 
     private void bindOrderData(com.example.medictown.data.models.Orders order) {
+        currentOrder = order;
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         
         String displayId = order.id.length() > 8 ? order.id.substring(0, 8) : order.id;
@@ -134,6 +138,7 @@ public class OrderDetailFragment extends Fragment {
         adapter.setOnReviewClickListener(order.status, this::showReviewDialog);
         binding.rvOrderItems.setAdapter(adapter);
         binding.btnReorder.setOnClickListener(v -> openPaymentForReorder(order));
+        binding.btnSendOrderToChat.setOnClickListener(v -> sendOrderToChat());
 
         // Check which items are already reviewed
         if ("completed".equals(order.status) && order.order_items != null && !order.order_items.isEmpty()) {
@@ -299,6 +304,16 @@ public class OrderDetailFragment extends Fragment {
         
         binding.orderProgressIndicator.setProgress(progress);
         binding.tvProgressStatus.setText(statusText);
+    }
+
+    private void sendOrderToChat() {
+        if (currentOrder == null) {
+            Toast.makeText(getContext(), "Khong tim thay don hang", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(requireContext(), ChatActivity.class);
+        intent.putExtra(ChatActivity.EXTRA_ORDER_ATTACHMENT, currentOrder);
+        startActivity(intent);
     }
 
     private String displayPaymentMethod(String method) {

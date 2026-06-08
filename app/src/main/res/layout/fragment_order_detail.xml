@@ -249,6 +249,17 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSendOrderToChat"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:text="Gửi đơn hàng cho shop"
+                android:textStyle="bold"
+                app:backgroundTint="@color/surface_container_high"
+                app:cornerRadius="12dp"
+                android:textColor="@color/primary" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReorder"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"

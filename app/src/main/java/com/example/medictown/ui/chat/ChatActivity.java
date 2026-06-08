@@ -1,10 +1,16 @@
 package com.example.medictown.ui.chat;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,18 +23,25 @@ import com.example.medictown.R;
 import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.Conversation;
+import com.example.medictown.data.models.Orders;
+import com.example.medictown.data.models.Products;
 import com.example.medictown.databinding.ActivityChatBinding;
 
 public class ChatActivity extends AppCompatActivity {
     public static final String EXTRA_SELLER_MODE = "seller_mode";
     public static final String EXTRA_CONVERSATION_JSON = "conversation_json";
     public static final String EXTRA_CUSTOMER_NAME = "customer_name";
+    public static final String EXTRA_PRODUCT_ATTACHMENT = "product_attachment";
+    public static final String EXTRA_ORDER_ATTACHMENT = "order_attachment";
 
     private ActivityChatBinding binding;
     private ChatViewModel viewModel;
     private ChatMessageAdapter adapter;
     private LinearLayoutManager layoutManager;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
     private boolean firstMessageRender = true;
+    private boolean pendingAttachmentSent;
+    private boolean sellerMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +58,17 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         viewModel = new ViewModelProvider(this).get(ChatViewModel.class);
+        sellerMode = getIntent().getBooleanExtra(EXTRA_SELLER_MODE, false);
+        setupImagePicker();
         adapter = new ChatMessageAdapter(
                 sessionManager.getUserId(),
+                sellerMode,
                 viewModel::retryMessage
         );
         setupRecyclerView();
         setupActions();
         observeViewModel();
 
-        boolean sellerMode = getIntent().getBooleanExtra(EXTRA_SELLER_MODE, false);
         if (sellerMode) {
             String customerName = getIntent().getStringExtra(EXTRA_CUSTOMER_NAME);
             binding.toolbar.setTitle(
@@ -137,6 +152,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void setupActions() {
         binding.toolbar.setNavigationOnClickListener(view -> finish());
+        binding.btnAttachImage.setOnClickListener(view -> openGallery());
         binding.btnSend.setOnClickListener(view -> sendMessage());
         binding.edtMessage.setOnEditorActionListener((view, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
@@ -147,7 +163,31 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    private void setupImagePicker() {
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK
+                            && result.getData() != null) {
+                        Uri imageUri = result.getData().getData();
+                        if (imageUri != null) {
+                            viewModel.uploadAndSendImage(imageUri);
+                        }
+                    }
+                }
+        );
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        imagePickerLauncher.launch(intent);
+    }
+
     private void observeViewModel() {
+        viewModel.getConversation().observe(this, conversation ->
+                sendPendingAttachmentIfReady()
+        );
+
         viewModel.getMessages().observe(this, messageItems -> {
             int previousCount = adapter.getItemCount();
             int previousFirstPosition = layoutManager.findFirstVisibleItemPosition();
@@ -192,6 +232,27 @@ public class ChatActivity extends AppCompatActivity {
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void sendPendingAttachmentIfReady() {
+        if (pendingAttachmentSent || viewModel.getConversation().getValue() == null) {
+            return;
+        }
+
+        Products product = (Products) getIntent()
+                .getSerializableExtra(EXTRA_PRODUCT_ATTACHMENT);
+        if (product != null) {
+            pendingAttachmentSent = true;
+            viewModel.sendProductMessage(product);
+            return;
+        }
+
+        Orders order = (Orders) getIntent()
+                .getSerializableExtra(EXTRA_ORDER_ATTACHMENT);
+        if (order != null) {
+            pendingAttachmentSent = true;
+            viewModel.sendOrderMessage(order);
+        }
     }
 
     private void sendMessage() {
