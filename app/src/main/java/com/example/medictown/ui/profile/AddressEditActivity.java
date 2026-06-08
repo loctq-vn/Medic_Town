@@ -1,5 +1,6 @@
 package com.example.medictown.ui.profile;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -9,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.example.medictown.R;
 import com.example.medictown.data.models.Address;
@@ -23,9 +27,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddressEditActivity extends AppCompatActivity {
+
+
     private ActivityAddressEditBinding binding;
     private ProfileRepository repository;
+    private Double selectedLatitude;
+    private Double selectedLongitude;
+    private String selectedProviderPlaceId;
+    private String selectedRawAddress;
     @Override
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAddressEditBinding.inflate(getLayoutInflater());
@@ -35,9 +47,26 @@ public class AddressEditActivity extends AppCompatActivity {
 
         setupbutton();
         loadAddresses();
+
     }
     private void setupbutton() {
         binding.toolbar.setNavigationOnClickListener(v -> finish());
+        binding.btnChooseOnMap.setOnClickListener(v -> {
+            Intent pickerIntent = new Intent(AddressEditActivity.this, AddressMapPickerActivity.class);
+
+            if (selectedLatitude != null && selectedLongitude != null) {
+                pickerIntent.putExtra("latitude", selectedLatitude);
+                pickerIntent.putExtra("longitude", selectedLongitude);
+            }
+
+            String currentLocation = binding.location.getText() != null
+                    ? binding.location.getText().toString()
+                    : "";
+
+            pickerIntent.putExtra("location", currentLocation);
+
+            mapPickerLauncher.launch(pickerIntent);
+        });
         binding.btnSave.setOnClickListener(v -> {
             Intent intent = getIntent();
             Address address = new Address();
@@ -47,6 +76,16 @@ public class AddressEditActivity extends AppCompatActivity {
             address.recipient_name = binding.recipientName.getText().toString();
             address.phone_number = binding.phoneNumber.getText().toString();
             address.location = binding.location.getText().toString();
+
+            address.latitude = selectedLatitude;
+            address.longitude = selectedLongitude;
+
+            if (selectedLatitude != null && selectedLongitude != null) {
+                address.map_provider = "osm";
+            }
+
+            address.provider_place_id = selectedProviderPlaceId;
+            address.raw_address = selectedRawAddress;
             if (intent.hasExtra("id")){
                 repository.setAddress(address, new Callback<Void>() {
                     @Override
@@ -75,6 +114,17 @@ public class AddressEditActivity extends AppCompatActivity {
                 });
             }
         });
+
+        binding.btnChooseOnMap.setOnClickListener(v -> {
+            Intent intent = new Intent(AddressEditActivity.this, AddressMapPickerActivity.class);
+
+            if (selectedLatitude != null && selectedLongitude != null) {
+                intent.putExtra("latitude", selectedLatitude);
+                intent.putExtra("longitude", selectedLongitude);
+            }
+
+            mapPickerLauncher.launch(intent);
+        });
     }
     private void loadAddresses() {
         Intent intent = getIntent();
@@ -84,6 +134,43 @@ public class AddressEditActivity extends AppCompatActivity {
             binding.phoneNumber.setText(intent.getStringExtra("phone_number"));
             binding.location.setText(intent.getStringExtra("location"));
         }
+        if (intent.hasExtra("latitude")) {
+            selectedLatitude = intent.getDoubleExtra("latitude", 0);
+        }
 
+        if (intent.hasExtra("longitude")) {
+            selectedLongitude = intent.getDoubleExtra("longitude", 0);
+        }
+
+        selectedProviderPlaceId = intent.getStringExtra("provider_place_id");
+        selectedRawAddress = intent.getStringExtra("raw_address");
     }
+
+    private final ActivityResultLauncher<Intent> mapPickerLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
+                            return;
+                        }
+
+                        Intent data = result.getData();
+
+                        String selectedLocation = data.getStringExtra("location");
+                        if (selectedLocation != null && !selectedLocation.trim().isEmpty()) {
+                            binding.location.setText(selectedLocation);
+                        }
+
+                        if (data.hasExtra("latitude")) {
+                            selectedLatitude = data.getDoubleExtra("latitude", 0);
+                        }
+
+                        if (data.hasExtra("longitude")) {
+                            selectedLongitude = data.getDoubleExtra("longitude", 0);
+                        }
+
+                        selectedProviderPlaceId = data.getStringExtra("provider_place_id");
+                        selectedRawAddress = data.getStringExtra("raw_address");
+                    }
+            );
 }

@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
+
     
     // Navigation Component
     implementation("androidx.navigation:navigation-fragment:2.8.5")
@@ -68,4 +69,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation("com.google.android.material:material:1.9.0")
+
+    // MapLibre
+    implementation("org.maplibre.gl:android-sdk:13.2.0")
 }

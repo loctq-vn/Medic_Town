@@ -70,6 +70,17 @@ public class AddressDetailActivity extends AppCompatActivity {
                 intent.putExtra("location", address.location);
                 intent.putExtra("location_name", address.location_name);
                 startActivity(intent);
+
+                if (address.latitude != null) {
+                    intent.putExtra("latitude", address.latitude);
+                }
+
+                if (address.longitude != null) {
+                    intent.putExtra("longitude", address.longitude);
+                }
+
+                intent.putExtra("provider_place_id", address.provider_place_id);
+                intent.putExtra("raw_address", address.raw_address);
             }
 
             @Override
