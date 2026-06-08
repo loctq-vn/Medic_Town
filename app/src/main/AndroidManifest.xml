@@ -12,14 +12,18 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MedicTown">
+        android:theme="@style/Theme.MedicTown"
+        android:usesCleartextTraffic="true">
+
         <activity
             android:name=".ui.shop.ShopSelectionActivity"
             android:exported="false" />
         <activity
             android:name=".ui.shop.SellerRegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.profile.AddressMapPickerActivity"
             android:exported="false" />
         <activity
             android:name=".ui.profile.AddressEditActivity"
@@ -51,9 +55,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="medictown"
                     android:host="payment"
-                    android:pathPrefix="/momo-result" />
+                    android:pathPrefix="/momo-result"
+                    android:scheme="medictown" />
             </intent-filter>
         </activity>
         <activity
