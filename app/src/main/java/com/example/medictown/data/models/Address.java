@@ -8,7 +8,6 @@ public class Address {
     public String phone_number;
     public String location_name;
 
-    // Apply MapLibre
     public Double latitude;
     public Double longitude;
     public String map_provider;
