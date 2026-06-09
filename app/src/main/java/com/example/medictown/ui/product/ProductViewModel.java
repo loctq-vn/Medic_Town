@@ -3,6 +3,7 @@ package com.example.medictown.ui.product;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import com.example.medictown.data.models.Advertisement;
 import com.example.medictown.data.models.ProductCategory;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.data.repositories.ProductRepository;
@@ -15,6 +16,7 @@ import retrofit2.Response;
 
 public class ProductViewModel extends ViewModel {
     private final ProductRepository repository;
+    private final MutableLiveData<List<Advertisement>> homeBannerAds = new MutableLiveData<>();
     private final MutableLiveData<List<Products>> featuredProducts = new MutableLiveData<>();
     private final MutableLiveData<List<Products>> allProducts = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
@@ -28,6 +30,10 @@ public class ProductViewModel extends ViewModel {
 
     public LiveData<List<Products>> getFeaturedProducts() {
         return featuredProducts;
+    }
+
+    public LiveData<List<Advertisement>> getHomeBannerAds() {
+        return homeBannerAds;
     }
     
     public LiveData<List<Products>> getAllProducts() {
@@ -59,6 +65,24 @@ public class ProductViewModel extends ViewModel {
             public void onFailure(Call<List<Products>> call, Throwable t) {
                 isLoading.setValue(false);
                 errorMessage.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void loadHomeBannerAds() {
+        repository.getHomeBannerAds(new Callback<List<Advertisement>>() {
+            @Override
+            public void onResponse(Call<List<Advertisement>> call, Response<List<Advertisement>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    homeBannerAds.setValue(response.body());
+                } else {
+                    homeBannerAds.setValue(java.util.Collections.emptyList());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Advertisement>> call, Throwable t) {
+                homeBannerAds.setValue(java.util.Collections.emptyList());
             }
         });
     }
@@ -159,6 +183,28 @@ public class ProductViewModel extends ViewModel {
             public void onFailure(Call<List<Products>> call, Throwable t) {
                 isLoading.setValue(false);
                 errorMessage.setValue("Lá»—i káº¿t ná»‘i: " + t.getMessage());
+            }
+        });
+    }
+
+    public void loadProductsByShop(String shopId) {
+        activeCategoryId = null;
+        isLoading.setValue(true);
+        repository.getProductsByShop(shopId, new Callback<List<Products>>() {
+            @Override
+            public void onResponse(Call<List<Products>> call, Response<List<Products>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    allProducts.setValue(response.body());
+                } else {
+                    errorMessage.setValue("Không thể tải sản phẩm của shop: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Products>> call, Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

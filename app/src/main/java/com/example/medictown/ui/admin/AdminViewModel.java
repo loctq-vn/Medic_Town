@@ -67,7 +67,7 @@ public class AdminViewModel extends ViewModel {
 
     public void fetchAllProducts() {
         isLoading.setValue(true);
-        apiService.getProducts(null, null, 100, 0).enqueue(new Callback<List<Products>>() {
+        apiService.getProducts(null, null, null, 100, 0).enqueue(new Callback<List<Products>>() {
             @Override
             public void onResponse(Call<List<Products>> call, Response<List<Products>> response) {
                 isLoading.setValue(false);

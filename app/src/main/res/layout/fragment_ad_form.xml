@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ad_background"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/ad_background"
+        android:elevation="2dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp">
+
+        <ImageButton
+            android:id="@+id/btnAdFormBack"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="start|center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Quay lại"
+            android:padding="8dp"
+            android:src="@drawable/ic_back"
+            app:tint="@color/ad_primary" />
+
+        <TextView
+            android:id="@+id/tvAdFormTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/plus_jakarta_sans_bold"
+            android:text="Tạo quảng cáo"
+            android:textColor="@color/ad_primary"
+            android:textSize="30sp" />
+
+        <ImageButton
+            android:id="@+id/btnAdFormMore"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="end|center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Tùy chọn"
+            android:padding="8dp"
+            android:src="@drawable/ic_more_vert"
+            app:tint="@color/ad_primary" />
+    </FrameLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/plus_jakarta_sans_bold"
+                        android:text="HÌNH ẢNH BANNER"
+                        android:textColor="@color/ad_text_secondary"
+                        android:textSize="16sp" />
+
+                    <FrameLayout
+                        android:id="@+id/layoutBannerUpload"
+                        android:layout_width="match_parent"
+                        android:layout_height="140dp"
+                        android:layout_marginTop="14dp"
+                        android:background="@drawable/bg_ad_form_upload"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/ivAdBannerPreview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="Ảnh banner"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone" />
+
+                        <LinearLayout
+                            android:id="@+id/layoutBannerPlaceholder"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="18dp">
+
+                            <ImageView
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:contentDescription="Tải ảnh lên"
+                                android:src="@android:drawable/ic_menu_gallery"
+                                app:tint="@color/ad_text_secondary" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:gravity="center"
+                                android:text="Kéo thả hoặc nhấn để tải lên"
+                                android:textColor="@color/ad_text"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:gravity="center"
+                                android:text="Khuyến nghị: 1200×500px, PNG/JPG"
+                                android:textColor="@color/ad_text_secondary"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+                    </FrameLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/plus_jakarta_sans_bold"
+                        android:text="THÔNG TIN CHUNG"
+                        android:textColor="@color/ad_text_secondary"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="26dp"
+                        android:fontFamily="@font/plus_jakarta_sans"
+                        android:text="Tên quảng cáo"
+                        android:textColor="@color/ad_text"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/etAdName"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_ad_form_input"
+                        android:fontFamily="@font/plus_jakarta_sans"
+                        android:hint="Nhập tên chiến dịch"
+                        android:inputType="textCapSentences"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp"
+                        android:textColor="@color/ad_text"
+                        android:textColorHint="#788292"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="22dp"
+                        android:fontFamily="@font/plus_jakarta_sans"
+                        android:text="Mô tả ngắn"
+                        android:textColor="@color/ad_text"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/etAdDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="96dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_ad_form_input"
+                        android:fontFamily="@font/plus_jakarta_sans"
+                        android:gravity="top"
+                        android:hint="Nhập mô tả..."
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:padding="18dp"
+                        android:textColor="@color/ad_text"
+                        android:textColorHint="#788292"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="7dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:text="Vị trí hiển thị"
+                                android:textColor="@color/ad_text"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatSpinner
+                                android:id="@+id/spAdPosition"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:layout_marginTop="8dp"
+                                android:background="@drawable/bg_ad_form_input"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:paddingEnd="10dp"
+                                android:popupBackground="@color/white" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="7dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:text="Loại điều hướng"
+                                android:textColor="@color/ad_text"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatSpinner
+                                android:id="@+id/spAdRedirectType"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:layout_marginTop="8dp"
+                                android:background="@drawable/bg_ad_form_input"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:paddingEnd="10dp"
+                                android:popupBackground="@color/white" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvAdRedirectTargetLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="22dp"
+                        android:fontFamily="@font/plus_jakarta_sans"
+                        android:text="Chọn sản phẩm"
+                        android:textColor="@color/ad_text"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/etAdRedirectTarget"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_ad_form_input"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:fontFamily="@font/plus_jakarta_sans"
+                        android:hint="Chọn sản phẩm"
+                        android:inputType="none"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp"
+                        android:textColor="@color/ad_text"
+                        android:textColorHint="#788292"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="22dp"
+                        android:fontFamily="@font/plus_jakarta_sans"
+                        android:text="Ngân sách quảng cáo"
+                        android:textColor="@color/ad_text"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/etAdBudget"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_ad_form_input"
+                        android:fontFamily="@font/plus_jakarta_sans"
+                        android:hint="Nhập ngân sách (VNĐ)"
+                        android:inputType="numberDecimal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp"
+                        android:textColor="@color/ad_text"
+                        android:textColorHint="#788292"
+                        android:textSize="17sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/plus_jakarta_sans_bold"
+                            android:text="TRẠNG THÁI"
+                            android:textColor="@color/ad_text_secondary"
+                            android:textSize="16sp" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switchAdActive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:thumbTint="@color/ad_form_switch_thumb"
+                            app:trackTint="@color/ad_form_switch_track" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="14dp"
+                        android:background="@drawable/bg_ad_form_status_tabs"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/btnStatusDraft"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_ad_form_status_tab_selected"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:fontFamily="@font/plus_jakarta_sans_bold"
+                            android:gravity="center"
+                            android:text="Bản nháp"
+                            android:textColor="@color/ad_primary"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/btnStatusActive"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_ad_form_status_tab_clear"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:fontFamily="@font/plus_jakarta_sans"
+                            android:gravity="center"
+                            android:text="Đang chạy"
+                            android:textColor="@color/ad_text"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/btnStatusPaused"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_ad_form_status_tab_clear"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:fontFamily="@font/plus_jakarta_sans"
+                            android:gravity="center"
+                            android:text="Tạm dừng"
+                            android:textColor="@color/ad_text"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/btnStatusExpired"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_ad_form_status_tab_clear"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:fontFamily="@font/plus_jakarta_sans"
+                            android:gravity="center"
+                            android:text="Hết hạn"
+                            android:textColor="@color/ad_text"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+<View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="22dp"
+                        android:background="#E2E8E3" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="7dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:text="Ngày bắt đầu"
+                                android:textColor="@color/ad_text"
+                                android:textSize="14sp" />
+
+                            <EditText
+                                android:id="@+id/etAdStartDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:layout_marginTop="8dp"
+                                android:background="@drawable/bg_ad_form_input"
+                                android:clickable="true"
+                                android:drawableEnd="@drawable/ic_ad_calendar"
+                                android:drawablePadding="8dp"
+                                android:focusable="false"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:hint="mm/dd/yyyy"
+                                android:inputType="none"
+                                android:paddingStart="18dp"
+                                android:paddingEnd="14dp"
+                                android:textColor="@color/ad_text"
+                                android:textColorHint="@color/ad_text"
+                                android:textSize="17sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="7dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:text="Ngày kết thúc"
+                                android:textColor="@color/ad_text"
+                                android:textSize="14sp" />
+
+                            <EditText
+                                android:id="@+id/etAdEndDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:layout_marginTop="8dp"
+                                android:background="@drawable/bg_ad_form_input"
+                                android:clickable="true"
+                                android:drawableEnd="@drawable/ic_ad_calendar"
+                                android:drawablePadding="8dp"
+                                android:focusable="false"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:hint="mm/dd/yyyy"
+                                android:inputType="none"
+                                android:paddingStart="18dp"
+                                android:paddingEnd="14dp"
+                                android:textColor="@color/ad_text"
+                                android:textColorHint="@color/ad_text"
+                                android:textSize="17sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/white"
+        android:elevation="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelAdForm"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="7dp"
+            android:layout_weight="0.58"
+            android:fontFamily="@font/plus_jakarta_sans_bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="Hủy"
+            android:textAllCaps="false"
+            android:textColor="@color/ad_primary"
+            android:textSize="23sp"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="16dp"
+            app:strokeColor="@color/ad_primary"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmitAdForm"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="7dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/plus_jakarta_sans_bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="Tạo quảng cáo"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="23sp"
+            app:backgroundTint="@color/ad_primary_container"
+            app:cornerRadius="16dp" />
+    </LinearLayout>
+</LinearLayout>

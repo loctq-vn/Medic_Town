@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
 
     
     // Navigation Component

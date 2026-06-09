@@ -54,6 +54,35 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <FrameLayout
+                android:id="@+id/layout_ad_banner"
+                android:layout_width="match_parent"
+                android:layout_height="168dp"
+                android:layout_marginBottom="12dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vp_ad_banners"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingStart="22dp"
+                    android:paddingEnd="22dp" />
+
+                <LinearLayout
+                    android:id="@+id/ll_ad_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:orientation="horizontal" />
+            </FrameLayout>
+
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

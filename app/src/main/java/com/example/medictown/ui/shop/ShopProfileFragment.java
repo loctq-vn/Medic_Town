@@ -41,6 +41,24 @@ public class ShopProfileFragment extends Fragment {
         repository = new ShopRepository();
         sessionManager = new SessionManager(requireContext());
 
+        binding.btnManageProducts.setOnClickListener(v ->
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new com.example.medictown.ui.admin.AdminInventoryFragment())
+                        .addToBackStack(null)
+                        .commit()
+        );
+        binding.btnManageOrders.setOnClickListener(v ->
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new com.example.medictown.ui.admin.AdminOrdersFragment())
+                        .addToBackStack(null)
+                        .commit()
+        );
+        binding.btnManageAds.setOnClickListener(v ->
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new AdManagementFragment())
+                        .addToBackStack(null)
+                        .commit()
+        );
         binding.btnSaveShop.setOnClickListener(v -> saveShop());
         binding.btnBuyerChannel.setOnClickListener(v -> {
             sessionManager.clearCurrentShop();

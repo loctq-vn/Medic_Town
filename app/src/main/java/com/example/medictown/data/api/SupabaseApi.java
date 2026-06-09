@@ -1,6 +1,8 @@
 package com.example.medictown.data.api;
 
 import com.example.medictown.data.models.Address;
+import com.example.medictown.data.models.Advertisement;
+import com.example.medictown.data.models.AdvertisementRequest;
 import com.example.medictown.data.models.AuthRequest;
 import com.example.medictown.data.models.AuthResponse;
 import com.example.medictown.data.models.CartItem;
@@ -37,10 +39,23 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface SupabaseApi {
+    @GET("api/ads")
+    Call<List<Advertisement>> getAds(
+            @Query("position") String position,
+            @Query("limit") int limit
+    );
+
+    @POST("api/ads/{ad_id}/view")
+    Call<Void> recordAdView(@Path("ad_id") String adId);
+
+    @POST("api/ads/{ad_id}/click")
+    Call<Void> recordAdClick(@Path("ad_id") String adId);
+
     @GET("api/products")
     Call<List<Products>> getProducts(
             @Query("category_id") String categoryId,
             @Query("subcategory_id") String subcategoryId,
+            @Query("shop_id") String shopId,
             @Query("limit") int limit,
             @Query("offset") int offset
     );
@@ -56,6 +71,7 @@ public interface SupabaseApi {
             @Query("search") String search,
             @Query("category_id") String categoryId,
             @Query("subcategory_id") String subcategoryId,
+            @Query("shop_id") String shopId,
             @Query("limit") int limit,
             @Query("offset") int offset
     );
@@ -144,6 +160,43 @@ public interface SupabaseApi {
     Call<Shop> updateShop(
             @Path("shop_id") String shopId,
             @Body Shop shop
+    );
+
+    @GET("api/shops/{shop_id}/ads")
+    Call<List<Advertisement>> getShopAdvertisements(
+            @Path("shop_id") String shopId,
+            @Query("search") String search,
+            @Query("status") String status,
+            @Query("position") String position,
+            @Query("limit") int limit,
+            @Query("offset") int offset,
+            @Query("fetch_all") boolean fetchAll
+    );
+
+    @POST("api/shops/{shop_id}/ads")
+    Call<Advertisement> createShopAdvertisement(
+            @Path("shop_id") String shopId,
+            @Body AdvertisementRequest advertisement
+    );
+
+    @PATCH("api/shops/{shop_id}/ads/{ad_id}")
+    Call<Advertisement> updateShopAdvertisement(
+            @Path("shop_id") String shopId,
+            @Path("ad_id") String advertisementId,
+            @Body AdvertisementRequest advertisement
+    );
+
+    @PATCH("api/shops/{shop_id}/ads/{ad_id}/status")
+    Call<Advertisement> updateShopAdvertisementStatus(
+            @Path("shop_id") String shopId,
+            @Path("ad_id") String advertisementId,
+            @Body java.util.Map<String, Object> update
+    );
+
+    @DELETE("api/shops/{shop_id}/ads/{ad_id}")
+    Call<Void> deleteShopAdvertisement(
+            @Path("shop_id") String shopId,
+            @Path("ad_id") String advertisementId
     );
 
     @GET("api/shops/{shop_id}/products")

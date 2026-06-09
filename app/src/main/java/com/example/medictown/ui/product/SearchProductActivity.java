@@ -55,6 +55,17 @@ public class SearchProductActivity extends AppCompatActivity {
             viewModel.loadProductsByCategoryKey(categoryKey);
             binding.etSearch.clearFocus();
             hideKeyboard();
+        } else if ("shop".equals(mode)) {
+            String shopId = getIntent().getStringExtra("shop_id");
+            String shopTitle = getIntent().getStringExtra("shop_title");
+            if (shopTitle != null && !shopTitle.isEmpty()) {
+                binding.etSearch.setHint(shopTitle);
+            }
+            if (shopId != null && !shopId.trim().isEmpty()) {
+                viewModel.loadProductsByShop(shopId);
+            }
+            binding.etSearch.clearFocus();
+            hideKeyboard();
         } else if ("see_all".equals(mode)) {
             // Chế độ Xem tất cả: Hiện SP, không focus, ẩn bàn phím
             viewModel.loadAllProducts();

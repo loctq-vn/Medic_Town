@@ -1,10 +1,7 @@
 package com.example.medictown.ui.shop;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,7 +63,7 @@ public class SellerProductFormFragment extends Fragment {
     private ArrayAdapter<ProductCategory> categoryAdapter;
     private ArrayAdapter<ProductSubcategory> subcategoryAdapter;
     private ProductImageAdapter productImageAdapter;
-    private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private ActivityResultLauncher<String> imagePickerLauncher;
     private final List<String> productImageUrls = new ArrayList<>();
     private boolean categoriesLoaded = false;
     private boolean subcategoriesLoaded = false;
@@ -129,13 +126,10 @@ public class SellerProductFormFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        Uri imageUri = result.getData().getData();
-                        if (imageUri != null) {
-                            uploadSelectedProductImage(imageUri);
-                        }
+                new ActivityResultContracts.GetContent(),
+                imageUri -> {
+                    if (imageUri != null) {
+                        uploadSelectedProductImage(imageUri);
                     }
                 }
         );
@@ -312,8 +306,7 @@ public class SellerProductFormFragment extends Fragment {
     }
 
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        imagePickerLauncher.launch(intent);
+        imagePickerLauncher.launch("image/*");
     }
 
     private void uploadSelectedProductImage(Uri imageUri) {
@@ -336,7 +329,11 @@ public class SellerProductFormFragment extends Fragment {
                     productImageUploading = false;
                     binding.progressBar.setVisibility(View.GONE);
                     binding.btnAddProduct.setEnabled(true);
-                    Toast.makeText(getContext(), "Không thể tải ảnh sản phẩm", Toast.LENGTH_SHORT).show();
+                    String message = e.getMessage();
+                    if (message == null || message.trim().isEmpty()) {
+                        message = "Không thể tải ảnh sản phẩm";
+                    }
+                    Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
                 });
             }
 
@@ -351,7 +348,11 @@ public class SellerProductFormFragment extends Fragment {
                     binding.btnAddProduct.setEnabled(true);
 
                     if (!response.isSuccessful()) {
-                        Toast.makeText(getContext(), "Không thể tải ảnh sản phẩm", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(
+                                getContext(),
+                                getProductImageUploadError(response.code(), responseBody),
+                                Toast.LENGTH_LONG
+                        ).show();
                         return;
                     }
 
@@ -366,6 +367,31 @@ public class SellerProductFormFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private String getProductImageUploadError(int statusCode, String responseBody) {
+        try {
+            String detail = new JSONObject(responseBody).optString("detail", "");
+            if ("File exceeds max upload size".equals(detail)) {
+                return "Ảnh vượt quá dung lượng tối đa 5 MB";
+            }
+            if ("Unsupported file extension".equals(detail)
+                    || "File content does not match extension".equals(detail)
+                    || "File content does not match MIME type".equals(detail)) {
+                return "Định dạng ảnh không hợp lệ. Vui lòng chọn JPG, PNG hoặc WebP";
+            }
+            if ("Empty file".equals(detail)) {
+                return "Ảnh đã chọn không có dữ liệu";
+            }
+        } catch (Exception ignored) {
+        }
+        if (statusCode == 401) {
+            return "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại";
+        }
+        if (statusCode == 403 || statusCode == 404) {
+            return "Bạn không có quyền tải ảnh cho gian hàng này";
+        }
+        return "Không thể tải ảnh sản phẩm (mã lỗi " + statusCode + ")";
     }
 
     private void updateProductImagesField() {

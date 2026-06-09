@@ -10,10 +10,16 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+/.idea/deploymentTargetSelector.xml
 .DS_Store
 /build
 /build-codex-verify/
 /app/build-codex/
+/.codex-build/
+/.codex-build-final/
+/.codex-build-filter/
+/.codex-build-filter-final/
+/.gradle-filter-verify/
 /captures
 .externalNativeBuild
 .cxx

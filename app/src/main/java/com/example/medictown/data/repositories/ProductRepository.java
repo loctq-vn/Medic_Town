@@ -2,6 +2,7 @@ package com.example.medictown.data.repositories;
 
 import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SupabaseApi;
+import com.example.medictown.data.models.Advertisement;
 import com.example.medictown.data.models.ProductCategory;
 import com.example.medictown.data.models.Products;
 
@@ -18,23 +19,31 @@ public class ProductRepository {
     }
 
     public void getAllProducts(Callback<List<Products>> callback) {
-        apiService.getProducts(null, null, DEFAULT_LIMIT, 0).enqueue(callback);
+        apiService.getProducts(null, null, null, DEFAULT_LIMIT, 0).enqueue(callback);
     }
 
     public void getFeaturedProducts(Callback<List<Products>> callback) {
         apiService.getFeaturedProducts(DEFAULT_LIMIT, 0).enqueue(callback);
     }
 
+    public void getHomeBannerAds(Callback<List<Advertisement>> callback) {
+        apiService.getAds("home_banner", 10).enqueue(callback);
+    }
+
     public void searchProducts(String query, Callback<List<Products>> callback) {
-        apiService.searchProducts(query, null, null, DEFAULT_LIMIT, 0).enqueue(callback);
+        apiService.searchProducts(query, null, null, null, DEFAULT_LIMIT, 0).enqueue(callback);
     }
 
     public void searchProducts(String query, String categoryId, Callback<List<Products>> callback) {
-        apiService.searchProducts(query, categoryId, null, DEFAULT_LIMIT, 0).enqueue(callback);
+        apiService.searchProducts(query, categoryId, null, null, DEFAULT_LIMIT, 0).enqueue(callback);
     }
 
     public void getProductsByCategory(String categoryId, Callback<List<Products>> callback) {
-        apiService.getProducts(categoryId, null, DEFAULT_LIMIT, 0).enqueue(callback);
+        apiService.getProducts(categoryId, null, null, DEFAULT_LIMIT, 0).enqueue(callback);
+    }
+
+    public void getProductsByShop(String shopId, Callback<List<Products>> callback) {
+        apiService.getProducts(null, null, shopId, DEFAULT_LIMIT, 0).enqueue(callback);
     }
 
     public void getProductCategories(Callback<List<ProductCategory>> callback) {

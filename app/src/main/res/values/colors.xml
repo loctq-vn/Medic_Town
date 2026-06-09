@@ -65,4 +65,22 @@
     <color name="admin_text_main">#1C252E</color>
     <color name="admin_text_secondary">#637381</color>
     <color name="admin_card_stroke">#1400A76F</color>
+
+    <!-- Advertisement management -->
+    <color name="ad_primary">#007A52</color>
+    <color name="ad_primary_container">#19C58A</color>
+    <color name="ad_background">#F7F9FF</color>
+    <color name="ad_surface_blue">#E8F0FF</color>
+    <color name="ad_surface_green">#DDF6EC</color>
+    <color name="ad_surface_red">#FFDAD6</color>
+    <color name="ad_surface_gray">#EEF2F6</color>
+    <color name="ad_outline">#B8C5BD</color>
+    <color name="ad_text">#142235</color>
+    <color name="ad_text_secondary">#56645C</color>
+    <color name="ad_disabled">#B8C8C0</color>
+    <color name="ad_danger">#C73535</color>
+    <color name="ad_upload_surface">#E5EEFF</color>
+    <color name="ad_status_tabs_bg">#EEF4FF</color>
+    <color name="ad_status_tab_selected">#F9FBFF</color>
+    <color name="ad_status_tab_stroke">#E7ECF5</color>
 </resources>

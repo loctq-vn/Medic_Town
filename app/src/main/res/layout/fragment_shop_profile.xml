@@ -62,6 +62,96 @@
             </LinearLayout>
         </LinearLayout>
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/admin_card_stroke"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Quản lý bán hàng"
+                    android:textColor="@color/on_surface"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnManageProducts"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="72dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="Sản phẩm"
+                        android:textAllCaps="false"
+                        android:textSize="12sp"
+                        app:backgroundTint="@color/admin_light_green"
+                        app:cornerRadius="8dp"
+                        app:icon="@drawable/ic_product"
+                        app:iconGravity="textTop"
+                        app:iconPadding="6dp"
+                        app:iconTint="@color/admin_primary" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnManageOrders"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="72dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="Đơn hàng"
+                        android:textAllCaps="false"
+                        android:textSize="12sp"
+                        app:backgroundTint="@color/light_blue"
+                        app:cornerRadius="8dp"
+                        app:icon="@drawable/ic_history"
+                        app:iconGravity="textTop"
+                        app:iconPadding="6dp"
+                        app:iconTint="@color/main_blue" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnManageAds"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="72dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="Quảng cáo"
+                        android:textAllCaps="false"
+                        android:textSize="12sp"
+                        app:backgroundTint="@color/prescription_on_bg"
+                        app:cornerRadius="8dp"
+                        app:icon="@drawable/ic_uudai"
+                        app:iconGravity="textTop"
+                        app:iconPadding="6dp"
+                        app:iconTint="@color/tertiary_container" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <EditText
             android:id="@+id/etShopName"
             android:layout_width="match_parent"

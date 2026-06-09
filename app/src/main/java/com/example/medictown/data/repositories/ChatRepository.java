@@ -128,10 +128,10 @@ public class ChatRepository {
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
             byte[] bytes = getBytes(inputStream);
+            ImageType imageType = detectImageType(bytes);
 
-            String fileName = "chat_" + System.currentTimeMillis() + ".jpg";
-            String mimeType = context.getContentResolver().getType(fileUri);
-            if (mimeType == null) mimeType = "image/jpeg";
+            String fileName = "chat_" + System.currentTimeMillis() + "." + imageType.extension;
+            String mimeType = imageType.mimeType;
 
             RequestBody requestBody = RequestBody.create(bytes, MediaType.parse(mimeType));
             String token = new SessionManager(context).getToken();
@@ -154,6 +154,50 @@ public class ChatRepository {
             if (callback != null) {
                 callback.onFailure(null, new IOException(e));
             }
+        }
+    }
+
+    private ImageType detectImageType(byte[] bytes) throws IOException {
+        if (bytes.length >= 3
+                && (bytes[0] & 0xFF) == 0xFF
+                && (bytes[1] & 0xFF) == 0xD8
+                && (bytes[2] & 0xFF) == 0xFF) {
+            return new ImageType("jpg", "image/jpeg");
+        }
+        if (bytes.length >= 8
+                && (bytes[0] & 0xFF) == 0x89
+                && bytes[1] == 'P'
+                && bytes[2] == 'N'
+                && bytes[3] == 'G'
+                && bytes[4] == '\r'
+                && bytes[5] == '\n'
+                && bytes[6] == 0x1A
+                && bytes[7] == '\n') {
+            return new ImageType("png", "image/png");
+        }
+        if (bytes.length >= 12
+                && bytes[0] == 'R'
+                && bytes[1] == 'I'
+                && bytes[2] == 'F'
+                && bytes[3] == 'F'
+                && bytes[8] == 'W'
+                && bytes[9] == 'E'
+                && bytes[10] == 'B'
+                && bytes[11] == 'P') {
+            return new ImageType("webp", "image/webp");
+        }
+        throw new IOException(
+                "Định dạng ảnh không được hỗ trợ. Vui lòng chọn JPG, PNG hoặc WebP"
+        );
+    }
+
+    private static class ImageType {
+        final String extension;
+        final String mimeType;
+
+        ImageType(String extension, String mimeType) {
+            this.extension = extension;
+            this.mimeType = mimeType;
         }
     }
 

@@ -23,9 +23,9 @@ import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.ui.admin.AdminDashboardFragment;
-import com.example.medictown.ui.admin.AdminInventoryFragment;
+
 import com.example.medictown.ui.admin.AdminOrderDetailFragment;
-import com.example.medictown.ui.admin.AdminOrdersFragment;
+
 import com.example.medictown.ui.cart.CartFragment;
 import com.example.medictown.ui.chat.ChatActivity;
 import com.example.medictown.ui.chat.SellerConversationFragment;
@@ -87,11 +87,7 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (sellerMode) {
-                if (itemId == R.id.nav_seller_inventory) {
-                    selectedFragment = new AdminInventoryFragment();
-                } else if (itemId == R.id.nav_seller_orders) {
-                    selectedFragment = new AdminOrdersFragment();
-                } else if (itemId == R.id.nav_seller_messages) {
+                if (itemId == R.id.nav_seller_messages) {
                     selectedFragment = new SellerConversationFragment();
                 } else if (itemId == R.id.nav_seller_revenue) {
                     selectedFragment = new AdminDashboardFragment();
@@ -142,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setItemTextColor(AppCompatResources.getColorStateList(this, R.color.seller_nav_item_color_state));
 
         setupBottomNavigation();
-        bottomNav.setSelectedItemId(R.id.nav_seller_inventory);
+        bottomNav.setSelectedItemId(R.id.nav_seller_revenue);
     }
 
     public void openBuyerChannel() {
@@ -225,7 +221,8 @@ public class MainActivity extends AppCompatActivity {
         if (!sellerMode) {
             openSellerChannel();
         }
-        bottomNav.setSelectedItemId(R.id.nav_seller_inventory);
+        bottomNav.setSelectedItemId(R.id.nav_seller_profile); // Chuyển sang tab Gian hàng (hoặc giữ nguyên tab hiện tại)
+
 
         SessionManager sessionManager = new SessionManager(this);
         String shopId = sessionManager.getCurrentShopId();
@@ -271,7 +268,8 @@ public class MainActivity extends AppCompatActivity {
         if (!sellerMode) {
             openSellerChannel();
         }
-        bottomNav.setSelectedItemId(R.id.nav_seller_orders);
+        bottomNav.setSelectedItemId(R.id.nav_seller_profile); // Chuyển sang tab Gian hàng
+
 
         SessionManager sessionManager = new SessionManager(this);
         String shopId = sessionManager.getCurrentShopId();

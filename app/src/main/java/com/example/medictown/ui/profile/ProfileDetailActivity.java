@@ -1,10 +1,8 @@
 package com.example.medictown.ui.profile;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +34,7 @@ import retrofit2.Response;
 public class ProfileDetailActivity extends AppCompatActivity {
     private ActivityProfileDetailBinding binding;
     private ProfileRepository repository;
-    private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private ActivityResultLauncher<String> imagePickerLauncher;
     public Uri imageUri;
     public String exportedurl;
     private TextView tvUrl;
@@ -50,10 +48,10 @@ public class ProfileDetailActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        imageUri = result.getData().getData();
+                new ActivityResultContracts.GetContent(),
+                selectedImageUri -> {
+                    if (selectedImageUri != null) {
+                        imageUri = selectedImageUri;
                         Glide.with(this)
                                 .load(imageUri)
                                 .transform(new CenterCrop(), new RoundedCorners(24))
@@ -148,7 +146,6 @@ public class ProfileDetailActivity extends AppCompatActivity {
         });
     }
     public void openGallery(View view) {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        imagePickerLauncher.launch(intent);
+        imagePickerLauncher.launch("image/*");
     }
 }

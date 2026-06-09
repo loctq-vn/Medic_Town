@@ -1,10 +1,6 @@
 package com.example.medictown.ui.chat;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
@@ -38,7 +34,7 @@ public class ChatActivity extends AppCompatActivity {
     private ChatViewModel viewModel;
     private ChatMessageAdapter adapter;
     private LinearLayoutManager layoutManager;
-    private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private ActivityResultLauncher<String> imagePickerLauncher;
     private boolean firstMessageRender = true;
     private boolean pendingAttachmentSent;
     private boolean sellerMode;
@@ -165,22 +161,17 @@ public class ChatActivity extends AppCompatActivity {
 
     private void setupImagePicker() {
         imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK
-                            && result.getData() != null) {
-                        Uri imageUri = result.getData().getData();
-                        if (imageUri != null) {
-                            viewModel.uploadAndSendImage(imageUri);
-                        }
+                new ActivityResultContracts.GetContent(),
+                imageUri -> {
+                    if (imageUri != null) {
+                        viewModel.uploadAndSendImage(imageUri);
                     }
                 }
         );
     }
 
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        imagePickerLauncher.launch(intent);
+        imagePickerLauncher.launch("image/*");
     }
 
     private void observeViewModel() {

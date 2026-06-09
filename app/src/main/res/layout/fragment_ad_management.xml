@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ad_background">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="96dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/plus_jakarta_sans"
+                    android:maxLines="1"
+                    android:text="Quản lý quảng cáo"
+                    android:textColor="@color/ad_text"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCreateAd"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="4dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="Tạo quảng cáo"
+                    android:textAllCaps="false"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/ad_primary"
+                    app:cornerRadius="8dp"
+                    app:icon="@drawable/ic_ad_add"
+                    app:iconPadding="4dp"
+                    app:iconSize="18dp"
+                    app:iconTint="@color/white" />
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="4dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="128dp"
+                        android:layout_height="98dp"
+                        app:cardBackgroundColor="@color/ad_surface_blue"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="1dp"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                                android:padding="12dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:contentDescription="Đang chạy"
+                                    android:src="@drawable/ic_ad_campaign" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="7dp"
+                                    android:fontFamily="@font/plus_jakarta_sans"
+                                    android:text="Đang chạy"
+                                    android:textColor="@color/ad_text_secondary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvRunningCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:text="0"
+                                android:textColor="@color/ad_text"
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="128dp"
+                        android:layout_height="98dp"
+                        android:layout_marginStart="12dp"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="1dp"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:contentDescription="Đã tắt"
+                                    android:src="@drawable/ic_ad_pause" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="7dp"
+                                    android:fontFamily="@font/plus_jakarta_sans"
+                                    android:text="Đã tắt"
+                                    android:textColor="@color/ad_text_secondary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvPausedCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:text="0"
+                                android:textColor="@color/ad_text"
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="128dp"
+                        android:layout_height="98dp"
+                        android:layout_marginStart="12dp"
+                        app:cardBackgroundColor="@color/ad_surface_red"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="1dp"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:contentDescription="Hết hạn"
+                                    android:src="@drawable/ic_ad_timer_off" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="7dp"
+                                    android:fontFamily="@font/plus_jakarta_sans"
+                                    android:text="Hết hạn"
+                                    android:textColor="@color/ad_danger"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvExpiredCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:text="0"
+                                android:textColor="@color/ad_text"
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="128dp"
+                        android:layout_height="98dp"
+                        android:layout_marginStart="12dp"
+                        app:cardBackgroundColor="@color/ad_surface_green"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="1dp"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:contentDescription="Tổng lượt nhấn"
+                                    android:src="@drawable/ic_ad_click" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="7dp"
+                                    android:fontFamily="@font/plus_jakarta_sans"
+                                    android:text="Tổng nhấn"
+                                    android:textColor="@color/ad_text_secondary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/plus_jakarta_sans"
+                                android:text="1.2k"
+                                android:textColor="@color/ad_text"
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="@color/ad_outline"
+                app:hintEnabled="false"
+                app:startIconDrawable="@drawable/ic_search_thin"
+                app:startIconTint="@color/ad_text_secondary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etAdSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:fontFamily="@font/plus_jakarta_sans"
+                    android:hint="Tìm kiếm chiến dịch..."
+                    android:inputType="text"
+                    android:paddingVertical="12dp"
+                    android:textColor="@color/ad_text"
+                    android:textColorHint="@color/ad_text_secondary"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/adStatusChipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipSpacingHorizontal="8dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAllAds"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:checked="true"
+                        android:minHeight="0dp"
+                        android:textSize="11sp"
+                        android:text="Tất cả"
+                        android:textColor="@color/ad_filter_chip_text"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/ad_filter_chip_bg"
+                        app:chipCornerRadius="18dp"
+                        app:chipMinHeight="50dp"
+                        app:chipStrokeColor="@color/ad_outline"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipRunningAds"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:minHeight="0dp"
+                        android:textSize="11sp"
+                        android:text="Đang chạy"
+                        android:textColor="@color/ad_filter_chip_text"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/ad_filter_chip_bg"
+                        app:chipCornerRadius="18dp"
+                        app:chipMinHeight="50dp"
+                        app:chipStrokeColor="@color/ad_outline"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipEndingAds"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:minHeight="0dp"
+                        android:textSize="11sp"
+                        android:text="Bản nháp"
+                        android:textColor="@color/ad_filter_chip_text"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/ad_filter_chip_bg"
+                        app:chipCornerRadius="18dp"
+                        app:chipMinHeight="50dp"
+                        app:chipStrokeColor="@color/ad_outline"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipPausedAds"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:minHeight="0dp"
+                        android:textSize="11sp"
+                        android:text="Đã tắt"
+                        android:textColor="@color/ad_filter_chip_text"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/ad_filter_chip_bg"
+                        app:chipCornerRadius="18dp"
+                        app:chipMinHeight="50dp"
+                        app:chipStrokeColor="@color/ad_outline"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipExpiredAds"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:minHeight="0dp"
+                        android:textSize="11sp"
+                        android:text="Hết hạn"
+                        android:textColor="@color/ad_filter_chip_text"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/ad_filter_chip_bg"
+                        app:chipCornerRadius="18dp"
+                        app:chipMinHeight="50dp"
+                        app:chipStrokeColor="@color/ad_outline"
+                        app:chipStrokeWidth="1dp" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinnerAdPosition"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_ad_filter_field"
+                android:fontFamily="@font/plus_jakarta_sans"
+                android:paddingStart="12dp"
+                android:paddingEnd="40dp"
+                android:popupBackground="@color/white"
+                android:textAlignment="viewStart" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvAdvertisements"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCreateAd"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:contentDescription="Tạo quảng cáo mới"
+        android:src="@drawable/ic_ad_add"
+        app:backgroundTint="@color/ad_primary"
+        app:elevation="8dp"
+        app:tint="@color/white" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
