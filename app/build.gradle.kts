@@ -73,4 +73,7 @@ dependencies {
 
     // MapLibre
     implementation("org.maplibre.gl:android-sdk:13.2.0")
+
+    // Loading Screen
+    implementation("androidx.core:core-splashscreen:1.2.0")
 }

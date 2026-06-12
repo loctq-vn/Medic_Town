@@ -57,4 +57,10 @@
     <style name="TextAppearance.Apothecary.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
         <item name="android:textColor">@color/on_surface_variant</item>
     </style>
+
+    <style name="Theme.MedicTown.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#F8FAFC</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/medic_town_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.MedicTown</item>
+    </style>
 </resources>
