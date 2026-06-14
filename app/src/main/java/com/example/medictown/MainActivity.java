@@ -37,6 +37,7 @@ import com.example.medictown.ui.profile.ProfileFragment;
 import com.example.medictown.ui.shop.SellerProductFormFragment;
 import com.example.medictown.ui.shop.ShopProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.medictown.notifications.NotificationTokenManager;
 
 import java.util.List;
 
@@ -56,7 +57,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        new SessionManager(this);
+
+        SessionManager sessionManager = new SessionManager(this);
+
+        if (sessionManager.isLoggedIn()) {
+            NotificationTokenManager.registerCurrentToken(this);
+        }
 
         appBarMain = findViewById(R.id.app_bar_main);
         bottomNav = findViewById(R.id.bottom_navigation);

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -76,4 +77,8 @@ dependencies {
 
     // Loading Screen
     implementation("androidx.core:core-splashscreen:1.2.0")
+
+    // Shipping status notification
+    implementation(platform("com.google.firebase:firebase-bom:34.14.1"))
+    implementation("com.google.firebase:firebase-messaging")
 }

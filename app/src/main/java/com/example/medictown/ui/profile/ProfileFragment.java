@@ -17,7 +17,9 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.medictown.MainActivity;
 import com.example.medictown.R;
+import com.example.medictown.data.api.RetrofitClient;
 import com.example.medictown.data.api.SessionManager;
+import com.example.medictown.data.models.DeviceTokenRequest;
 import com.example.medictown.data.models.Shop;
 import com.example.medictown.data.models.Users;
 import com.example.medictown.data.repositories.ShopRepository;
@@ -26,6 +28,7 @@ import com.example.medictown.ui.admin.AdminDashboardFragment;
 import com.example.medictown.ui.auth.LoginActivity;
 import com.example.medictown.ui.shop.SellerRegisterActivity;
 import com.example.medictown.ui.shop.ShopSelectionActivity;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 
@@ -96,16 +99,7 @@ public class ProfileFragment extends Fragment {
                     .commit();
         });
 
-        binding.btnLogout.setOnClickListener(v -> {
-            SessionManager sessionManager = new SessionManager(getContext());
-            sessionManager.clearSession();
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            if (getActivity() != null) {
-                getActivity().finish();
-            }
-        });
+        binding.btnLogout.setOnClickListener(v -> logout());
     }
 
     private void openSellerChannel() {
@@ -171,5 +165,72 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void unregisterDeviceToken(String firebaseToken) {
+        DeviceTokenRequest request =
+                new DeviceTokenRequest(firebaseToken);
+
+        RetrofitClient.getApiService()
+                .unregisterDeviceToken(request)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(
+                            @NonNull Call<Void> call,
+                            @NonNull Response<Void> response
+                    ) {
+                        // Logout even if the server returns an error.
+                        // The user should not be trapped in the app.
+                        finishLogout();
+                    }
+
+                    @Override
+                    public void onFailure(
+                            @NonNull Call<Void> call,
+                            @NonNull Throwable throwable
+                    ) {
+                        // Network errors should not prevent logout.
+                        finishLogout();
+                    }
+                });
+    }
+    private void logout() {
+        if (binding == null) {
+            return;
+        }
+
+        // Prevent the user from starting multiple logout requests.
+        binding.btnLogout.setEnabled(false);
+
+        FirebaseMessaging.getInstance()
+                .getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        // We could not obtain the Firebase token.
+                        // Still allow the user to log out.
+                        finishLogout();
+                        return;
+                    }
+
+                    String firebaseToken = task.getResult();
+
+                    if (firebaseToken == null || firebaseToken.trim().isEmpty()) {
+                        finishLogout();
+                        return;
+                    }
+
+                    unregisterDeviceToken(firebaseToken);
+                });
+    }
+    private void finishLogout() {
+        if (!isAdded()) return;
+
+        sessionManager.clearSession();
+
+        Intent intent = new Intent(requireContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
     }
 }

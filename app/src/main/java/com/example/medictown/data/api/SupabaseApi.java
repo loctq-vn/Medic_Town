@@ -26,6 +26,7 @@ import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.models.Shop;
 import com.example.medictown.data.models.SellerConversationItem;
 import com.example.medictown.data.models.Users;
+import com.example.medictown.data.models.DeviceTokenRequest;
 
 import java.util.List;
 
@@ -37,6 +38,8 @@ import retrofit2.http.PATCH;
 import retrofit2.http.Path;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.HTTP;
+import retrofit2.http.PUT;
 
 public interface SupabaseApi {
     @GET("api/ads")
@@ -284,4 +287,12 @@ public interface SupabaseApi {
 
     @GET("api/chat/seller/conversations")
     Call<List<SellerConversationItem>> getSellerChatConversations();
+
+    @PUT("api/notifications/device-token")
+    Call<Void> registerDeviceToken(@Body DeviceTokenRequest request);
+
+    @HTTP(method = "DELETE",
+            path = "api/notifications/device-token",
+            hasBody = true)
+    Call<Void> unregisterDeviceToken(@Body DeviceTokenRequest request);
 }

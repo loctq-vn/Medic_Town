@@ -26,6 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+
 public class PaymentFragment extends Fragment {
 
     private static final String ARG_SELECTED_ITEMS = "selected_items";
@@ -313,8 +321,11 @@ public class PaymentFragment extends Fragment {
         });
 
         viewModel.orderSuccess.observe(getViewLifecycleOwner(), success -> {
-            if (success) {
-                Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
+            if (Boolean.TRUE.equals(success)) {
+                requestNotificationPermissionIfNeeded();
+                Toast.makeText(requireContext(),
+                        "Đặt hàng thành công!",
+                        Toast.LENGTH_SHORT).show();
                 navigateToHistory();
             }
         });
@@ -377,6 +388,26 @@ public class PaymentFragment extends Fragment {
         super.onResume();
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).setNavBarsVisibility(false);
+        }
+    }
+
+    private final ActivityResultLauncher<String> notificationPermissionLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestPermission(),
+                    granted -> {
+                        // Optionally show an explanation when denied.
+                    }
+            );
+
+    private void requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+        ) != PackageManager.PERMISSION_GRANTED) {
+            notificationPermissionLauncher.launch(
+                    Manifest.permission.POST_NOTIFICATIONS
+            );
         }
     }
 }

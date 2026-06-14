@@ -31,6 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.example.medictown.notifications.NotificationTokenManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -136,8 +137,18 @@ public class LoginActivity extends AppCompatActivity {
                             authResponse.getAccessToken(),
                             authResponse.getUser().getId(),
                             authResponse.getUser().getEmail()
+
                     );
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+// Must run after saveSession because the endpoint requires Bearer authentication.
+                    NotificationTokenManager.registerCurrentToken(LoginActivity.this);
+
+                    Toast.makeText(
+                            LoginActivity.this,
+                            "Đăng nhập thành công!",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 } else {
@@ -178,7 +189,15 @@ public class LoginActivity extends AppCompatActivity {
                             authResponse.getUser().getId(),
                             authResponse.getUser().getEmail()
                     );
-                    Toast.makeText(LoginActivity.this, "Đăng nhập Google thành công!", Toast.LENGTH_SHORT).show();
+
+                    NotificationTokenManager.registerCurrentToken(LoginActivity.this);
+
+                    Toast.makeText(
+                            LoginActivity.this,
+                            "Đăng nhập Google thành công!",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 } else {
