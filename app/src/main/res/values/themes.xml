@@ -20,6 +20,10 @@
 
     <style name="Theme.MedicTown" parent="Base.Theme.MedicTown" />
 
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
     <style name="App.ShapeAppearance.Small" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerSize">2dp</item>
     </style>

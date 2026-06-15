@@ -100,25 +100,30 @@
 
                 <TextView
                     android:id="@+id/tv_price"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="450.000đ"
                     android:textColor="@color/main_blue"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:ellipsize="end"
+                    android:maxLines="1" />
 
                 <TextView
                     android:id="@+id/tv_discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="#FFE0E0"
-                    android:paddingHorizontal="4dp"
-                    android:paddingVertical="1dp"
+                    android:background="@drawable/round_corner_item"
+                    android:backgroundTint="#FFE0E0"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
                     android:text="-10%"
                     android:textColor="#D32F2F"
                     android:textSize="10sp"
                     android:textStyle="bold"
+                    android:maxLines="1"
                     android:visibility="gone"/>
             </LinearLayout>
         </LinearLayout>

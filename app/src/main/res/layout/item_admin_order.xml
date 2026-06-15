@@ -18,76 +18,90 @@
         android:padding="20dp">
 
         <!-- Card Header -->
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <!-- Hàng 1: ID và Trạng thái -->
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/tvPaymentStatus"
-                android:orientation="vertical">
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tvOrderId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/layoutStatuses"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:letterSpacing="0.1"
                     android:text="ID: #CE-89021"
                     android:textColor="@color/admin_primary"
                     android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
-
-                <TextView
-                    android:id="@+id/tvCustomerName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Trần Duy Mạnh"
-                    android:textColor="@color/admin_text_main"
-                    android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvOrderTime"
+                <LinearLayout
+                    android:id="@+id/layoutStatuses"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="Hôm nay, 14:32"
-                    android:textColor="@color/text_gray"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                    android:layout_alignParentEnd="true"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:id="@+id/tvPaymentStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/round_corner_item"
+                        android:backgroundTint="#FFF3CD"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"
+                        android:text="CHƯA THANH TOÁN"
+                        android:textColor="#7A4D00"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/round_corner_item"
+                        android:backgroundTint="#C6E4F4"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:text="CHỜ XÁC NHẬN"
+                        android:textColor="#2E4B57"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <!-- Hàng 2: Tên khách hàng -->
             <TextView
-                android:id="@+id/tvPaymentStatus"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvCustomerName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:layout_toStartOf="@+id/tvStatus"
-                android:background="@drawable/round_corner_item"
-                android:backgroundTint="#FFF3CD"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:text="CHƯA THANH TOÁN"
-                android:textColor="#7A4D00"
-                android:textSize="10sp"
+                android:layout_marginTop="8dp"
+                android:text="Trần Duy Mạnh"
+                android:textColor="@color/admin_text_main"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
+            <!-- Hàng 3: Thời gian -->
             <TextView
-                android:id="@+id/tvStatus"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvOrderTime"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/round_corner_item"
-                android:backgroundTint="#C6E4F4"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp"
-                android:text="CHỜ XÁC NHẬN"
-                android:textColor="#2E4B57"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+                android:layout_marginTop="4dp"
+                android:text="Hôm nay, 14:32"
+                android:textColor="@color/text_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"

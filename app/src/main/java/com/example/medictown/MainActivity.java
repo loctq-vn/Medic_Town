@@ -3,7 +3,10 @@ package com.example.medictown;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -36,7 +39,9 @@ import com.example.medictown.ui.product.ProductFragment;
 import com.example.medictown.ui.profile.ProfileFragment;
 import com.example.medictown.ui.shop.SellerProductFormFragment;
 import com.example.medictown.ui.shop.ShopProfileFragment;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.medictown.notifications.NotificationTokenManager;
 
 import java.util.List;
@@ -48,8 +53,11 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNav;
+    private BottomAppBar bottomAppBar;
+    private FloatingActionButton fabCenter;
     private View appBarMain;
-    private View topChatButton;
+    private ImageView appLogo;
+    private TextView appTitle;
     private boolean sellerMode = false;
 
     @Override
@@ -65,11 +73,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         appBarMain = findViewById(R.id.app_bar_main);
+        appLogo = findViewById(R.id.app_logo);
+        appTitle = findViewById(R.id.app_title);
         bottomNav = findViewById(R.id.bottom_navigation);
-        topChatButton = findViewById(R.id.btn_top_chat);
-        topChatButton.setOnClickListener(view ->
-                startActivity(new Intent(this, ChatActivity.class))
-        );
+        bottomAppBar = findViewById(R.id.bottomAppBar);
+        fabCenter = findViewById(R.id.fab_center);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -85,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
 
         setupBottomNavigation();
         handleIntent(getIntent());
+
+        findViewById(R.id.fab_center).setOnClickListener(view -> {
+            startActivity(new Intent(this, ChatActivity.class));
+        });
     }
 
     private void setupBottomNavigation() {
@@ -101,12 +113,12 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new ShopProfileFragment();
                 }
             } else {
-                if (itemId == R.id.nav_product) {
+                if (itemId == R.id.nav_home) {
                     selectedFragment = new ProductFragment();
-                } else if (itemId == R.id.nav_cart) {
-                    selectedFragment = new CartFragment();
                 } else if (itemId == R.id.nav_history) {
                     selectedFragment = new HistoryFragment();
+                } else if (itemId == R.id.nav_cart) {
+                    selectedFragment = new CartFragment();
                 } else if (itemId == R.id.nav_profile) {
                     selectedFragment = new ProfileFragment();
                 }
@@ -133,15 +145,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void openSellerChannel() {
         sellerMode = true;
-        topChatButton.setVisibility(View.GONE);
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         bottomNav.getMenu().clear();
         bottomNav.inflateMenu(R.menu.seller_bottom_nav_menu);
+
+        // Đổi sang thanh dài bình thường (phẳng) cho Admin
+        if (fabCenter != null) fabCenter.setVisibility(View.GONE);
+        if (bottomAppBar != null) {
+            bottomAppBar.setFabCradleMargin(0f);
+            bottomAppBar.setFabCradleRoundedCornerRadius(0f);
+        }
 
         // Đổi màu thanh navigation sang màu admin (xanh lá)
         bottomNav.setItemBackgroundResource(R.drawable.seller_nav_indicator_background);
         bottomNav.setItemIconTintList(AppCompatResources.getColorStateList(this, R.color.seller_nav_item_color_state));
         bottomNav.setItemTextColor(AppCompatResources.getColorStateList(this, R.color.seller_nav_item_color_state));
+
+        // Đổi màu logo và tiêu đề sang màu admin
+        if (appLogo != null) {
+            appLogo.setImageTintList(AppCompatResources.getColorStateList(this, R.color.admin_primary));
+        }
+        if (appTitle != null) {
+            appTitle.setTextColor(getResources().getColor(R.color.admin_primary, getTheme()));
+        }
 
         setupBottomNavigation();
         bottomNav.setSelectedItemId(R.id.nav_seller_revenue);
@@ -149,18 +175,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void openBuyerChannel() {
         sellerMode = false;
-        topChatButton.setVisibility(View.VISIBLE);
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         bottomNav.getMenu().clear();
         bottomNav.inflateMenu(R.menu.bottom_nav_menu);
 
+        // Hiển thị lại vết lõm và nút FAB cho User
+        if (fabCenter != null) fabCenter.setVisibility(View.VISIBLE);
+        if (bottomAppBar != null) {
+            bottomAppBar.setFabCradleMargin(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics()));
+            bottomAppBar.setFabCradleRoundedCornerRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+        }
+
         // Đổi màu thanh navigation về màu mặc định (xanh dương)
         bottomNav.setItemBackgroundResource(R.drawable.nav_indicator_background);
-        bottomNav.setItemIconTintList(AppCompatResources.getColorStateList(this, R.color.nav_item_color_state));
-        bottomNav.setItemTextColor(AppCompatResources.getColorStateList(this, R.color.nav_item_color_state));
+        bottomNav.setItemIconTintList(AppCompatResources.getColorStateList(this, R.color.nav_item_colors));
+        bottomNav.setItemTextColor(AppCompatResources.getColorStateList(this, R.color.nav_item_colors));
+
+        // Đổi màu logo và tiêu đề về màu mặc định
+        if (appLogo != null) {
+            appLogo.setImageTintList(AppCompatResources.getColorStateList(this, R.color.main_blue));
+        }
+        if (appTitle != null) {
+            appTitle.setTextColor(getResources().getColor(R.color.main_blue, getTheme()));
+        }
 
         setupBottomNavigation();
-        bottomNav.setSelectedItemId(R.id.nav_product);
+        bottomNav.setSelectedItemId(R.id.nav_home);
     }
 
     @Override

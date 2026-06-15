@@ -268,11 +268,11 @@ public class AdFormFragment extends Fragment {
         boolean details = MODE_DETAILS.equals(mode);
         boolean edit = MODE_EDIT.equals(mode);
         binding.tvAdFormTitle.setText(
-                details ? "Chi tiết quảng cáo" : edit ? "Chỉnh sửa quảng cáo" : "Tạo quảng cáo"
+                details ? "Chi tiết" : edit ? "Chỉnh sửa" : "Tạo quảng cáo"
         );
         binding.btnCancelAdForm.setText(details ? "Đóng" : "Hủy");
         binding.btnSubmitAdForm.setText(
-                details ? "Chỉnh sửa" : edit ? "Lưu thay đổi" : "Tạo quảng cáo"
+                details ? "Chỉnh sửa" : edit ? "Lưu thay đổi" : "Tạo"
         );
         setFormEnabled(!details);
     }

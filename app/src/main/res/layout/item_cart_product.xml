@@ -82,15 +82,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layoutQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:background="@drawable/bg_quantity_selector"
         android:gravity="center_vertical"
         android:paddingHorizontal="8dp"
-        android:paddingVertical="4dp"
-        app:layout_constraintStart_toStartOf="@+id/tvProductName"
-        app:layout_constraintTop_toBottomOf="@+id/layoutTags">
+        android:paddingVertical="4dp">
 
         <TextView
             android:id="@+id/btnMinus"
@@ -119,12 +117,11 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layoutPriceInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvOldPrice"
@@ -143,4 +140,18 @@
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:constraint_referenced_ids="layoutQuantity,layoutPriceInfo"
+        app:flow_wrapMode="aligned"
+        app:flow_horizontalStyle="spread_inside"
+        app:flow_horizontalBias="1"
+        app:flow_verticalAlign="bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvProductName"
+        app:layout_constraintTop_toBottomOf="@+id/layoutTags" />
 </androidx.constraintlayout.widget.ConstraintLayout>
