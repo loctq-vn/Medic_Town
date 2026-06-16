@@ -21,6 +21,7 @@ import com.example.medictown.ui.chat.ChatActivity;
 import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.repositories.RecommendationRepository;
 import com.example.medictown.data.repositories.ReviewRepository;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import retrofit2.Call;
@@ -43,6 +44,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private RecommendationRepository recommendationRepository;
     private ProductReviewAdapter reviewAdapter;
     private ProductImageAdapter productImageAdapter;
+    private ProductAdapter relatedProductAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         if (product != null) {
             displayProductDetails();
             setupReviewRecyclerView();
+            setupRelatedProductsRecyclerView();
             fetchReviews();
+            fetchRelatedProducts();
             recordProductEvent("view", buildMetadata("product_detail", 0));
         }
 
@@ -154,6 +158,26 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.rvReviews.setAdapter(reviewAdapter);
     }
 
+    private void setupRelatedProductsRecyclerView() {
+        relatedProductAdapter = new ProductAdapter();
+        relatedProductAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
+            @Override
+            public void onProductClick(Products relatedProduct) {
+                recordProductEvent(relatedProduct, "click", buildMetadata("related_products", 0));
+                Intent intent = new Intent(ProductDetailActivity.this, ProductDetailActivity.class);
+                intent.putExtra("product", relatedProduct);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onBuyNowClick(Products relatedProduct) {
+                showRelatedProductBottomSheet(relatedProduct);
+            }
+        });
+        binding.rvRelatedProducts.setLayoutManager(new GridLayoutManager(this, 2));
+        binding.rvRelatedProducts.setAdapter(relatedProductAdapter);
+    }
+
     private void fetchReviews() {
         reviewRepository.getProductReviews(product.id, new Callback<List<Reviews>>() {
             @Override
@@ -168,6 +192,29 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Reviews>> call, Throwable t) {
                 // Ignore error for now
+            }
+        });
+    }
+
+    private void fetchRelatedProducts() {
+        if (product == null || product.id == null || product.id.trim().isEmpty()) {
+            binding.cardRelatedProducts.setVisibility(View.GONE);
+            return;
+        }
+        recommendationRepository.getRelatedProducts(product.id, 10, new Callback<List<Products>>() {
+            @Override
+            public void onResponse(Call<List<Products>> call, Response<List<Products>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    binding.cardRelatedProducts.setVisibility(View.VISIBLE);
+                    relatedProductAdapter.setProductList(response.body());
+                } else {
+                    binding.cardRelatedProducts.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Products>> call, Throwable t) {
+                binding.cardRelatedProducts.setVisibility(View.GONE);
             }
         });
     }
@@ -267,11 +314,40 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void showRelatedProductBottomSheet(Products relatedProduct) {
+        ProductBuyNowBottomSheet.show(this, getLayoutInflater(), relatedProduct, new ProductBuyNowBottomSheet.OnProductPurchaseActionListener() {
+            @Override
+            public void onAddToCart(Products product, int quantity) {
+                if (!sessionManager.isLoggedIn()) {
+                    Toast.makeText(ProductDetailActivity.this, "Vui lòng đăng nhập để thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                cartViewModel.addToCart(sessionManager.getUserId(), product.id, quantity, sessionManager.getToken());
+                recordProductEvent(product, "add_to_cart", buildMetadata("related_products_sheet", quantity));
+            }
+
+            @Override
+            public void onBuyNow(Products product, int quantity) {
+                if (!sessionManager.isLoggedIn()) {
+                    Toast.makeText(ProductDetailActivity.this, "Vui lòng đăng nhập để mua hàng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                recordProductEvent(product, "buy", buildMetadata("related_products_sheet", quantity));
+                openPayment(product, quantity);
+            }
+        });
+    }
+
     private void recordProductEvent(String eventType, Map<String, Object> metadata) {
-        if (product == null || recommendationRepository == null || sessionManager == null || !sessionManager.isLoggedIn()) {
+        recordProductEvent(product, eventType, metadata);
+    }
+
+    private void recordProductEvent(Products eventProduct, String eventType, Map<String, Object> metadata) {
+        if (eventProduct == null || eventProduct.id == null || eventProduct.id.trim().isEmpty()
+                || recommendationRepository == null || sessionManager == null || !sessionManager.isLoggedIn()) {
             return;
         }
-        recommendationRepository.recordEvent(product.id, eventType, metadata);
+        recommendationRepository.recordEvent(eventProduct.id, eventType, metadata);
     }
 
     private Map<String, Object> buildMetadata(String source, int quantity) {

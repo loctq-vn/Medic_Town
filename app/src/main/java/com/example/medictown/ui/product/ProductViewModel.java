@@ -7,6 +7,7 @@ import com.example.medictown.data.models.Advertisement;
 import com.example.medictown.data.models.ProductCategory;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.data.repositories.ProductRepository;
+import com.example.medictown.data.repositories.RecommendationRepository;
 import java.text.Normalizer;
 import java.util.Locale;
 import java.util.List;
@@ -16,20 +17,27 @@ import retrofit2.Response;
 
 public class ProductViewModel extends ViewModel {
     private final ProductRepository repository;
+    private final RecommendationRepository recommendationRepository;
     private final MutableLiveData<List<Advertisement>> homeBannerAds = new MutableLiveData<>();
     private final MutableLiveData<List<Products>> featuredProducts = new MutableLiveData<>();
     private final MutableLiveData<List<Products>> allProducts = new MutableLiveData<>();
+    private final MutableLiveData<List<Products>> recommendedProducts = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private String activeCategoryId;
 
     public ProductViewModel() {
         this.repository = new ProductRepository();
+        this.recommendationRepository = new RecommendationRepository();
         loadFeaturedProducts();
     }
 
     public LiveData<List<Products>> getFeaturedProducts() {
         return featuredProducts;
+    }
+
+    public LiveData<List<Products>> getRecommendedProducts() {
+        return recommendedProducts;
     }
 
     public LiveData<List<Advertisement>> getHomeBannerAds() {
@@ -65,6 +73,27 @@ public class ProductViewModel extends ViewModel {
             public void onFailure(Call<List<Products>> call, Throwable t) {
                 isLoading.setValue(false);
                 errorMessage.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void loadRecommendedProducts(int limit) {
+        isLoading.setValue(true);
+        recommendationRepository.getRecommendedProducts(limit, new Callback<List<Products>>() {
+            @Override
+            public void onResponse(Call<List<Products>> call, Response<List<Products>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    recommendedProducts.setValue(response.body());
+                } else {
+                    recommendedProducts.setValue(java.util.Collections.emptyList());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Products>> call, Throwable t) {
+                isLoading.setValue(false);
+                recommendedProducts.setValue(java.util.Collections.emptyList());
             }
         });
     }

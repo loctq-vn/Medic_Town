@@ -42,6 +42,8 @@ public class ProductFragment extends Fragment {
     private AdBannerAdapter adBannerAdapter;
     private AdvertisementRepository advertisementRepository;
     private RecommendationRepository recommendationRepository;
+    private boolean showingRecommendations = false;
+    private boolean recommendationFallbackRequested = false;
     private final Set<String> viewedAdvertisementIds = new HashSet<>();
     private final Handler adAutoScrollHandler = new Handler(Looper.getMainLooper());
     private final Runnable adAutoScrollRunnable = new Runnable() {
@@ -131,17 +133,39 @@ public class ProductFragment extends Fragment {
         
         // Gọi tải tất cả sản phẩm
         viewModel.loadHomeBannerAds();
-        viewModel.loadAllProducts();
+        loadPrimaryProductSection();
     }
 
     private void setupSwipeRefresh() {
         binding.swipeRefresh.setOnRefreshListener(() -> {
             viewModel.loadHomeBannerAds();
-            viewModel.loadAllProducts();
+            loadPrimaryProductSection();
         });
         
         // Cấu hình màu sắc
         binding.swipeRefresh.setColorSchemeResources(R.color.main_blue);
+    }
+
+    private void loadPrimaryProductSection() {
+        recommendationFallbackRequested = false;
+        if (sessionManager != null && sessionManager.isLoggedIn()) {
+            showingRecommendations = true;
+            if (binding != null) {
+                binding.tvTitle.setText("Gợi ý cho bạn");
+            }
+            viewModel.loadRecommendedProducts(20);
+            return;
+        }
+
+        showingRecommendations = false;
+        if (binding != null) {
+            binding.tvTitle.setText("Sản phẩm nổi bật");
+        }
+        viewModel.loadAllProducts();
+    }
+
+    private String currentProductSource() {
+        return showingRecommendations ? "home_recommendations" : "home_product_grid";
     }
 
     private void setupSearch() {
@@ -211,7 +235,7 @@ public class ProductFragment extends Fragment {
         adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Products product) {
-                recordProductEvent(product, "click", "home_product_grid", 0);
+                recordProductEvent(product, "click", currentProductSource(), 0);
                 android.content.Intent intent = new android.content.Intent(getContext(), ProductDetailActivity.class);
                 intent.putExtra("product", product);
                 startActivity(intent);
@@ -246,7 +270,7 @@ public class ProductFragment extends Fragment {
                     return;
                 }
                 cartViewModel.addToCart(sessionManager.getUserId(), product.id, quantity, sessionManager.getToken());
-                recordProductEvent(product, "add_to_cart", "home_buy_now_sheet", quantity);
+                recordProductEvent(product, "add_to_cart", currentProductSource() + "_sheet", quantity);
             }
 
             @Override
@@ -255,7 +279,7 @@ public class ProductFragment extends Fragment {
                     android.widget.Toast.makeText(getContext(), "Vui lòng đăng nhập để mua hàng", android.widget.Toast.LENGTH_SHORT).show();
                     return;
                 }
-                recordProductEvent(product, "buy", "home_buy_now_sheet", quantity);
+                recordProductEvent(product, "buy", currentProductSource() + "_sheet", quantity);
                 openPayment(product, quantity);
             }
         });
@@ -333,6 +357,23 @@ public class ProductFragment extends Fragment {
     private void observeViewModel() {
         viewModel.getHomeBannerAds().observe(getViewLifecycleOwner(), this::bindAdBanners);
 
+        viewModel.getRecommendedProducts().observe(getViewLifecycleOwner(), products -> {
+            if (!showingRecommendations) {
+                return;
+            }
+            if (products != null && !products.isEmpty()) {
+                binding.tvTitle.setText("Gợi ý cho bạn");
+                adapter.setProductList(products);
+                return;
+            }
+            if (!recommendationFallbackRequested) {
+                recommendationFallbackRequested = true;
+                showingRecommendations = false;
+                binding.tvTitle.setText("Sản phẩm nổi bật");
+                viewModel.loadAllProducts();
+            }
+        });
+
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (binding != null) {
                 binding.swipeRefresh.setRefreshing(isLoading);
@@ -350,13 +391,13 @@ public class ProductFragment extends Fragment {
 
         // Quan sát cả featured và all products để hiển thị
         viewModel.getFeaturedProducts().observe(getViewLifecycleOwner(), products -> {
-            if (products != null && !products.isEmpty()) {
+            if (!showingRecommendations && products != null && !products.isEmpty()) {
                 adapter.setProductList(products);
             }
         });
 
         viewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
-            if (products != null && !products.isEmpty()) {
+            if (!showingRecommendations && products != null && !products.isEmpty()) {
                 adapter.setProductList(products);
             }
         });

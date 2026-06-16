@@ -33,12 +33,12 @@ public class RecommendationRepository {
         apiService.recordProductEvent(request).enqueue(noOpCallback());
     }
 
-    public void getMyRecommendations(int limit, Callback<List<Products>> callback) {
-        apiService.getMyRecommendations(limit).enqueue(callback);
+    public void getRecommendedProducts(int limit, Callback<List<Products>> callback) {
+        apiService.getRecommendedProducts(limit).enqueue(callback);
     }
 
-    public void getProductRecommendations(String productId, int limit, Callback<List<Products>> callback) {
-        apiService.getProductRecommendations(productId, limit).enqueue(callback);
+    public void getRelatedProducts(String productId, int limit, Callback<List<Products>> callback) {
+        apiService.getRelatedProducts(productId, limit).enqueue(callback);
     }
 
     private Callback<Void> noOpCallback() {

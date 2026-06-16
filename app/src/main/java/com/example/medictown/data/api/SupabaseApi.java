@@ -59,10 +59,10 @@ public interface SupabaseApi {
     Call<Void> recordProductEvent(@Body ProductEventRequest event);
 
     @GET("api/recommendations/me")
-    Call<List<Products>> getMyRecommendations(@Query("limit") int limit);
+    Call<List<Products>> getRecommendedProducts(@Query("limit") int limit);
 
     @GET("api/recommendations/products/{product_id}")
-    Call<List<Products>> getProductRecommendations(
+    Call<List<Products>> getRelatedProducts(
             @Path("product_id") String productId,
             @Query("limit") int limit
     );
