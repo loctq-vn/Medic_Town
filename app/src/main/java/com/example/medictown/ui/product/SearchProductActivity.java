@@ -10,10 +10,13 @@ import com.example.medictown.MainActivity;
 import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.Products;
+import com.example.medictown.data.repositories.RecommendationRepository;
 import com.example.medictown.databinding.ActivitySearchProductBinding;
 import com.example.medictown.ui.cart.CartViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SearchProductActivity extends AppCompatActivity {
     private ActivitySearchProductBinding binding;
@@ -21,6 +24,9 @@ public class SearchProductActivity extends AppCompatActivity {
     private ProductViewModel viewModel;
     private CartViewModel cartViewModel;
     private SessionManager sessionManager;
+    private RecommendationRepository recommendationRepository;
+    private String currentMode = "search";
+    private String currentSearchQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,7 @@ public class SearchProductActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(ProductViewModel.class);
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
         sessionManager = new SessionManager(this);
+        recommendationRepository = new RecommendationRepository();
         setupUI();
         observeData();
         
@@ -46,6 +53,7 @@ public class SearchProductActivity extends AppCompatActivity {
 
     private void handleIntent() {
         String mode = getIntent().getStringExtra("mode");
+        currentMode = mode == null ? "search" : mode;
         if ("category".equals(mode)) {
             String categoryKey = getIntent().getStringExtra("category_key");
             String categoryTitle = getIntent().getStringExtra("category_title");
@@ -83,6 +91,7 @@ public class SearchProductActivity extends AppCompatActivity {
         adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Products product) {
+                recordProductClick(product);
                 Intent intent = new Intent(SearchProductActivity.this, ProductDetailActivity.class);
                 intent.putExtra("product", product);
                 startActivity(intent);
@@ -115,6 +124,8 @@ public class SearchProductActivity extends AppCompatActivity {
                 String query = binding.etSearch.getText().toString().trim();
                 if (!query.isEmpty()) {
                     hideKeyboard(); // Ẩn bàn phím sau khi nhấn tìm kiếm
+                    currentSearchQuery = query;
+                    currentMode = "search";
                     viewModel.searchProducts(query);
                 }
                 return true;
@@ -157,6 +168,7 @@ public class SearchProductActivity extends AppCompatActivity {
                     return;
                 }
                 cartViewModel.addToCart(sessionManager.getUserId(), product.id, quantity, sessionManager.getToken());
+                recordProductEvent(product, "add_to_cart", sourceForCurrentMode(), quantity);
             }
 
             @Override
@@ -165,9 +177,43 @@ public class SearchProductActivity extends AppCompatActivity {
                     android.widget.Toast.makeText(SearchProductActivity.this, "Vui lòng đăng nhập để mua hàng", android.widget.Toast.LENGTH_SHORT).show();
                     return;
                 }
+                recordProductEvent(product, "buy", sourceForCurrentMode(), quantity);
                 openPayment(product, quantity);
             }
         });
+    }
+
+    private void recordProductClick(Products product) {
+        String eventType = "search".equals(currentMode) && hasText(currentSearchQuery)
+                ? "search_click"
+                : "click";
+        recordProductEvent(product, eventType, sourceForCurrentMode(), 0);
+    }
+
+    private void recordProductEvent(Products product, String eventType, String source, int quantity) {
+        if (product == null || recommendationRepository == null || sessionManager == null || !sessionManager.isLoggedIn()) {
+            return;
+        }
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("source", source);
+        if (hasText(currentSearchQuery)) {
+            metadata.put("query", currentSearchQuery);
+        }
+        if (quantity > 0) {
+            metadata.put("quantity", quantity);
+        }
+        recommendationRepository.recordEvent(product.id, eventType, metadata);
+    }
+
+    private String sourceForCurrentMode() {
+        if (!hasText(currentMode) || "search".equals(currentMode)) {
+            return "search_results";
+        }
+        return "search_" + currentMode;
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
     }
 
     private void openPayment(Products product, int quantity) {

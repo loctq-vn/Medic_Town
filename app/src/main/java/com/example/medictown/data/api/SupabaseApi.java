@@ -18,6 +18,7 @@ import com.example.medictown.data.models.OrderCreateRequest;
 import com.example.medictown.data.models.Orders;
 import com.example.medictown.data.models.Payments;
 import com.example.medictown.data.models.ProductCategory;
+import com.example.medictown.data.models.ProductEventRequest;
 import com.example.medictown.data.models.ProductSubcategory;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.data.models.RevenueDailySummary;
@@ -53,6 +54,9 @@ public interface SupabaseApi {
 
     @POST("api/ads/{ad_id}/click")
     Call<Void> recordAdClick(@Path("ad_id") String adId);
+
+    @POST("api/recommendations/events")
+    Call<Void> recordProductEvent(@Body ProductEventRequest event);
 
     @GET("api/products")
     Call<List<Products>> getProducts(

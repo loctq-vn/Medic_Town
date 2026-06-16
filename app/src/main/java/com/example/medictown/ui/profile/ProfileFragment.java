@@ -67,7 +67,7 @@ public class ProfileFragment extends Fragment {
 
     private void setupSwipeRefresh() {
         binding.swipeRefresh.setOnRefreshListener(() -> {
-            mViewModel.fetchUserProfile(sessionManager.getUserId());
+            mViewModel.fetchCurrentUserProfile();
         });
         binding.swipeRefresh.setColorSchemeResources(R.color.primary);
     }
@@ -168,7 +168,7 @@ public class ProfileFragment extends Fragment {
     private void observeViewModel(){
         mViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (binding == null) return;
-            if (isLoading) {
+            if (Boolean.TRUE.equals(isLoading)) {
                 binding.shimmerProfile.setVisibility(View.VISIBLE);
                 binding.shimmerProfile.startShimmer();
                 binding.layoutProfileHeader.setVisibility(View.GONE);

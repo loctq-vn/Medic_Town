@@ -19,6 +19,7 @@ import com.example.medictown.databinding.ActivityProductDetailBinding;
 import com.example.medictown.ui.cart.CartViewModel;
 import com.example.medictown.ui.chat.ChatActivity;
 import com.example.medictown.data.models.Reviews;
+import com.example.medictown.data.repositories.RecommendationRepository;
 import com.example.medictown.data.repositories.ReviewRepository;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -28,8 +29,10 @@ import retrofit2.Response;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class ProductDetailActivity extends AppCompatActivity {
     private ActivityProductDetailBinding binding;
@@ -37,6 +40,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private CartViewModel cartViewModel;
     private SessionManager sessionManager;
     private ReviewRepository reviewRepository;
+    private RecommendationRepository recommendationRepository;
     private ProductReviewAdapter reviewAdapter;
     private ProductImageAdapter productImageAdapter;
 
@@ -49,6 +53,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
         reviewRepository = new ReviewRepository();
+        recommendationRepository = new RecommendationRepository();
 
         // Nhận dữ liệu product từ Intent
         product = (Products) getIntent().getSerializableExtra("product");
@@ -57,6 +62,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             displayProductDetails();
             setupReviewRecyclerView();
             fetchReviews();
+            recordProductEvent("view", buildMetadata("product_detail", 0));
         }
 
         setupButtons();
@@ -209,6 +215,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 String userId = sessionManager.getUserId();
                 String token = sessionManager.getToken();
                 cartViewModel.addToCart(userId, product.id, 1, token);
+                recordProductEvent("add_to_cart", buildMetadata("product_detail", 1));
             } else {
                 Toast.makeText(this, "Vui lòng đăng nhập để thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
             }
@@ -249,13 +256,31 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onAddToCart(Products product, int quantity) {
                 cartViewModel.addToCart(sessionManager.getUserId(), product.id, quantity, sessionManager.getToken());
+                recordProductEvent("add_to_cart", buildMetadata("buy_now_sheet", quantity));
             }
 
             @Override
             public void onBuyNow(Products product, int quantity) {
+                recordProductEvent("buy", buildMetadata("buy_now_sheet", quantity));
                 openPayment(product, quantity);
             }
         });
+    }
+
+    private void recordProductEvent(String eventType, Map<String, Object> metadata) {
+        if (product == null || recommendationRepository == null || sessionManager == null || !sessionManager.isLoggedIn()) {
+            return;
+        }
+        recommendationRepository.recordEvent(product.id, eventType, metadata);
+    }
+
+    private Map<String, Object> buildMetadata(String source, int quantity) {
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("source", source);
+        if (quantity > 0) {
+            metadata.put("quantity", quantity);
+        }
+        return metadata;
     }
 
     private void openPayment(Products product, int quantity) {

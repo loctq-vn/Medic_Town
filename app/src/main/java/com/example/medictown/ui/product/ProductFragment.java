@@ -22,12 +22,15 @@ import com.example.medictown.data.models.Advertisement;
 import com.example.medictown.data.models.CartItem;
 import com.example.medictown.data.models.Products;
 import com.example.medictown.data.repositories.AdvertisementRepository;
+import com.example.medictown.data.repositories.RecommendationRepository;
 import com.example.medictown.databinding.FragmentProductBinding;
 import com.example.medictown.ui.cart.CartViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ProductFragment extends Fragment {
@@ -38,6 +41,7 @@ public class ProductFragment extends Fragment {
     private ProductAdapter adapter;
     private AdBannerAdapter adBannerAdapter;
     private AdvertisementRepository advertisementRepository;
+    private RecommendationRepository recommendationRepository;
     private final Set<String> viewedAdvertisementIds = new HashSet<>();
     private final Handler adAutoScrollHandler = new Handler(Looper.getMainLooper());
     private final Runnable adAutoScrollRunnable = new Runnable() {
@@ -114,6 +118,7 @@ public class ProductFragment extends Fragment {
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
         sessionManager = new SessionManager(requireContext());
         advertisementRepository = new AdvertisementRepository();
+        recommendationRepository = new RecommendationRepository();
 
         setupRecyclerView();
         setupAdBanner();
@@ -206,6 +211,7 @@ public class ProductFragment extends Fragment {
         adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Products product) {
+                recordProductEvent(product, "click", "home_product_grid", 0);
                 android.content.Intent intent = new android.content.Intent(getContext(), ProductDetailActivity.class);
                 intent.putExtra("product", product);
                 startActivity(intent);
@@ -240,6 +246,7 @@ public class ProductFragment extends Fragment {
                     return;
                 }
                 cartViewModel.addToCart(sessionManager.getUserId(), product.id, quantity, sessionManager.getToken());
+                recordProductEvent(product, "add_to_cart", "home_buy_now_sheet", quantity);
             }
 
             @Override
@@ -248,6 +255,7 @@ public class ProductFragment extends Fragment {
                     android.widget.Toast.makeText(getContext(), "Vui lòng đăng nhập để mua hàng", android.widget.Toast.LENGTH_SHORT).show();
                     return;
                 }
+                recordProductEvent(product, "buy", "home_buy_now_sheet", quantity);
                 openPayment(product, quantity);
             }
         });
@@ -304,6 +312,7 @@ public class ProductFragment extends Fragment {
             ).show();
             return;
         }
+        recordProductEvent(advertisement.product, "click", "ad_banner", 0);
         android.content.Intent intent = new android.content.Intent(
                 getContext(),
                 ProductDetailActivity.class
@@ -430,6 +439,18 @@ public class ProductFragment extends Fragment {
 
     private int dpToPx(int dp) {
         return Math.round(dp * getResources().getDisplayMetrics().density);
+    }
+
+    private void recordProductEvent(Products product, String eventType, String source, int quantity) {
+        if (product == null || recommendationRepository == null || sessionManager == null || !sessionManager.isLoggedIn()) {
+            return;
+        }
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("source", source);
+        if (quantity > 0) {
+            metadata.put("quantity", quantity);
+        }
+        recommendationRepository.recordEvent(product.id, eventType, metadata);
     }
 
     @Override
