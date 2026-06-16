@@ -58,6 +58,15 @@ public interface SupabaseApi {
     @POST("api/recommendations/events")
     Call<Void> recordProductEvent(@Body ProductEventRequest event);
 
+    @GET("api/recommendations/me")
+    Call<List<Products>> getMyRecommendations(@Query("limit") int limit);
+
+    @GET("api/recommendations/products/{product_id}")
+    Call<List<Products>> getProductRecommendations(
+            @Path("product_id") String productId,
+            @Query("limit") int limit
+    );
+
     @GET("api/products")
     Call<List<Products>> getProducts(
             @Query("category_id") String categoryId,
