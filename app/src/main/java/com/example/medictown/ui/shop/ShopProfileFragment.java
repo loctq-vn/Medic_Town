@@ -67,34 +67,22 @@ public class ShopProfileFragment extends Fragment {
             }
         });
 
-        setupSwipeRefresh();
         loadShop();
-    }
-
-    private void setupSwipeRefresh() {
-        binding.swipeRefresh.setOnRefreshListener(this::loadShop);
-        binding.swipeRefresh.setColorSchemeResources(R.color.admin_primary);
     }
 
     private void loadShop() {
         String shopId = sessionManager.getCurrentShopId();
         if (shopId == null || shopId.isEmpty()) {
-            if (binding != null) {
-                binding.swipeRefresh.setRefreshing(false);
-            }
             Toast.makeText(getContext(), "Chưa chọn gian hàng", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (binding != null && !binding.swipeRefresh.isRefreshing()) {
-            binding.progressBar.setVisibility(View.VISIBLE);
-        }
+        binding.progressBar.setVisibility(View.VISIBLE);
         repository.getShop(shopId, new Callback<Shop>() {
             @Override
             public void onResponse(Call<Shop> call, Response<Shop> response) {
                 if (binding == null) return;
                 binding.progressBar.setVisibility(View.GONE);
-                binding.swipeRefresh.setRefreshing(false);
                 if (!response.isSuccessful() || response.body() == null) {
                     Toast.makeText(getContext(), "Không thể tải thông tin gian hàng", Toast.LENGTH_SHORT).show();
                     return;
@@ -106,7 +94,6 @@ public class ShopProfileFragment extends Fragment {
             public void onFailure(Call<Shop> call, Throwable t) {
                 if (binding == null) return;
                 binding.progressBar.setVisibility(View.GONE);
-                binding.swipeRefresh.setRefreshing(false);
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

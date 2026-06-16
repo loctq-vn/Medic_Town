@@ -6,7 +6,6 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,47 +50,6 @@ public class ProductFragment extends Fragment {
             scheduleAdAutoScroll();
         }
     };
-    private final Handler typingHandler = new Handler(Looper.getMainLooper());
-    private final String[] searchHints = {
-            "Tìm thuốc...",
-            "Tìm thực phẩm chức năng...",
-            "Tìm dược mỹ phẩm...",
-            "Tìm thiết bị y tế...",
-            "Tìm khẩu trang, nước sát khuẩn..."
-    };
-    private int currentHintIndex = 0;
-    private int currentCharIndex = 0;
-    private boolean isTyping = true;
-
-    private final Runnable typingRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (binding == null) return;
-            String currentHint = searchHints[currentHintIndex];
-            if (isTyping) {
-                if (currentCharIndex <= currentHint.length()) {
-                    binding.tvSearchPlaceholder.setText(currentHint.substring(0, currentCharIndex));
-                    currentCharIndex++;
-                    typingHandler.postDelayed(this, 100);
-                } else {
-                    isTyping = false;
-                    currentCharIndex = currentHint.length();
-                    typingHandler.postDelayed(this, 2000);
-                }
-            } else {
-                if (currentCharIndex > 0) {
-                    currentCharIndex--;
-                    binding.tvSearchPlaceholder.setText(currentHint.substring(0, currentCharIndex));
-                    typingHandler.postDelayed(this, 50);
-                } else {
-                    isTyping = true;
-                    currentCharIndex = 0;
-                    currentHintIndex = (currentHintIndex + 1) % searchHints.length;
-                    typingHandler.postDelayed(this, 500);
-                }
-            }
-        }
-    };
     private final ViewPager2.OnPageChangeCallback adPageChangeCallback = new ViewPager2.OnPageChangeCallback() {
         @Override
         public void onPageSelected(int position) {
@@ -119,24 +77,11 @@ public class ProductFragment extends Fragment {
         setupAdBanner();
         setupSearch();
         setupCategoryNavigation();
-        setupCategoryScrollIndicator();
-        setupSwipeRefresh();
         observeViewModel();
-        startTypingAnimation();
         
         // Gọi tải tất cả sản phẩm
         viewModel.loadHomeBannerAds();
         viewModel.loadAllProducts();
-    }
-
-    private void setupSwipeRefresh() {
-        binding.swipeRefresh.setOnRefreshListener(() -> {
-            viewModel.loadHomeBannerAds();
-            viewModel.loadAllProducts();
-        });
-        
-        // Cấu hình màu sắc
-        binding.swipeRefresh.setColorSchemeResources(R.color.main_blue);
     }
 
     private void setupSearch() {
@@ -167,38 +112,6 @@ public class ProductFragment extends Fragment {
         intent.putExtra("category_key", categoryKey);
         intent.putExtra("category_title", categoryTitle);
         startActivity(intent);
-    }
-
-    private void setupCategoryScrollIndicator() {
-        binding.hsvCategories.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (binding == null) return;
-                binding.hsvCategories.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
-                int scrollRange = binding.hsvCategories.getChildAt(0).getWidth() - binding.hsvCategories.getWidth();
-                if (scrollRange > 0) {
-                    binding.llCategoryIndicatorContainer.setVisibility(View.VISIBLE);
-                } else {
-                    binding.llCategoryIndicatorContainer.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        binding.hsvCategories.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            int contentWidth = binding.hsvCategories.getChildAt(0).getWidth();
-            int viewWidth = binding.hsvCategories.getWidth();
-            int scrollRange = contentWidth - viewWidth;
-
-            if (scrollRange > 0) {
-                float scrollPercentage = (float) scrollX / scrollRange;
-                float indicatorWidth = binding.flCategoryIndicator.getWidth();
-                float thumbWidth = binding.viewCategoryIndicatorThumb.getWidth();
-                float maxIndicatorScroll = indicatorWidth - thumbWidth;
-
-                binding.viewCategoryIndicatorThumb.setTranslationX(scrollPercentage * maxIndicatorScroll);
-            }
-        });
     }
 
     private void setupRecyclerView() {
@@ -324,21 +237,6 @@ public class ProductFragment extends Fragment {
     private void observeViewModel() {
         viewModel.getHomeBannerAds().observe(getViewLifecycleOwner(), this::bindAdBanners);
 
-        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            if (binding != null) {
-                binding.swipeRefresh.setRefreshing(isLoading);
-                if (isLoading) {
-                    binding.shimmerProducts.setVisibility(View.VISIBLE);
-                    binding.shimmerProducts.startShimmer();
-                    binding.rvProducts.setVisibility(View.GONE);
-                } else {
-                    binding.shimmerProducts.stopShimmer();
-                    binding.shimmerProducts.setVisibility(View.GONE);
-                    binding.rvProducts.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
         // Quan sát cả featured và all products để hiển thị
         viewModel.getFeaturedProducts().observe(getViewLifecycleOwner(), products -> {
             if (products != null && !products.isEmpty()) {
@@ -419,15 +317,6 @@ public class ProductFragment extends Fragment {
         adAutoScrollHandler.removeCallbacks(adAutoScrollRunnable);
     }
 
-    private void startTypingAnimation() {
-        stopTypingAnimation();
-        typingHandler.post(typingRunnable);
-    }
-
-    private void stopTypingAnimation() {
-        typingHandler.removeCallbacks(typingRunnable);
-    }
-
     private int dpToPx(int dp) {
         return Math.round(dp * getResources().getDisplayMetrics().density);
     }
@@ -438,14 +327,12 @@ public class ProductFragment extends Fragment {
         if (adBannerAdapter != null && adBannerAdapter.getItemCount() > 1) {
             scheduleAdAutoScroll();
         }
-        startTypingAnimation();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         stopAdAutoScroll();
-        stopTypingAnimation();
     }
 
     @Override

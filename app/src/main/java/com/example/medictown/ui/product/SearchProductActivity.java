@@ -202,18 +202,6 @@ public class SearchProductActivity extends AppCompatActivity {
     }
 
     private void observeData() {
-        viewModel.getIsLoading().observe(this, isLoading -> {
-            if (isLoading) {
-                binding.shimmerSearch.setVisibility(android.view.View.VISIBLE);
-                binding.shimmerSearch.startShimmer();
-                binding.rvSearchResults.setVisibility(android.view.View.GONE);
-            } else {
-                binding.shimmerSearch.stopShimmer();
-                binding.shimmerSearch.setVisibility(android.view.View.GONE);
-                binding.rvSearchResults.setVisibility(android.view.View.VISIBLE);
-            }
-        });
-
         viewModel.getAllProducts().observe(this, products -> {
             if (products != null) {
                 adapter.setProductList(products);

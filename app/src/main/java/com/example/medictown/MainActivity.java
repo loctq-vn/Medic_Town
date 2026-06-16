@@ -3,6 +3,7 @@ package com.example.medictown;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -134,10 +135,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void setNavBarsVisibility(boolean show) {
         int visibility = show ? View.VISIBLE : View.GONE;
-        if (bottomNav != null) bottomNav.setVisibility(visibility);
-        if (bottomAppBar != null) bottomAppBar.setVisibility(visibility);
-        if (fabCenter != null) fabCenter.setVisibility(visibility);
-        if (appBarMain != null) appBarMain.setVisibility(visibility);
+        if (bottomNav != null) {
+            bottomNav.setVisibility(visibility);
+        }
+        if (appBarMain != null) {
+            appBarMain.setVisibility(visibility);
+        }
     }
 
     public void openSellerChannel() {
@@ -147,7 +150,11 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.inflateMenu(R.menu.seller_bottom_nav_menu);
 
         // Đổi sang thanh dài bình thường (phẳng) cho Admin
-        if (fabCenter != null) fabCenter.hide();
+        if (fabCenter != null) fabCenter.setVisibility(View.GONE);
+        if (bottomAppBar != null) {
+            bottomAppBar.setFabCradleMargin(0f);
+            bottomAppBar.setFabCradleRoundedCornerRadius(0f);
+        }
 
         // Đổi màu thanh navigation sang màu admin (xanh lá)
         bottomNav.setItemBackgroundResource(R.drawable.seller_nav_indicator_background);
@@ -173,7 +180,11 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.inflateMenu(R.menu.bottom_nav_menu);
 
         // Hiển thị lại vết lõm và nút FAB cho User
-        if (fabCenter != null) fabCenter.show();
+        if (fabCenter != null) fabCenter.setVisibility(View.VISIBLE);
+        if (bottomAppBar != null) {
+            bottomAppBar.setFabCradleMargin(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics()));
+            bottomAppBar.setFabCradleRoundedCornerRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+        }
 
         // Đổi màu thanh navigation về màu mặc định (xanh dương)
         bottomNav.setItemBackgroundResource(R.drawable.nav_indicator_background);

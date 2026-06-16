@@ -60,16 +60,8 @@ public class ProfileFragment extends Fragment {
         shopRepository = new ShopRepository();
         sessionManager = new SessionManager(requireContext());
 
-        setupSwipeRefresh();
         setupClickListeners();
         observeViewModel();
-    }
-
-    private void setupSwipeRefresh() {
-        binding.swipeRefresh.setOnRefreshListener(() -> {
-            mViewModel.fetchUserProfile(sessionManager.getUserId());
-        });
-        binding.swipeRefresh.setColorSchemeResources(R.color.primary);
     }
 
     @Override
@@ -166,23 +158,7 @@ public class ProfileFragment extends Fragment {
         });
     }
     private void observeViewModel(){
-        mViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            if (binding == null) return;
-            if (isLoading) {
-                binding.shimmerProfile.setVisibility(View.VISIBLE);
-                binding.shimmerProfile.startShimmer();
-                binding.layoutProfileHeader.setVisibility(View.GONE);
-            } else {
-                binding.shimmerProfile.stopShimmer();
-                binding.shimmerProfile.setVisibility(View.GONE);
-                binding.layoutProfileHeader.setVisibility(View.VISIBLE);
-            }
-        });
-
         mViewModel.getUser().observe(getViewLifecycleOwner(),users -> {
-            if (binding == null) return;
-            
-            binding.swipeRefresh.setRefreshing(false);
             if (users != null) {
                 user = users;
                 binding.name.setText(user.name);
@@ -202,9 +178,6 @@ public class ProfileFragment extends Fragment {
             }
         });
         mViewModel.getErrorMessage().observe(getViewLifecycleOwner(),error -> {
-            if (binding == null) return;
-            
-            binding.swipeRefresh.setRefreshing(false);
             if (error != null) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
             }

@@ -78,12 +78,6 @@ dependencies {
     // Loading Screen
     implementation("androidx.core:core-splashscreen:1.2.0")
 
-    // Swipe Refresh
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
-
-    // Shimmer Loading
-    implementation(libs.shimmer)
-
     // Shipping status notification
     implementation(platform("com.google.firebase:firebase-bom:34.14.1"))
     implementation("com.google.firebase:firebase-messaging")

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,9 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/surface"
-        android:fillViewport="true"
-        android:clipToPadding="false"
-        android:paddingBottom="130dp">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,24 +19,13 @@
             android:paddingTop="18dp"
             android:paddingBottom="24dp">
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer_profile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible">
-                <include layout="@layout/layout_profile_header_placeholder" />
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
             <LinearLayout
-                android:id="@+id/layout_profile_header"
                 android:layout_width="match_parent"
                 android:layout_height="104dp"
                 android:background="@drawable/bg_profile_menu_card"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="14dp"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:paddingHorizontal="14dp">
 
                 <ImageView
                     android:id="@+id/ivAvatar"
@@ -349,4 +335,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</FrameLayout>

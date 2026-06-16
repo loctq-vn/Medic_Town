@@ -62,16 +62,10 @@ public class AdManagementFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         repository = new AdvertisementRepository();
         sessionManager = new SessionManager(requireContext());
-        setupSwipeRefresh();
         setupList();
         setupSearchAndFilters();
         setupActions();
         loadAdvertisements();
-    }
-
-    private void setupSwipeRefresh() {
-        binding.swipeRefresh.setOnRefreshListener(this::loadAdvertisements);
-        binding.swipeRefresh.setColorSchemeResources(R.color.ad_primary);
     }
 
     private void setupList() {
@@ -167,17 +161,12 @@ public class AdManagementFragment extends Fragment {
         if (binding == null || repository == null || sessionManager == null) return;
         String shopId = sessionManager.getCurrentShopId();
         if (shopId == null || shopId.isEmpty()) {
-            binding.swipeRefresh.setRefreshing(false);
             allAdvertisements.clear();
             updateSummary();
             applyFilters();
             Toast.makeText(requireContext(), "Chưa chọn gian hàng", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        binding.shimmerAds.setVisibility(View.VISIBLE);
-        binding.shimmerAds.startShimmer();
-        binding.rvAdvertisements.setVisibility(View.GONE);
 
         repository.getShopAdvertisements(
                 shopId,
@@ -188,11 +177,6 @@ public class AdManagementFragment extends Fragment {
                             Response<List<Advertisement>> response
                     ) {
                         if (binding == null) return;
-                        binding.swipeRefresh.setRefreshing(false);
-                        binding.shimmerAds.stopShimmer();
-                        binding.shimmerAds.setVisibility(View.GONE);
-                        binding.rvAdvertisements.setVisibility(View.VISIBLE);
-
                         if (!response.isSuccessful() || response.body() == null) {
                             Toast.makeText(
                                     requireContext(),
@@ -210,10 +194,6 @@ public class AdManagementFragment extends Fragment {
                     @Override
                     public void onFailure(Call<List<Advertisement>> call, Throwable throwable) {
                         if (binding == null) return;
-                        binding.swipeRefresh.setRefreshing(false);
-                        binding.shimmerAds.stopShimmer();
-                        binding.shimmerAds.setVisibility(View.GONE);
-                        binding.rvAdvertisements.setVisibility(View.VISIBLE);
                         Toast.makeText(
                                 requireContext(),
                                 throwable.getMessage(),

@@ -33,8 +33,6 @@ public class CartFragment extends Fragment {
     private RecyclerView rvCartItems;
     private TextView tvTotalAmount, tvSubtotalLabel, tvSubtotalValue, tvClearAll;
     private Button btnCheckout;
-    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefresh;
-    private com.facebook.shimmer.ShimmerFrameLayout shimmerCart;
 
     @Nullable
     @Override
@@ -51,7 +49,6 @@ public class CartFragment extends Fragment {
 
         initViews(view);
         setupRecyclerView();
-        setupSwipeRefresh();
         observeViewModel();
 
         loadCartData();
@@ -64,8 +61,6 @@ public class CartFragment extends Fragment {
         tvSubtotalValue = view.findViewById(R.id.tvSubtotalValue);
         tvClearAll = view.findViewById(R.id.tvClearAll);
         btnCheckout = view.findViewById(R.id.btnCheckout);
-        swipeRefresh = view.findViewById(R.id.swipe_refresh);
-        shimmerCart = view.findViewById(R.id.shimmer_cart);
 
         btnCheckout.setOnClickListener(v -> {
             List<CartItem> allItems = mViewModel.cartItems.getValue();
@@ -96,17 +91,6 @@ public class CartFragment extends Fragment {
                 mViewModel.clearCart(sessionManager.getUserId(), sessionManager.getToken());
             }
         });
-    }
-
-    private void setupSwipeRefresh() {
-        swipeRefresh.setOnRefreshListener(() -> {
-            if (sessionManager.isLoggedIn()) {
-                mViewModel.fetchCartItems(sessionManager.getUserId(), sessionManager.getToken());
-            } else {
-                swipeRefresh.setRefreshing(false);
-            }
-        });
-        swipeRefresh.setColorSchemeResources(R.color.main_blue);
     }
 
     private void setupRecyclerView() {
@@ -141,23 +125,8 @@ public class CartFragment extends Fragment {
     }
 
     private void observeViewModel() {
-        mViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading) {
-                shimmerCart.setVisibility(View.VISIBLE);
-                shimmerCart.startShimmer();
-                rvCartItems.setVisibility(View.GONE);
-            } else {
-                shimmerCart.stopShimmer();
-                shimmerCart.setVisibility(View.GONE);
-                rvCartItems.setVisibility(View.VISIBLE);
-            }
-        });
-
         // Theo dõi danh sách giỏ hàng
         mViewModel.cartItems.observe(getViewLifecycleOwner(), items -> {
-            if (swipeRefresh != null) {
-                swipeRefresh.setRefreshing(false);
-            }
             if (items != null) {
                 adapter.setCartItems(items);
                 updateTotals(items);
