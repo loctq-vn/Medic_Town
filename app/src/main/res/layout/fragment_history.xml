@@ -1,179 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/surface"
-    android:clipToPadding="false"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="100dp">
+        android:layout_height="match_parent"
+        android:background="@color/surface"
+        android:clipToPadding="false"
+        android:padding="16dp">
 
-        <!-- Screen Title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lịch sử đơn hàng"
-            android:textColor="@color/on_surface"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Theo dõi các đơn thuốc và sản phẩm của bạn"
-            android:textColor="@color/on_surface_variant"
-            android:textSize="14sp" />
-
-        <!-- Filter Tabs -->
-        <HorizontalScrollView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:scrollbars="none">
+            android:orientation="vertical"
+            android:paddingBottom="130dp">
 
-            <LinearLayout
+            <!-- Screen Title -->
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingVertical="4dp">
+                android:text="Lịch sử đơn hàng"
+                android:textColor="@color/on_surface"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnFilterAll"
-                    style="@style/Widget.Material3.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tất cả"
-                    android:textSize="13sp"
-                    app:cornerRadius="100dp"
-                    app:backgroundTint="@color/primary"
-                    android:paddingHorizontal="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Theo dõi các đơn thuốc và sản phẩm của bạn"
+                android:textColor="@color/on_surface_variant"
+                android:textSize="14sp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnFilterPending"
-                    style="@style/Widget.Material3.Button.TonalButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Đang xử lý"
-                    android:textSize="13sp"
-                    android:textColor="@color/on_surface_variant"
-                    app:backgroundTint="@color/surface_container_high"
-                    app:cornerRadius="100dp"
-                    android:paddingHorizontal="20dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnFilterShipping"
-                    style="@style/Widget.Material3.Button.TonalButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Đang giao"
-                    android:textSize="13sp"
-                    android:textColor="@color/on_surface_variant"
-                    app:backgroundTint="@color/surface_container_high"
-                    app:cornerRadius="100dp"
-                    android:paddingHorizontal="20dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnFilterCompleted"
-                    style="@style/Widget.Material3.Button.TonalButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Hoàn thành"
-                    android:textSize="13sp"
-                    android:textColor="@color/on_surface_variant"
-                    app:backgroundTint="@color/surface_container_high"
-                    app:cornerRadius="100dp"
-                    android:paddingHorizontal="20dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnFilterCancelled"
-                    style="@style/Widget.Material3.Button.TonalButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Đã hủy"
-                    android:textSize="13sp"
-                    android:textColor="@color/on_surface_variant"
-                    app:backgroundTint="@color/surface_container_high"
-                    app:cornerRadius="100dp"
-                    android:paddingHorizontal="20dp"/>
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <!-- Order Cards Stack -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvOrderHistory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:nestedScrollingEnabled="false"
-            tools:listitem="@layout/item_order_history" />
-
-        <!-- Help Section -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="#0D003D9B"> <!-- Primary with 5% alpha -->
-
-            <FrameLayout
+            <!-- Filter Tabs -->
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="32dp">
+                android:layout_marginTop="24dp"
+                android:scrollbars="none">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="4dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFilterAll"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tất cả"
+                        android:textSize="13sp"
+                        app:cornerRadius="100dp"
+                        app:backgroundTint="@color/primary"
+                        android:paddingHorizontal="20dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFilterPending"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Đang xử lý"
+                        android:textSize="13sp"
+                        android:textColor="@color/on_surface_variant"
+                        app:backgroundTint="@color/surface_container_high"
+                        app:cornerRadius="100dp"
+                        android:paddingHorizontal="20dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFilterShipping"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Đang giao"
+                        android:textSize="13sp"
+                        android:textColor="@color/on_surface_variant"
+                        app:backgroundTint="@color/surface_container_high"
+                        app:cornerRadius="100dp"
+                        android:paddingHorizontal="20dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFilterCompleted"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Hoàn thành"
+                        android:textSize="13sp"
+                        android:textColor="@color/on_surface_variant"
+                        app:backgroundTint="@color/surface_container_high"
+                        app:cornerRadius="100dp"
+                        android:paddingHorizontal="20dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFilterCancelled"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Đã hủy"
+                        android:textSize="13sp"
+                        android:textColor="@color/on_surface_variant"
+                        app:backgroundTint="@color/surface_container_high"
+                        app:cornerRadius="100dp"
+                        android:paddingHorizontal="20dp"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Order Cards Stack -->
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_order_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:visibility="visible">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="60dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cần hỗ trợ về đơn hàng?"
-                        android:textColor="@color/primary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Đội ngũ dược sĩ chuyên môn của chúng tôi luôn sẵn sàng giải đáp thắc mắc về liều dùng và vận chuyển."
-                        android:textColor="@color/on_surface_variant"
-                        android:textSize="13sp"
-                        android:lineSpacingExtra="4dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Liên hệ Dược sĩ →"
-                        android:textColor="@color/primary"
-                        android:textStyle="bold"
-                        android:textSize="13sp" />
+                    android:orientation="vertical">
+                    <include layout="@layout/item_order_history_placeholder" />
+                    <include layout="@layout/item_order_history_placeholder" />
+                    <include layout="@layout/item_order_history_placeholder" />
                 </LinearLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@drawable/ic_hospital"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginBottom="-30dp"
-                    android:layout_marginEnd="-30dp"
-                    android:alpha="0.1"
-                    android:rotation="12"
-                    app:tint="@color/primary"/>
-            </FrameLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvOrderHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone"
+                tools:listitem="@layout/item_order_history"
+                tools:visibility="visible" />
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <!-- Help Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#0D003D9B"> <!-- Primary with 5% alpha -->
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="32dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="60dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cần hỗ trợ về đơn hàng?"
+                            android:textColor="@color/primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Đội ngũ dược sĩ chuyên môn của chúng tôi luôn sẵn sàng giải đáp thắc mắc về liều dùng và vận chuyển."
+                            android:textColor="@color/on_surface_variant"
+                            android:textSize="13sp"
+                            android:lineSpacingExtra="4dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Liên hệ Dược sĩ →"
+                            android:textColor="@color/primary"
+                            android:textStyle="bold"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/ic_hospital"
+                        android:layout_gravity="bottom|end"
+                        android:layout_marginBottom="-30dp"
+                        android:layout_marginEnd="-30dp"
+                        android:alpha="0.1"
+                        android:rotation="12"
+                        app:tint="@color/primary"/>
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

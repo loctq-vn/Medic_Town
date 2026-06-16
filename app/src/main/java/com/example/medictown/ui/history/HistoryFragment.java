@@ -47,6 +47,7 @@ public class HistoryFragment extends Fragment {
         
         setupRecyclerView();
         setupFilterButtons();
+        setupSwipeRefresh();
         observeViewModel();
         
         if (sessionManager.isLoggedIn()) {
@@ -54,6 +55,17 @@ public class HistoryFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), "Vui lòng đăng nhập để xem lịch sử", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setupSwipeRefresh() {
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            if (sessionManager.isLoggedIn()) {
+                viewModel.fetchOrders(sessionManager.getUserId());
+            } else {
+                binding.swipeRefresh.setRefreshing(false);
+            }
+        });
+        binding.swipeRefresh.setColorSchemeResources(R.color.primary);
     }
 
     private void setupFilterButtons() {
@@ -142,7 +154,18 @@ public class HistoryFragment extends Fragment {
         viewModel.currentFilter.observe(getViewLifecycleOwner(), this::updateFilterButtonsUI);
 
         viewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
-            // Có thể thêm ProgressBar nếu cần
+            if (binding != null) {
+                binding.swipeRefresh.setRefreshing(isLoading);
+                if (isLoading) {
+                    binding.shimmerOrderHistory.setVisibility(View.VISIBLE);
+                    binding.shimmerOrderHistory.startShimmer();
+                    binding.rvOrderHistory.setVisibility(View.GONE);
+                } else {
+                    binding.shimmerOrderHistory.stopShimmer();
+                    binding.shimmerOrderHistory.setVisibility(View.GONE);
+                    binding.rvOrderHistory.setVisibility(View.VISIBLE);
+                }
+            }
         });
 
         viewModel.errorMessage.observe(getViewLifecycleOwner(), error -> {
