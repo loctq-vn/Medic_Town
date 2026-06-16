@@ -135,12 +135,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void setNavBarsVisibility(boolean show) {
         int visibility = show ? View.VISIBLE : View.GONE;
-        if (bottomNav != null) {
-            bottomNav.setVisibility(visibility);
-        }
-        if (appBarMain != null) {
-            appBarMain.setVisibility(visibility);
-        }
+        if (bottomNav != null) bottomNav.setVisibility(visibility);
+        if (bottomAppBar != null) bottomAppBar.setVisibility(visibility);
+        if (fabCenter != null) fabCenter.setVisibility(visibility);
+        if (appBarMain != null) appBarMain.setVisibility(visibility);
     }
 
     public void openSellerChannel() {
@@ -154,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         if (bottomAppBar != null) {
             bottomAppBar.setFabCradleMargin(0f);
             bottomAppBar.setFabCradleRoundedCornerRadius(0f);
+            bottomAppBar.setCradleVerticalOffset(0f);
         }
 
         // Đổi màu thanh navigation sang màu admin (xanh lá)
@@ -182,8 +181,9 @@ public class MainActivity extends AppCompatActivity {
         // Hiển thị lại vết lõm và nút FAB cho User
         if (fabCenter != null) fabCenter.setVisibility(View.VISIBLE);
         if (bottomAppBar != null) {
-            bottomAppBar.setFabCradleMargin(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics()));
-            bottomAppBar.setFabCradleRoundedCornerRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+            bottomAppBar.setFabCradleMargin(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
+            bottomAppBar.setFabCradleRoundedCornerRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics()));
+            bottomAppBar.setCradleVerticalOffset(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
         }
 
         // Đổi màu thanh navigation về màu mặc định (xanh dương)

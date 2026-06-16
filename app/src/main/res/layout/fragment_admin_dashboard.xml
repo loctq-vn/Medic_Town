@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/admin_bg"
     android:clipToPadding="false"
-    android:paddingBottom="96dp"
+    android:paddingBottom="130dp"
     android:theme="@style/ThemeOverlay.MedicTown.Revenue">
 
     <LinearLayout
