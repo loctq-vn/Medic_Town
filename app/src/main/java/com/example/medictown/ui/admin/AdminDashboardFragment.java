@@ -71,6 +71,7 @@ public class AdminDashboardFragment extends Fragment {
     private GridLayout topProductsContainer;
     private RecyclerView rvRecentOrders;
     private RecentOrdersAdapter recentOrdersAdapter;
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefresh;
     private String currentShopId;
     private LocalDate currentFromDate;
     private LocalDate currentToDate;
@@ -125,6 +126,7 @@ public class AdminDashboardFragment extends Fragment {
         paymentMethodsContainer = view.findViewById(R.id.paymentMethodsContainer);
         topProductsContainer = view.findViewById(R.id.inventory_grid);
         rvRecentOrders = view.findViewById(R.id.rvRecentOrders);
+        swipeRefresh = view.findViewById(R.id.swipe_refresh);
 
         recentOrdersAdapter = new RecentOrdersAdapter();
         rvRecentOrders.setAdapter(recentOrdersAdapter);
@@ -143,9 +145,13 @@ public class AdminDashboardFragment extends Fragment {
         viewModel.getRevenueDailySummary().observe(getViewLifecycleOwner(), this::updateRevenueDailySummary);
         viewModel.getRevenueTopProducts().observe(getViewLifecycleOwner(), this::renderTopProducts);
         viewModel.getAllOrders().observe(getViewLifecycleOwner(), recentOrdersAdapter::setOrders);
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (swipeRefresh != null) swipeRefresh.setRefreshing(isLoading);
+        });
 
         setupRevenueFilters();
         setupChartGroupFilters();
+        setupSwipeRefresh();
         updateChartGroupStyle();
 
         currentShopId = sessionManager.getCurrentShopId();
@@ -169,6 +175,22 @@ public class AdminDashboardFragment extends Fragment {
                 navigateTo(new AdminInventoryFragment());
             }
         });
+    }
+
+    private void setupSwipeRefresh() {
+        if (swipeRefresh == null) return;
+        swipeRefresh.setOnRefreshListener(() -> {
+            if (currentShopId != null && !currentShopId.isEmpty()) {
+                viewModel.fetchRevenueDailySummary(currentShopId);
+                viewModel.fetchShopOrders(currentShopId);
+                if (currentFromDate != null && currentToDate != null) {
+                    fetchRevenueDashboard(currentFromDate, currentToDate);
+                }
+            } else {
+                swipeRefresh.setRefreshing(false);
+            }
+        });
+        swipeRefresh.setColorSchemeResources(R.color.admin_primary);
     }
 
     private void setupRevenueFilters() {

@@ -40,6 +40,7 @@ public class AdminOrdersFragment extends Fragment {
 
     private AdminViewModel viewModel;
     private AdminOrdersAdapter adapter;
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefresh;
     private List<Orders> allOrdersList = new ArrayList<>();
     private String currentShopId;
     private LocalDate startDate;
@@ -53,11 +54,14 @@ public class AdminOrdersFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(AdminViewModel.class);
         currentShopId = new SessionManager(requireContext()).getCurrentShopId();
+        swipeRefresh = view.findViewById(R.id.swipe_refresh);
         adapter = new AdminOrdersAdapter();
 
         tvDateRange = view.findViewById(R.id.tvDateRange);
         View dateFilterContainer = (View) tvDateRange.getParent().getParent().getParent(); // The MaterialCardView
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
+
+        setupSwipeRefresh();
 
         // Mặc định từ 01/01/2026 đến ngày hiện tại
         startDate = LocalDate.of(2026, 1, 1);
@@ -130,11 +134,45 @@ public class AdminOrdersFragment extends Fragment {
             }
         });
 
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (swipeRefresh != null) {
+                swipeRefresh.setRefreshing(isLoading);
+            }
+            View fragmentView = getView();
+            if (fragmentView != null) {
+                View shimmer = fragmentView.findViewById(R.id.shimmerOrders);
+                View rv = fragmentView.findViewById(R.id.rvOrders);
+                if (shimmer != null && rv != null) {
+                    if (isLoading) {
+                        shimmer.setVisibility(View.VISIBLE);
+                        ((com.facebook.shimmer.ShimmerFrameLayout) shimmer).startShimmer();
+                        rv.setVisibility(View.GONE);
+                    } else {
+                        ((com.facebook.shimmer.ShimmerFrameLayout) shimmer).stopShimmer();
+                        shimmer.setVisibility(View.GONE);
+                        rv.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+
         if (currentShopId != null && !currentShopId.isEmpty()) {
             viewModel.fetchShopOrders(currentShopId);
         } else {
             viewModel.fetchAllOrders();
         }
+    }
+
+    private void setupSwipeRefresh() {
+        if (swipeRefresh == null) return;
+        swipeRefresh.setOnRefreshListener(() -> {
+            if (currentShopId != null && !currentShopId.isEmpty()) {
+                viewModel.fetchShopOrders(currentShopId);
+            } else {
+                viewModel.fetchAllOrders();
+            }
+        });
+        swipeRefresh.setColorSchemeResources(R.color.admin_primary);
     }
 
     private void filterOrders(String status) {

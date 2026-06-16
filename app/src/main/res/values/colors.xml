@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary">#003D9B</color>
+    <color name="primary">#1A56DB</color>
     <color name="primary_container">#0052CC</color>
     <color name="on_primary">#FFFFFF</color>
     <color name="surface">#F7F9FC</color>
@@ -26,9 +26,9 @@
     <color name="surface_variant">#E0E3E6</color>
 
     <!-- Legacy / Other colors used in project -->
-    <color name="main_blue">#003D9B</color>
-    <color name="dark_blue">#003D9B</color>
-    <color name="light_blue">#D1E4FF</color>
+    <color name="main_blue">#1A56DB</color>
+    <color name="dark_blue">#1142A6</color>
+    <color name="light_blue">#EFF4FB</color>
     <color name="text_gray">#757575</color>
     <color name="bg_gray">#F7F9FC</color>
     <color name="old_price_color">#9E9E9E</color>
@@ -36,8 +36,8 @@
     <color name="bg_quantity">#EEF2F5</color>
     <color name="warning_red">#A33500</color>
     <color name="divider_color">#E0E0E0</color>
-    <color name="price_color">#003D9B</color>
-    <color name="primary_alpha_05">#0D003D9B</color>
+    <color name="price_color">#1A56DB</color>
+    <color name="primary_alpha_05">#0D1A56DB</color>
     <color name="error">#BA1A1A</color>
     <color name="inventory_inactive_bg">#EEF0F5</color>
     <color name="inventory_inactive_text">#20242C</color>
