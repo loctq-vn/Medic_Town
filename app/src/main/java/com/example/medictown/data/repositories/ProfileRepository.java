@@ -27,7 +27,7 @@ public class ProfileRepository {
         this.apiService = RetrofitClient.getApiService();
     }
 
-    public void getUser(String userId, Callback<Users> callback) {
+    public void getCurrentUser(Callback<Users> callback) {
         apiService.getUser().enqueue(callback);
     }
 
@@ -63,6 +63,10 @@ public class ProfileRepository {
             RequestBody requestBody = RequestBody.create(bytes, MediaType.parse(mimeType));
             String token = new SessionManager(context).getToken();
 
+            if (token == null || token.trim().isEmpty()) {
+                throw new IOException("Phiên đăng nhập đã hết hạn");
+            }
+
             Request request = new Request.Builder()
                     .url(SupabaseConfig.BACKEND_URL + "api/users/me/avatar?filename=" + fileName)
                     .post(requestBody)
@@ -79,6 +83,7 @@ public class ProfileRepository {
         }
     }
 
+    private static final int MAX_AVATAR_BYTES = 5 * 1024 * 1024;
     public byte[] getBytes(InputStream inputStream) throws IOException {
         if (inputStream == null) {
             throw new IOException("Unable to open selected avatar");
@@ -89,6 +94,10 @@ public class ProfileRepository {
             int len;
             while ((len = stream.read(buffer)) != -1) {
                 byteBuffer.write(buffer, 0, len);
+
+                if (byteBuffer.size() > MAX_AVATAR_BYTES) {
+                    throw new IOException("Ảnh đại diện không được vượt quá 5 MB");
+                }
             }
             return byteBuffer.toByteArray();
         }

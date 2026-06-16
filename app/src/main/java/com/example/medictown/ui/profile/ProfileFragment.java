@@ -67,18 +67,40 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mViewModel.fetchUserProfile(sessionManager.getUserId());
+        mViewModel.fetchCurrentUserProfile();
     }
     private void setupClickListeners() {
         binding.itemProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), ProfileDetailActivity.class);
-            intent.putExtra("id", user.id);
+            if (user == null) {
+                Toast.makeText(
+                        requireContext(),
+                        "Hồ sơ đang được tải",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            Intent intent = new Intent(
+                    requireContext(),
+                    ProfileDetailActivity.class
+            );
             startActivity(intent);
         });
 
         binding.itemAddresses.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), AddressDetailActivity.class);
-            intent.putExtra("id", user.id);
+            if (user == null) {
+                Toast.makeText(
+                        requireContext(),
+                        "Hồ sơ đang được tải",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            Intent intent = new Intent(
+                    requireContext(),
+                    AddressDetailActivity.class
+            );
             startActivity(intent);
         });
 

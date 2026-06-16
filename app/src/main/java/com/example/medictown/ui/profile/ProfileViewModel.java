@@ -23,19 +23,27 @@ public class ProfileViewModel extends ViewModel {
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
-    public void fetchUserProfile(String userId) {
-        repository.getUser(userId, new Callback<Users>() {
+    public void fetchCurrentUserProfile() {
+        repository.getCurrentUser(new Callback<Users>() {
             @Override
-            public void onResponse(Call<Users> call, Response<Users> response) {
+            public void onResponse(
+                    Call<Users> call,
+                    Response<Users> response
+            ) {
                 if (response.isSuccessful() && response.body() != null) {
                     user.setValue(response.body());
                 } else {
-                    errorMessage.setValue("Lỗi khi tải user: " + response.message());
+                    errorMessage.setValue(
+                            "Không thể tải hồ sơ: HTTP " + response.code()
+                    );
                 }
             }
+
             @Override
-            public void onFailure(Call<Users> call, Throwable t) {
-                errorMessage.setValue("Lỗi kết nối: " + t.getMessage());
+            public void onFailure(Call<Users> call, Throwable throwable) {
+                errorMessage.setValue(
+                        "Lỗi kết nối: " + throwable.getMessage()
+                );
             }
         });
     }
