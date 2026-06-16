@@ -45,6 +45,7 @@ public class AdminInventoryFragment extends Fragment {
 
     private AdminViewModel viewModel;
     private AdminInventoryAdapter adapter;
+    private androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefresh;
     private String currentShopId;
 
     private final List<Products> allProducts = new ArrayList<>();
@@ -79,6 +80,7 @@ public class AdminInventoryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(AdminViewModel.class);
+        swipeRefresh = view.findViewById(R.id.swipe_refresh);
         adapter = new AdminInventoryAdapter();
         adapter.setOnProductActionListener(new AdminInventoryAdapter.OnProductActionListener() {
             @Override
@@ -104,6 +106,7 @@ public class AdminInventoryFragment extends Fragment {
         rvInventory.setLayoutManager(new LinearLayoutManager(getContext()));
         rvInventory.setAdapter(adapter);
 
+        setupSwipeRefresh();
         setupLocalFilters(view);
         setupActions(view);
         observeData();
@@ -111,6 +114,11 @@ public class AdminInventoryFragment extends Fragment {
         SessionManager sessionManager = new SessionManager(requireContext());
         currentShopId = sessionManager.getCurrentShopId();
         viewModel.fetchProductTaxonomy();
+    }
+
+    private void setupSwipeRefresh() {
+        swipeRefresh.setOnRefreshListener(this::loadProducts);
+        swipeRefresh.setColorSchemeResources(R.color.admin_primary);
     }
 
     private void openEditProduct(Products product) {
@@ -166,6 +174,28 @@ public class AdminInventoryFragment extends Fragment {
     }
 
     private void observeData() {
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (swipeRefresh != null) {
+                swipeRefresh.setRefreshing(isLoading);
+            }
+            View view = getView();
+            if (view != null) {
+                View shimmer = view.findViewById(R.id.shimmerInventory);
+                View rv = view.findViewById(R.id.rvInventory);
+                if (shimmer != null && rv != null) {
+                    if (isLoading) {
+                        shimmer.setVisibility(View.VISIBLE);
+                        ((com.facebook.shimmer.ShimmerFrameLayout) shimmer).startShimmer();
+                        rv.setVisibility(View.GONE);
+                    } else {
+                        ((com.facebook.shimmer.ShimmerFrameLayout) shimmer).stopShimmer();
+                        shimmer.setVisibility(View.GONE);
+                        rv.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+
         viewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
             allProducts.clear();
             if (products != null) {

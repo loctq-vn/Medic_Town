@@ -15,6 +15,7 @@ public class ProfileViewModel extends ViewModel {
     private final ProfileRepository repository;
     private final MutableLiveData<Users> user = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
 
     public ProfileViewModel() {
         this.repository = new ProfileRepository();
@@ -23,10 +24,15 @@ public class ProfileViewModel extends ViewModel {
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
+    public LiveData<Boolean> getIsLoading() {
+        return isLoading;
+    }
     public void fetchUserProfile(String userId) {
+        isLoading.setValue(true);
         repository.getUser(userId, new Callback<Users>() {
             @Override
             public void onResponse(Call<Users> call, Response<Users> response) {
+                isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null) {
                     user.setValue(response.body());
                 } else {
@@ -35,6 +41,7 @@ public class ProfileViewModel extends ViewModel {
             }
             @Override
             public void onFailure(Call<Users> call, Throwable t) {
+                isLoading.setValue(false);
                 errorMessage.setValue("Lỗi kết nối: " + t.getMessage());
             }
         });

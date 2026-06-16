@@ -86,12 +86,8 @@ public class PaymentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        // Hide BottomNavigationView and AppBar from MainActivity
-        if (getActivity() != null) {
-            View bottomNav = getActivity().findViewById(R.id.bottom_navigation);
-            View appBar = getActivity().findViewById(R.id.app_bar_main);
-            if (bottomNav != null) bottomNav.setVisibility(View.GONE);
-            if (appBar != null) appBar.setVisibility(View.GONE);
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setNavBarsVisibility(false);
         }
 
         viewModel = new ViewModelProvider(this).get(PaymentViewModel.class);
@@ -373,12 +369,8 @@ public class PaymentFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Show BottomNavigationView and AppBar when leaving
-        if (getActivity() != null) {
-            View bottomNav = getActivity().findViewById(R.id.bottom_navigation);
-            View appBar = getActivity().findViewById(R.id.app_bar_main);
-            if (bottomNav != null) bottomNav.setVisibility(View.VISIBLE);
-            if (appBar != null) appBar.setVisibility(View.VISIBLE);
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setNavBarsVisibility(true);
         }
         binding = null;
     }

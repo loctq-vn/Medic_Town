@@ -120,12 +120,23 @@ public class ProductFragment extends Fragment {
         setupSearch();
         setupCategoryNavigation();
         setupCategoryScrollIndicator();
+        setupSwipeRefresh();
         observeViewModel();
         startTypingAnimation();
         
         // Gọi tải tất cả sản phẩm
         viewModel.loadHomeBannerAds();
         viewModel.loadAllProducts();
+    }
+
+    private void setupSwipeRefresh() {
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            viewModel.loadHomeBannerAds();
+            viewModel.loadAllProducts();
+        });
+        
+        // Cấu hình màu sắc
+        binding.swipeRefresh.setColorSchemeResources(R.color.main_blue);
     }
 
     private void setupSearch() {
@@ -312,6 +323,21 @@ public class ProductFragment extends Fragment {
 
     private void observeViewModel() {
         viewModel.getHomeBannerAds().observe(getViewLifecycleOwner(), this::bindAdBanners);
+
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (binding != null) {
+                binding.swipeRefresh.setRefreshing(isLoading);
+                if (isLoading) {
+                    binding.shimmerProducts.setVisibility(View.VISIBLE);
+                    binding.shimmerProducts.startShimmer();
+                    binding.rvProducts.setVisibility(View.GONE);
+                } else {
+                    binding.shimmerProducts.stopShimmer();
+                    binding.shimmerProducts.setVisibility(View.GONE);
+                    binding.rvProducts.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         // Quan sát cả featured và all products để hiển thị
         viewModel.getFeaturedProducts().observe(getViewLifecycleOwner(), products -> {

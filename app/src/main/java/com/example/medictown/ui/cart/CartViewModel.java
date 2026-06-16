@@ -25,6 +25,9 @@ public class CartViewModel extends ViewModel {
     private final MutableLiveData<List<CartItem>> _cartItems = new MutableLiveData<>();
     public LiveData<List<CartItem>> cartItems = _cartItems;
 
+    private final MutableLiveData<Boolean> _isLoading = new MutableLiveData<>(false);
+    public LiveData<Boolean> isLoading = _isLoading;
+
     private final MutableLiveData<Map<String, String>> _subcategoryNames = new MutableLiveData<>(new HashMap<>());
     public LiveData<Map<String, String>> subcategoryNames = _subcategoryNames;
 
@@ -33,9 +36,11 @@ public class CartViewModel extends ViewModel {
     }
 
     public void fetchCartItems(String userId, String token) {
+        _isLoading.postValue(true);
         cartRepository.getCartItems(userId, token, new Callback<List<CartItem>>() {
             @Override
             public void onResponse(Call<List<CartItem>> call, Response<List<CartItem>> response) {
+                _isLoading.postValue(false);
                 if (response.isSuccessful() && response.body() != null) {
                     _cartItems.postValue(response.body());
                 } else {
@@ -45,6 +50,7 @@ public class CartViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<List<CartItem>> call, Throwable t) {
+                _isLoading.postValue(false);
                 _cartItems.postValue(null);
             }
         });
