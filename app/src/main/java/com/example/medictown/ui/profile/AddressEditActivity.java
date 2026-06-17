@@ -51,22 +51,7 @@ public class AddressEditActivity extends AppCompatActivity {
     }
     private void setupbutton() {
         binding.toolbar.setNavigationOnClickListener(v -> finish());
-        binding.btnChooseOnMap.setOnClickListener(v -> {
-            Intent pickerIntent = new Intent(AddressEditActivity.this, AddressMapPickerActivity.class);
-
-            if (selectedLatitude != null && selectedLongitude != null) {
-                pickerIntent.putExtra("latitude", selectedLatitude);
-                pickerIntent.putExtra("longitude", selectedLongitude);
-            }
-
-            String currentLocation = binding.location.getText() != null
-                    ? binding.location.getText().toString()
-                    : "";
-
-            pickerIntent.putExtra("location", currentLocation);
-
-            mapPickerLauncher.launch(pickerIntent);
-        });
+        binding.btnChooseOnMap.setOnClickListener(v -> openMapPicker());
         binding.btnSave.setOnClickListener(v -> {
             Intent intent = getIntent();
             Address address = new Address();
@@ -114,18 +99,25 @@ public class AddressEditActivity extends AppCompatActivity {
                 });
             }
         });
-
-        binding.btnChooseOnMap.setOnClickListener(v -> {
-            Intent intent = new Intent(AddressEditActivity.this, AddressMapPickerActivity.class);
-
-            if (selectedLatitude != null && selectedLongitude != null) {
-                intent.putExtra("latitude", selectedLatitude);
-                intent.putExtra("longitude", selectedLongitude);
-            }
-
-            mapPickerLauncher.launch(intent);
-        });
     }
+
+    private void openMapPicker() {
+        Intent pickerIntent = new Intent(AddressEditActivity.this, AddressMapPickerActivity.class);
+
+        if (selectedLatitude != null && selectedLongitude != null) {
+            pickerIntent.putExtra("latitude", selectedLatitude);
+            pickerIntent.putExtra("longitude", selectedLongitude);
+        }
+
+        String currentLocation = binding.location.getText() != null
+                ? binding.location.getText().toString()
+                : "";
+
+        pickerIntent.putExtra("location", currentLocation);
+
+        mapPickerLauncher.launch(pickerIntent);
+    }
+    
     private void loadAddresses() {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("id")) {

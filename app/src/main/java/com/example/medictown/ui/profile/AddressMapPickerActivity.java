@@ -26,14 +26,50 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+
+import org.maplibre.android.camera.CameraUpdateFactory;
+
+import org.json.JSONArray;
+
 public class AddressMapPickerActivity extends AppCompatActivity {
     private static final double DEFAULT_LAT = 10.7769;
     private static final double DEFAULT_LNG = 106.7009;
 
     private ActivityAddressMapPickerBinding binding;
     private MapLibreMap mapLibreMap;
+    private FusedLocationProviderClient fusedLocationClient;
     private final OkHttpClient client = new OkHttpClient();
 
+
+    private final ActivityResultLauncher<String[]> locationPermissionLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestMultiplePermissions(),
+                    result -> {
+                        Boolean fine = result.get(Manifest.permission.ACCESS_FINE_LOCATION);
+                        Boolean coarse = result.get(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+                        if (Boolean.TRUE.equals(fine) || Boolean.TRUE.equals(coarse)) {
+                            moveToCurrentLocation();
+                        } else {
+                            Toast.makeText(
+                                    this,
+                                    "Bạn cần cấp quyền vị trí để định vị",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    }
+            );
     private static final String OSM_STYLE_JSON =
             "{"
                     + "\"version\":8,"
@@ -60,6 +96,7 @@ public class AddressMapPickerActivity extends AppCompatActivity {
 
         MapLibre.getInstance(this);
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         binding = ActivityAddressMapPickerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -76,6 +113,22 @@ public class AddressMapPickerActivity extends AppCompatActivity {
         });
 
         binding.btnUseLocation.setOnClickListener(v -> confirmSelectedLocation());
+        binding.btnCurrentLocation.setOnClickListener(v -> requestOrMoveToCurrentLocation());
+        binding.btnSearchAddress.setOnClickListener(v -> {
+            String query = binding.etSearchAddress.getText() != null
+                    ? binding.etSearchAddress.getText().toString().trim()
+                    : "";
+
+            searchAddress(query);
+        });
+        binding.etSearchAddress.setOnEditorActionListener((v, actionId, event) -> {
+            String query = binding.etSearchAddress.getText() != null
+                    ? binding.etSearchAddress.getText().toString().trim()
+                    : "";
+
+            searchAddress(query);
+            return true;
+        });
     }
 
     private void setupMap() {
@@ -122,6 +175,145 @@ public class AddressMapPickerActivity extends AppCompatActivity {
         reverseGeocode(target.getLatitude(), target.getLongitude());
     }
 
+    private boolean hasLocationPermission() {
+        return ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestOrMoveToCurrentLocation() {
+        if (!hasLocationPermission()) {
+            locationPermissionLauncher.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+            return;
+        }
+
+        moveToCurrentLocation();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void moveToCurrentLocation() {
+        setLoading(true);
+
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener(location -> {
+                    setLoading(false);
+
+                    if (location == null) {
+                        Toast.makeText(
+                                this,
+                                "Không lấy được vị trí hiện tại",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
+
+                    moveCamera(location.getLatitude(), location.getLongitude(), 17);
+                })
+                .addOnFailureListener(e -> {
+                    setLoading(false);
+                    Toast.makeText(
+                            this,
+                            "Lỗi định vị vị trí hiện tại",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                });
+    }
+
+    private void moveCamera(double lat, double lng, double zoom) {
+        if (mapLibreMap == null) {
+            return;
+        }
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(lat, lng))
+                .zoom(zoom)
+                .build();
+
+        mapLibreMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private void searchAddress(String query) {
+        if (query.isEmpty()) {
+            Toast.makeText(this, "Nhập địa chỉ cần tìm", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        setLoading(true);
+
+        HttpUrl url = HttpUrl.parse("https://nominatim.openstreetmap.org/search")
+                .newBuilder()
+                .addQueryParameter("format", "jsonv2")
+                .addQueryParameter("q", query)
+                .addQueryParameter("limit", "1")
+                .addQueryParameter("countrycodes", "vn")
+                .addQueryParameter("addressdetails", "1")
+                .addQueryParameter("accept-language", "vi")
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .header("User-Agent", "MedicTown/1.0")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> {
+                    setLoading(false);
+                    Toast.makeText(
+                            AddressMapPickerActivity.this,
+                            "Không tìm được địa chỉ",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String body = response.body() != null ? response.body().string() : "";
+
+                runOnUiThread(() -> {
+                    setLoading(false);
+
+                    try {
+                        JSONArray array = new JSONArray(body);
+
+                        if (array.length() == 0) {
+                            Toast.makeText(
+                                    AddressMapPickerActivity.this,
+                                    "Không có kết quả phù hợp",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return;
+                        }
+
+                        JSONObject item = array.getJSONObject(0);
+
+                        double lat = Double.parseDouble(item.optString("lat"));
+                        double lng = Double.parseDouble(item.optString("lon"));
+                        String displayName = item.optString("display_name");
+
+                        binding.tvSelectedAddress.setText(displayName);
+                        moveCamera(lat, lng, 17);
+                    } catch (Exception e) {
+                        Toast.makeText(
+                                AddressMapPickerActivity.this,
+                                "Lỗi đọc kết quả tìm kiếm",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
+            }
+        });
+    }
     private void reverseGeocode(double lat, double lng) {
         setLoading(true);
 

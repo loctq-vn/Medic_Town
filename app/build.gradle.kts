@@ -87,4 +87,7 @@ dependencies {
     // Shipping status notification
     implementation(platform("com.google.firebase:firebase-bom:34.14.1"))
     implementation("com.google.firebase:firebase-messaging")
+
+    // Device Locating
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 }
