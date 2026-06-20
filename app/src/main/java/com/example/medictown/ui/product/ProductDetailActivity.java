@@ -49,6 +49,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        postponeEnterTransition();
         binding = ActivityProductDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -149,6 +150,19 @@ public class ProductDetailActivity extends AppCompatActivity {
                 .load(imageUrl)
                 .placeholder(R.drawable.ic_product)
                 .error(R.drawable.ic_product)
+                .listener(new com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@androidx.annotation.Nullable com.bumptech.glide.load.engine.GlideException e, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, boolean isFirstResource) {
+                        startPostponedEnterTransition();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(android.graphics.drawable.Drawable resource, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                        startPostponedEnterTransition();
+                        return false;
+                    }
+                })
                 .into(binding.imgProductDetail);
     }
 
@@ -162,11 +176,17 @@ public class ProductDetailActivity extends AppCompatActivity {
         relatedProductAdapter = new ProductAdapter();
         relatedProductAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
-            public void onProductClick(Products relatedProduct) {
+            public void onProductClick(Products relatedProduct, android.widget.ImageView productImage) {
                 recordProductEvent(relatedProduct, "click", buildMetadata("related_products", 0));
                 Intent intent = new Intent(ProductDetailActivity.this, ProductDetailActivity.class);
                 intent.putExtra("product", relatedProduct);
-                startActivity(intent);
+
+                androidx.core.app.ActivityOptionsCompat options = androidx.core.app.ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        ProductDetailActivity.this,
+                        productImage,
+                        androidx.core.view.ViewCompat.getTransitionName(productImage)
+                );
+                startActivity(intent, options.toBundle());
             }
 
             @Override
@@ -254,7 +274,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void setupButtons() {
         binding.toolbar.setNavigationOnClickListener(v -> {
-            finish();
+            supportFinishAfterTransition();
         });
         
         binding.btnAddToCartDetail.setOnClickListener(v -> {

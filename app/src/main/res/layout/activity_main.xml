@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_gray"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -60,7 +61,9 @@
         app:fabCradleMargin="10dp"
         app:fabCradleRoundedCornerRadius="10dp"
         app:fabCradleVerticalOffset="0dp"
-        app:elevation="4dp"
+        app:elevation="16dp"
+        android:outlineAmbientShadowColor="#1A000000"
+        android:outlineSpotShadowColor="#1A000000"
         app:paddingBottomSystemWindowInsets="false">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -71,7 +74,6 @@
             android:background="@android:color/transparent"
             app:backgroundTint="@android:color/transparent"
             app:elevation="0dp"
-            app:itemActiveIndicatorStyle="@null"
             app:itemIconTint="@color/nav_item_colors"
             app:itemTextColor="@color/nav_item_colors"
             app:labelVisibilityMode="labeled"
@@ -86,7 +88,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/main_blue"
         app:tint="@android:color/white"
-        app:srcCompat="@drawable/ic_ad_add"
+        app:srcCompat="@drawable/contact_support"
         app:layout_anchor="@id/bottomAppBar"
         app:elevation="12dp"
         app:maxImageSize="32dp"

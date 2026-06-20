@@ -8,9 +8,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,7 +41,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setupWindowInsets();
 
         SessionManager sessionManager = new SessionManager(this);
         if (!sessionManager.isLoggedIn()) {
@@ -84,28 +80,6 @@ public class ChatActivity extends AppCompatActivity {
                 );
             }
         }
-    }
-
-    private void setupWindowInsets() {
-        View root = binding.getRoot();
-        int paddingLeft = root.getPaddingLeft();
-        int paddingTop = root.getPaddingTop();
-        int paddingRight = root.getPaddingRight();
-        int paddingBottom = root.getPaddingBottom();
-
-        ViewCompat.setOnApplyWindowInsetsListener(root, (view, windowInsets) -> {
-            Insets systemBars = windowInsets.getInsets(
-                    WindowInsetsCompat.Type.systemBars()
-            );
-            view.setPadding(
-                    paddingLeft + systemBars.left,
-                    paddingTop + systemBars.top,
-                    paddingRight + systemBars.right,
-                    paddingBottom + systemBars.bottom
-            );
-            return windowInsets;
-        });
-        ViewCompat.requestApplyInsets(root);
     }
 
     private void initializeSellerConversation(SessionManager sessionManager) {

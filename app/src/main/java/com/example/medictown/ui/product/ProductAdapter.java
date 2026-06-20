@@ -21,10 +21,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private OnProductClickListener listener;
 
     public interface OnProductClickListener {
-        void onProductClick(Products product);
+        void onProductClick(Products product, android.widget.ImageView productImage);
 
         default void onBuyNowClick(Products product) {
-            onProductClick(product);
+            // Can be left as is or updated if needed
         }
     }
 
@@ -115,7 +115,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             // Thiết lập sự kiện click cho toàn bộ item (tùy chọn)
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onProductClick(product);
+                    listener.onProductClick(product, binding.imgProduct);
                 }
             });
         }

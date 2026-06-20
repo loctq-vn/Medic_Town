@@ -56,6 +56,11 @@
     <color name="status_critical_bg">#FFDAD6</color>
     <color name="status_critical_text">#93000A</color>
 
+    <!-- Ripple Colors -->
+    <color name="ripple_primary_light">#1F1A56DB</color>
+    <color name="ripple_admin_light">#1F00A76F</color>
+
+
     <!-- Admin Revenue/Green Theme Colors (Premium Modern Green) -->
     <color name="admin_primary">#00A76F</color>
     <color name="admin_accent">#34D399</color>

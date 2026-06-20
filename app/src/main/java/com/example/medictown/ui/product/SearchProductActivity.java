@@ -31,15 +31,8 @@ public class SearchProductActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        androidx.activity.EdgeToEdge.enable(this);
         binding = ActivitySearchProductBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.searchRoot, (v, insets) -> {
-            androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         viewModel = new ViewModelProvider(this).get(ProductViewModel.class);
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
@@ -90,11 +83,17 @@ public class SearchProductActivity extends AppCompatActivity {
         adapter = new ProductAdapter();
         adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
-            public void onProductClick(Products product) {
+            public void onProductClick(Products product, android.widget.ImageView productImage) {
                 recordProductClick(product);
                 Intent intent = new Intent(SearchProductActivity.this, ProductDetailActivity.class);
                 intent.putExtra("product", product);
-                startActivity(intent);
+
+                androidx.core.app.ActivityOptionsCompat options = androidx.core.app.ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        SearchProductActivity.this,
+                        productImage,
+                        androidx.core.view.ViewCompat.getTransitionName(productImage)
+                );
+                startActivity(intent, options.toBundle());
             }
 
             @Override

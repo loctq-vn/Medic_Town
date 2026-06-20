@@ -16,7 +16,13 @@
         <item name="colorTertiaryContainer">@color/tertiary_container</item>
         <item name="colorOnTertiaryContainer">@color/on_tertiary_container</item>
         <item name="android:fontFamily">sans-serif</item>
+
+        <!-- Custom Ripple Effects -->
+        <item name="colorControlHighlight">@color/ripple_primary_light</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
+
 
     <style name="Theme.MedicTown" parent="Base.Theme.MedicTown" />
 
@@ -67,4 +73,23 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/medic_town_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.MedicTown</item>
     </style>
+
+    <!-- Custom Button Style with Light Ripple -->
+    <style name="Widget.App.Button" parent="Widget.Material3.Button">
+        <item name="rippleColor">@color/ripple_primary_light</item>
+    </style>
+
+    <!-- Custom BottomNav Style with Light Ripple -->
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemRippleColor">@color/ripple_primary_light</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.App.BottomNavigationView.Indicator</item>
+    </style>
+
+    <style name="Widget.App.BottomNavigationView.Indicator" parent="">
+        <item name="android:color">@android:color/transparent</item>
+        <item name="android:width">48dp</item>
+        <item name="android:height">32dp</item>
+    </style>
 </resources>
+
+

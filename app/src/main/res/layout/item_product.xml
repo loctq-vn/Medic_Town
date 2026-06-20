@@ -22,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
+                android:transitionName="product_image"
                 android:src="@drawable/ic_product" />
 
             <TextView

@@ -3,7 +3,16 @@
     <style name="ThemeOverlay.MedicTown.Revenue" parent="">
         <item name="fontFamily">@font/plus_jakarta_sans</item>
         <item name="android:fontFamily">@font/plus_jakarta_sans</item>
+        <!-- Seller Ripple Colors -->
+        <item name="colorControlHighlight">@color/ripple_admin_light</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button.Seller</item>
     </style>
+
+    <!-- Seller Button Style -->
+    <style name="Widget.App.Button.Seller" parent="Widget.Material3.Button">
+        <item name="rippleColor">@color/ripple_admin_light</item>
+    </style>
+
 
     <style name="AdminFormSectionTitle">
         <item name="android:layout_width">match_parent</item>

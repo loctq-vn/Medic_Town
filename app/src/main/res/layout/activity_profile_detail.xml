@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/white"
-        android:paddingTop="50dp">
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"

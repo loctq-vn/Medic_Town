@@ -1,121 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="0dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="20dp">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <View
+            android:id="@+id/v_side_accent"
+            android:layout_width="8dp"
+            android:layout_height="0dp"
+            android:background="#E1F5FE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_avatar"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_circle_avatar"
+            android:gravity="center"
+            android:textColor="@color/on_surface"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/v_side_accent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="D" />
+
+        <TextView
+            android:id="@+id/location_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/edit"
+            app:layout_constraintStart_toEndOf="@id/tv_avatar"
+            app:layout_constraintTop_toTopOf="@id/tv_avatar"
+            tools:text="Dũng Trương Anh" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="3dp"
-                    android:background="@color/light_blue"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_home" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="10dp">
-
-                    <TextView
-                        android:id="@+id/location_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="location_name"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/recipient_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="recipient_name" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/edit"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:backgroundTint="#00FFFFFF"
-                    android:src="@drawable/ic_edit" />
-
-                <ImageButton
-                    android:id="@+id/delete"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:backgroundTint="#00FFFFFF"
-                    android:src="@drawable/outline_delete_24" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/recipient_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="24dp">
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_gray"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@id/location_name"
+            app:layout_constraintStart_toStartOf="@id/location_name"
+            app:layout_constraintTop_toBottomOf="@id/location_name"
+            tools:text="Dũng Trương Anh" />
 
-            <View
-                android:layout_width="3dp"
-                android:layout_height="match_parent"
-                android:background="#70003D9B" />
+        <TextView
+            android:id="@+id/phone_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/text_gray"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@id/location_name"
+            app:layout_constraintStart_toStartOf="@id/location_name"
+            app:layout_constraintTop_toBottomOf="@id/recipient_name"
+            tools:text="0865226045" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingHorizontal="20dp">
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/location_name"
+            app:layout_constraintStart_toStartOf="@id/location_name"
+            app:layout_constraintTop_toBottomOf="@id/phone_number"
+            tools:text="Khu phố 35, Phường Tam Hiệp, Thành phố Đồng Nai, 76109, Việt Nam" />
 
-                <TextView
-                    android:id="@+id/phone_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="2dp"
-                    android:text="phone_number" />
+        <ImageButton
+            android:id="@+id/edit"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_circle_edit"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintEnd_toStartOf="@+id/delete"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#2196F3" />
 
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="location" />
-            </LinearLayout>
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/delete"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_circle_delete"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/outline_delete_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#F44336" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

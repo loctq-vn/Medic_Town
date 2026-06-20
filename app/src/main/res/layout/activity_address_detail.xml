@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/white"
-        android:paddingTop="50dp">
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:nestedScrollingEnabled="false"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_address" />
 
     </androidx.core.widget.NestedScrollView>

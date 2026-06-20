@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.medictown.R;
+import com.example.medictown.data.api.SessionManager;
 import com.example.medictown.data.models.Address;
 import com.example.medictown.data.repositories.ProfileRepository;
 import com.example.medictown.databinding.ActivityAddressDetailBinding;
@@ -28,6 +29,7 @@ public class AddressDetailActivity extends AppCompatActivity {
     private ActivityAddressDetailBinding binding;
     private ProfileRepository repository;
     private AddressAdapter adapter;
+    private String userId;
     public List<Address> addressList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,12 @@ public class AddressDetailActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         this.repository = new ProfileRepository();
+        
+        userId = getIntent().getStringExtra("id");
+        if (userId == null) {
+            userId = new SessionManager(this).getUserId();
+        }
+        
         setupRecyclerView();
         setupbutton();
     }
@@ -49,7 +57,7 @@ public class AddressDetailActivity extends AppCompatActivity {
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         binding.btnAdd.setOnClickListener(v -> {
             Intent intent = new Intent(AddressDetailActivity.this, AddressEditActivity.class);
-            intent.putExtra("user_id", getIntent().getStringExtra("id"));
+            intent.putExtra("user_id", userId);
             startActivity(intent);
         });
     }
@@ -112,22 +120,24 @@ public class AddressDetailActivity extends AppCompatActivity {
     }
 
     private void loadAddresses() {
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("id")) {
-            repository.getAddress(intent.getStringExtra("id"), new Callback<List<Address>>() {
-                @Override
-                public void onResponse(Call<List<Address>> call, Response<List<Address>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        addressList = response.body();
-                        adapter.setAddressList(addressList);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Address>> call, Throwable t) {
-                    Toast.makeText(AddressDetailActivity.this, "Lỗi tải dữ liệu", Toast.LENGTH_SHORT).show();
-                }
-            });
+        if (userId == null) {
+            Toast.makeText(this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        repository.getAddress(userId, new Callback<List<Address>>() {
+            @Override
+            public void onResponse(Call<List<Address>> call, Response<List<Address>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    addressList = response.body();
+                    adapter.setAddressList(addressList);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Address>> call, Throwable t) {
+                Toast.makeText(AddressDetailActivity.this, "Lỗi tải dữ liệu", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

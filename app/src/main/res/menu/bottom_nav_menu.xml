@@ -11,7 +11,6 @@
 
     <item
         android:id="@+id/nav_consult"
-        android:icon="@drawable/ic_transparent"
         android:title="Tư vấn"
         android:enabled="false" />
 

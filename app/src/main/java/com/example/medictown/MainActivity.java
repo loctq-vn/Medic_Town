@@ -1,19 +1,30 @@
 package com.example.medictown;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
+
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -59,10 +70,43 @@ public class MainActivity extends AppCompatActivity {
     private TextView appTitle;
     private boolean sellerMode = false;
 
+    private final Handler iconHandler = new Handler(Looper.getMainLooper());
+    private int currentIconIndex = 0;
+    private final int[] fabIcons = {
+            R.drawable.contact_support,
+            R.drawable.clinical_notes,
+            R.drawable.health_cross_icon
+    };
+    private final Runnable iconAnimationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (fabCenter == null || fabCenter.getVisibility() != View.VISIBLE) {
+                iconHandler.postDelayed(this, 3000);
+                return;
+            }
+
+            ObjectAnimator fadeOut = ObjectAnimator.ofInt(fabCenter, "imageAlpha", 255, 0);
+            fadeOut.setDuration(600);
+            fadeOut.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    currentIconIndex = (currentIconIndex + 1) % fabIcons.length;
+                    fabCenter.setImageResource(fabIcons[currentIconIndex]);
+
+                    ObjectAnimator fadeIn = ObjectAnimator.ofInt(fabCenter, "imageAlpha", 0, 255);
+                    fadeIn.setDuration(600);
+                    fadeIn.start();
+                }
+            });
+            fadeOut.start();
+
+            iconHandler.postDelayed(this, 4000);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
         SessionManager sessionManager = new SessionManager(this);
@@ -78,12 +122,6 @@ public class MainActivity extends AppCompatActivity {
         bottomAppBar = findViewById(R.id.bottomAppBar);
         fabCenter = findViewById(R.id.fab_center);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
-            return insets;
-        });
-
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new ProductFragment())
@@ -96,6 +134,19 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.fab_center).setOnClickListener(view -> {
             startActivity(new Intent(this, ChatActivity.class));
         });
+
+        startIconAnimation();
+    }
+
+    private void startIconAnimation() {
+        iconHandler.removeCallbacks(iconAnimationRunnable);
+        iconHandler.postDelayed(iconAnimationRunnable, 2000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        iconHandler.removeCallbacks(iconAnimationRunnable);
     }
 
     private void setupBottomNavigation() {
@@ -153,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setItemBackgroundResource(R.drawable.seller_nav_indicator_background);
         bottomNav.setItemIconTintList(AppCompatResources.getColorStateList(this, R.color.seller_nav_item_color_state));
         bottomNav.setItemTextColor(AppCompatResources.getColorStateList(this, R.color.seller_nav_item_color_state));
+        bottomNav.setItemRippleColor(ColorStateList.valueOf(getResources().getColor(R.color.ripple_admin_light, getTheme())));
 
         // Đổi màu logo và tiêu đề sang màu admin
         if (appLogo != null) {
@@ -179,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setItemBackgroundResource(R.drawable.nav_indicator_background);
         bottomNav.setItemIconTintList(AppCompatResources.getColorStateList(this, R.color.nav_item_colors));
         bottomNav.setItemTextColor(AppCompatResources.getColorStateList(this, R.color.nav_item_colors));
+        bottomNav.setItemRippleColor(ColorStateList.valueOf(getResources().getColor(R.color.ripple_primary_light, getTheme())));
 
         // Đổi màu logo và tiêu đề về màu mặc định
         if (appLogo != null) {

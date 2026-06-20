@@ -109,6 +109,7 @@ public class ProfileFragment extends Fragment {
                     requireContext(),
                     AddressDetailActivity.class
             );
+            intent.putExtra("id", user.id);
             startActivity(intent);
         });
 

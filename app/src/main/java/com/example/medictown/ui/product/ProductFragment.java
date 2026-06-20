@@ -234,11 +234,17 @@ public class ProductFragment extends Fragment {
         adapter = new ProductAdapter();
         adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
-            public void onProductClick(Products product) {
+            public void onProductClick(Products product, android.widget.ImageView productImage) {
                 recordProductEvent(product, "click", currentProductSource(), 0);
                 android.content.Intent intent = new android.content.Intent(getContext(), ProductDetailActivity.class);
                 intent.putExtra("product", product);
-                startActivity(intent);
+                
+                androidx.core.app.ActivityOptionsCompat options = androidx.core.app.ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        requireActivity(),
+                        productImage,
+                        androidx.core.view.ViewCompat.getTransitionName(productImage)
+                );
+                startActivity(intent, options.toBundle());
             }
 
             @Override
