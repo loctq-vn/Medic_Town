@@ -28,7 +28,6 @@ import com.example.medictown.data.models.GoogleAuthRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.example.medictown.notifications.NotificationTokenManager;
@@ -62,21 +61,18 @@ public class LoginActivity extends AppCompatActivity {
         tvRegister = findViewById(R.id.tvRegister);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
 
-        // Configure Google Sign-In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("74717555053-tdqa6ag9dtkbome2voqbglbkunuhj7at.apps.googleusercontent.com") // THAY MÃ WEB CLIENT ID VÀO ĐÂY
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient = GoogleSignInConfig.createClient(this);
 
         // Initialize ActivityResultLauncher
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
+                    Intent data = result.getData();
+                    if (data != null) {
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                         handleSignInResult(task);
+                    } else if (result.getResultCode() != RESULT_OK) {
+                        Toast.makeText(this, "Không thể mở đăng nhập Google. Vui lòng kiểm tra cấu hình Google.", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -169,6 +165,8 @@ public class LoginActivity extends AppCompatActivity {
             String idToken = account.getIdToken();
             if (idToken != null) {
                 loginWithSupabaseGoogle(idToken);
+            } else {
+                Toast.makeText(this, "Không lấy được Google ID token. Vui lòng kiểm tra Web Client ID.", Toast.LENGTH_SHORT).show();
             }
         } catch (ApiException e) {
             Toast.makeText(this, "Google Sign-In failed: " + e.getStatusCode(), Toast.LENGTH_SHORT).show();

@@ -9,6 +9,7 @@
     <string name="login_button">Đăng nhập</string>
     <string name="or_continue_with">HOẶC TIẾP TỤC VỚI</string>
     <string name="google_login">Google</string>
+    <string name="google_web_client_id">74717555053-tdqa6ag9dtkbome2voqbglbkunuhj7at.apps.googleusercontent.com</string>
     <string name="new_user_prompt">Bạn mới sử dụng MedicTown?</string>
     <string name="register_now">Tạo tài khoản</string>
     <string name="register_title">Tạo tài khoản</string>

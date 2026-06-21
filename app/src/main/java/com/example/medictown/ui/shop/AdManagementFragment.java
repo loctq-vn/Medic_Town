@@ -1,12 +1,16 @@
 package com.example.medictown.ui.shop;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -67,6 +71,42 @@ public class AdManagementFragment extends Fragment {
         setupSearchAndFilters();
         setupActions();
         loadAdvertisements();
+        setupFormFocusClearing();
+    }
+
+    private void setupFormFocusClearing() {
+        clearTextFocusWhenTouchingNonInput(binding.getRoot());
+    }
+
+    private void clearTextFocusWhenTouchingNonInput(View view) {
+        if (view == null) return;
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener((touchedView, event) -> {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    clearFormFocus();
+                }
+                return false;
+            });
+        }
+
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                clearTextFocusWhenTouchingNonInput(viewGroup.getChildAt(i));
+            }
+        }
+    }
+
+    private void clearFormFocus() {
+        if (binding == null) return;
+        binding.etAdSearch.clearFocus();
+
+        View focusedView = requireActivity().getCurrentFocus();
+        if (focusedView != null) {
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+        }
     }
 
     private void setupSwipeRefresh() {

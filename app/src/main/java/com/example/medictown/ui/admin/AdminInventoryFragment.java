@@ -1,13 +1,17 @@
 package com.example.medictown.ui.admin;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -114,6 +118,44 @@ public class AdminInventoryFragment extends Fragment {
         SessionManager sessionManager = new SessionManager(requireContext());
         currentShopId = sessionManager.getCurrentShopId();
         viewModel.fetchProductTaxonomy();
+        setupFormFocusClearing();
+    }
+
+    private void setupFormFocusClearing() {
+        clearTextFocusWhenTouchingNonInput(getView());
+    }
+
+    private void clearTextFocusWhenTouchingNonInput(View view) {
+        if (view == null) return;
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener((touchedView, event) -> {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    clearFormFocus();
+                }
+                return false;
+            });
+        }
+
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                clearTextFocusWhenTouchingNonInput(viewGroup.getChildAt(i));
+            }
+        }
+    }
+
+    private void clearFormFocus() {
+        View view = getView();
+        if (view == null) return;
+        TextInputEditText etSearch = view.findViewById(R.id.etSearch);
+        if (etSearch != null) etSearch.clearFocus();
+
+        View focusedView = requireActivity().getCurrentFocus();
+        if (focusedView != null) {
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+        }
     }
 
     private void setupSwipeRefresh() {

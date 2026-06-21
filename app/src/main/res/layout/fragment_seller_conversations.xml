@@ -111,13 +111,34 @@
             app:cornerRadius="10dp" />
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progress_loading"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_loading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header" />
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:shimmer_auto_start="true"
+        app:shimmer_duration="1200">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="12dp">
+
+            <include layout="@layout/item_seller_conversation_placeholder" />
+            <include layout="@layout/item_seller_conversation_placeholder" />
+            <include layout="@layout/item_seller_conversation_placeholder" />
+            <include layout="@layout/item_seller_conversation_placeholder" />
+            <include layout="@layout/item_seller_conversation_placeholder" />
+            <include layout="@layout/item_seller_conversation_placeholder" />
+            <include layout="@layout/item_seller_conversation_placeholder" />
+            <include layout="@layout/item_seller_conversation_placeholder" />
+
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

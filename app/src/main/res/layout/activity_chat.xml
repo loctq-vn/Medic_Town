@@ -80,12 +80,14 @@
             android:insetRight="0dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:backgroundTint="@color/primary"
+            app:backgroundTint="@android:color/transparent"
             app:cornerRadius="26dp"
             app:icon="@drawable/ic_image"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
-            app:iconTint="@color/white" />
+            app:iconSize="28dp"
+            app:iconTint="@color/primary"
+            app:rippleColor="@color/ripple_primary_light" />
 
         <EditText
             android:id="@+id/edt_message"
@@ -114,12 +116,14 @@
             android:insetRight="0dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:backgroundTint="@color/primary"
+            app:backgroundTint="@android:color/transparent"
             app:cornerRadius="26dp"
             app:icon="@drawable/ic_send"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
-            app:iconTint="@color/white" />
+            app:iconSize="28dp"
+            app:iconTint="@color/primary"
+            app:rippleColor="@color/ripple_primary_light" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
