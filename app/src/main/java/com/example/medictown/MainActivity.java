@@ -243,6 +243,9 @@ public class MainActivity extends AppCompatActivity {
         if (appTitle != null) {
             appTitle.setTextColor(getResources().getColor(R.color.admin_primary, getTheme()));
         }
+        if (notificationButton != null) {
+            notificationButton.setImageTintList(AppCompatResources.getColorStateList(this, R.color.admin_primary));
+        }
 
         setupBottomNavigation();
         bottomNav.setSelectedItemId(R.id.nav_seller_revenue);
@@ -269,6 +272,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if (appTitle != null) {
             appTitle.setTextColor(getResources().getColor(R.color.main_blue, getTheme()));
+        }
+        if (notificationButton != null) {
+            notificationButton.setImageTintList(AppCompatResources.getColorStateList(this, R.color.main_blue));
         }
 
         setupBottomNavigation();
