@@ -117,7 +117,7 @@ public class AddressEditActivity extends AppCompatActivity {
 
         mapPickerLauncher.launch(pickerIntent);
     }
-    
+
     private void loadAddresses() {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("id")) {

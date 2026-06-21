@@ -41,6 +41,37 @@
                 android:textColor="@color/main_blue"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <FrameLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp">
+
+                <ImageButton
+                    android:id="@+id/btn_notifications"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Notifications"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_notifications" />
+
+                <TextView
+                    android:id="@+id/tv_notification_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="top|end"
+                    android:background="@drawable/bg_unread_badge"
+                    android:gravity="center"
+                    android:text="3"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+            </FrameLayout>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

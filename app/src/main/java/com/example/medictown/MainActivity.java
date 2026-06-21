@@ -44,6 +44,7 @@ import com.example.medictown.ui.chat.ChatActivity;
 import com.example.medictown.ui.chat.SellerConversationFragment;
 import com.example.medictown.ui.history.HistoryFragment;
 import com.example.medictown.ui.history.OrderDetailFragment;
+import com.example.medictown.ui.notifications.NotificationCenterActivity;
 import com.example.medictown.ui.payment.PaymentFragment;
 import com.example.medictown.ui.product.ProductFragment;
 import com.example.medictown.ui.profile.ProfileFragment;
@@ -60,6 +61,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.view.LayoutInflater;
+import android.view.Gravity;
+import android.widget.ImageButton;
+import android.widget.PopupWindow;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.medictown.data.models.AppNotification;
+import com.example.medictown.ui.notifications.NotificationAdapter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import android.view.ViewGroup;
+
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNav;
@@ -69,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
     private ImageView appLogo;
     private TextView appTitle;
     private boolean sellerMode = false;
+
+    private ImageButton notificationButton;
+    private TextView notificationBadge;
+    private final List<AppNotification> notifications = new ArrayList<>();
 
     private final Handler iconHandler = new Handler(Looper.getMainLooper());
     private int currentIconIndex = 0;
@@ -118,6 +139,15 @@ public class MainActivity extends AppCompatActivity {
         appBarMain = findViewById(R.id.app_bar_main);
         appLogo = findViewById(R.id.app_logo);
         appTitle = findViewById(R.id.app_title);
+
+        notificationButton = findViewById(R.id.btn_notifications);
+        notificationBadge = findViewById(R.id.tv_notification_badge);
+
+        loadNotifications();
+
+        notificationButton.setOnClickListener(v -> showShortNotificationPopup());
+        updateNotificationBadge();
+
         bottomNav = findViewById(R.id.bottom_navigation);
         bottomAppBar = findViewById(R.id.bottomAppBar);
         fabCenter = findViewById(R.id.fab_center);
@@ -391,5 +421,72 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Lỗi kết nối khi tải đơn hàng", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void loadNotifications() {
+        RetrofitClient.getApiService().getNotifications(10).enqueue(new Callback<List<AppNotification>>() {
+            @Override
+            public void onResponse(Call<List<AppNotification>> call, Response<List<AppNotification>> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    return;
+                }
+
+                notifications.clear();
+                notifications.addAll(response.body());
+                updateNotificationBadge();
+            }
+
+            @Override
+            public void onFailure(Call<List<AppNotification>> call, Throwable throwable) {
+                Toast.makeText(MainActivity.this, "Cannot load notifications", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateNotificationBadge() {
+        int unreadCount = 0;
+        for (AppNotification item : notifications) {
+            if (!item.isRead) unreadCount++;
+        }
+
+        if (unreadCount > 0) {
+            notificationBadge.setVisibility(View.VISIBLE);
+            notificationBadge.setText(String.valueOf(unreadCount));
+        } else {
+            notificationBadge.setVisibility(View.GONE);
+        }
+    }
+
+    private void showShortNotificationPopup() {
+        loadNotifications();
+        View popupView = LayoutInflater.from(this)
+                .inflate(R.layout.popup_notifications, null, false);
+
+        RecyclerView recyclerView = popupView.findViewById(R.id.rv_short_notifications);
+        TextView moreButton = popupView.findViewById(R.id.tv_more_notifications);
+
+        List<AppNotification> shortList = notifications.size() > 3
+                ? notifications.subList(0, 3)
+                : notifications;
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new NotificationAdapter(shortList));
+
+        PopupWindow popupWindow = new PopupWindow(
+                popupView,
+                getResources().getDisplayMetrics().widthPixels - 32,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true
+        );
+
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setElevation(12f);
+
+        moreButton.setOnClickListener(v -> {
+            popupWindow.dismiss();
+            startActivity(new Intent(this, NotificationCenterActivity.class));
+        });
+
+        popupWindow.showAsDropDown(notificationButton, -280, 0, Gravity.END);
     }
 }

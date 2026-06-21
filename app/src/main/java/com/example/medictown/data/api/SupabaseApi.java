@@ -42,6 +42,8 @@ import retrofit2.http.Query;
 import retrofit2.http.HTTP;
 import retrofit2.http.PUT;
 
+import com.example.medictown.data.models.AppNotification;
+
 public interface SupabaseApi {
     @GET("api/ads")
     Call<List<Advertisement>> getAds(
@@ -303,6 +305,15 @@ public interface SupabaseApi {
 
     @PUT("api/notifications/device-token")
     Call<Void> registerDeviceToken(@Body DeviceTokenRequest request);
+
+    @GET("api/notifications")
+    Call<List<AppNotification>> getNotifications(@Query("limit") int limit);
+
+    @PATCH("api/notifications/{notification_id}/read")
+    Call<Void> markNotificationRead(@Path("notification_id") String notificationId);
+
+    @PATCH("api/notifications/read-all")
+    Call<Void> markAllNotificationsRead();
 
     @HTTP(method = "DELETE",
             path = "api/notifications/device-token",
