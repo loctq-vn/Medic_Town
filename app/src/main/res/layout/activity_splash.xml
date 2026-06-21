@@ -30,7 +30,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/app_name"
                 android:scaleType="centerInside"
-                android:src="@drawable/medic_town_logo" />
+                android:src="@mipmap/logo" />
         </FrameLayout>
 
         <TextView

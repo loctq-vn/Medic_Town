@@ -1,30 +1,81 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:padding="12dp">
 
+    <!-- Icon Trạng Thái -->
+    <ImageView
+        android:id="@+id/iv_notification_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_circle_placeholder"
+        android:padding="8dp"
+        android:src="@drawable/ic_notifications"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/main_blue" />
+
+    <!-- Nội dung -->
     <TextView
         android:id="@+id/tv_notification_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
         android:textColor="@color/on_surface"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/view_unread_dot"
+        app:layout_constraintStart_toEndOf="@+id/iv_notification_icon"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_notification_message"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:textColor="@color/text_gray"
-        android:textSize="13sp" />
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_notification_title"
+        app:layout_constraintStart_toStartOf="@+id/tv_notification_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_notification_title" />
 
     <TextView
         android:id="@+id/tv_notification_time"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:alpha="0.6"
         android:textColor="@color/text_gray"
-        android:textSize="11sp" />
-</LinearLayout>
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_notification_title"
+        app:layout_constraintStart_toStartOf="@+id/tv_notification_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_notification_message" />
+
+    <!-- Chấm xanh chưa đọc -->
+    <View
+        android:id="@+id/view_unread_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:background="@drawable/bg_unread_badge"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Divider tự thân (tùy chọn, ở đây mình dùng view mỏng ở đáy) -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="#F5F5F5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_notification_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_notification_time" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
