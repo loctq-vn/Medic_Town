@@ -168,6 +168,15 @@ public class MainActivity extends AppCompatActivity {
         startIconAnimation();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (notificationButton != null) {
+            loadNotifications();
+        }
+    }
+
     private void startIconAnimation() {
         iconHandler.removeCallbacks(iconAnimationRunnable);
         iconHandler.postDelayed(iconAnimationRunnable, 2000);
@@ -476,7 +485,6 @@ public class MainActivity extends AppCompatActivity {
                 : notifications;
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new NotificationAdapter(shortList));
 
         PopupWindow popupWindow = new PopupWindow(
                 popupView,
@@ -484,6 +492,11 @@ public class MainActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 true
         );
+
+        recyclerView.setAdapter(new NotificationAdapter(shortList, notification -> {
+            popupWindow.dismiss();
+            handleNotificationClick(notification);
+        }));
 
         popupWindow.setOutsideTouchable(true);
         popupWindow.setElevation(12f);
@@ -494,5 +507,59 @@ public class MainActivity extends AppCompatActivity {
         });
 
         popupWindow.showAsDropDown(notificationButton, -280, 0, Gravity.END);
+    }
+
+    private void handleNotificationClick(AppNotification notification) {
+        if (notification == null) {
+            return;
+        }
+
+        markNotificationRead(notification);
+
+        if (notification.orderId == null || notification.orderId.trim().isEmpty()) {
+            Toast.makeText(this, "This notification is not linked to an order", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (sellerMode) {
+            openBuyerChannel();
+        }
+
+        bottomNav.setSelectedItemId(R.id.nav_history);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, OrderDetailFragment.newInstance(notification.orderId))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void markNotificationRead(AppNotification notification) {
+        if (notification == null || notification.id == null || notification.id.trim().isEmpty()) {
+            return;
+        }
+
+        boolean wasUnread = !notification.isRead;
+
+        if (wasUnread) {
+            notification.isRead = true;
+            updateNotificationBadge();
+        }
+
+        RetrofitClient.getApiService().markNotificationRead(notification.id).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                // Local UI is already updated.
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable throwable) {
+                if (wasUnread) {
+                    notification.isRead = false;
+                    updateNotificationBadge();
+                }
+
+                Toast.makeText(MainActivity.this, "Cannot mark notification as read", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

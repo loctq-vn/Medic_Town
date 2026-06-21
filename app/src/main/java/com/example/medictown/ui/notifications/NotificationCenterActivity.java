@@ -20,6 +20,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.content.Intent;
+
+import com.example.medictown.MainActivity;
+
+
 public class NotificationCenterActivity extends AppCompatActivity {
     private final List<AppNotification> notifications = new ArrayList<>();
     private NotificationAdapter adapter;
@@ -36,7 +41,7 @@ public class NotificationCenterActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.rv_all_notifications);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new NotificationAdapter(notifications);
+        adapter = new NotificationAdapter(notifications, this::handleNotificationClick);
         recyclerView.setAdapter(adapter);
 
         loadNotifications();
@@ -59,6 +64,50 @@ public class NotificationCenterActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<List<AppNotification>> call, @NonNull Throwable throwable) {
                 Toast.makeText(NotificationCenterActivity.this, "Cannot load notifications", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleNotificationClick(AppNotification notification) {
+        if (notification == null) {
+            return;
+        }
+
+        markNotificationRead(notification);
+
+        if (notification.orderId == null || notification.orderId.trim().isEmpty()) {
+            Toast.makeText(this, "This notification is not linked to an order", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("open_order_detail", true);
+        intent.putExtra("order_id", notification.orderId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        startActivity(intent);
+        finish();
+    }
+
+    private void markNotificationRead(AppNotification notification) {
+        if (notification.id == null || notification.id.trim().isEmpty()) {
+            return;
+        }
+
+        if (!notification.isRead) {
+            notification.isRead = true;
+            adapter.notifyDataSetChanged();
+        }
+
+        RetrofitClient.getApiService().markNotificationRead(notification.id).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                // Already updated locally.
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable throwable) {
+                Toast.makeText(NotificationCenterActivity.this, "Cannot mark notification as read", Toast.LENGTH_SHORT).show();
             }
         });
     }

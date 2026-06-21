@@ -14,10 +14,20 @@ import com.example.medictown.data.models.AppNotification;
 import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
+    public interface OnNotificationClickListener {
+        void onNotificationClick(AppNotification notification);
+    }
+
     private final List<AppNotification> notifications;
+    private final OnNotificationClickListener listener;
 
     public NotificationAdapter(List<AppNotification> notifications) {
+        this(notifications, null);
+    }
+
+    public NotificationAdapter(List<AppNotification> notifications, OnNotificationClickListener listener) {
         this.notifications = notifications;
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,10 +41,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
         AppNotification item = notifications.get(position);
+
         holder.title.setText(item.title);
         holder.message.setText(item.message);
         holder.time.setText(item.createdAt);
         holder.itemView.setAlpha(item.isRead ? 0.6f : 1f);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onNotificationClick(item);
+            }
+        });
     }
 
     @Override
