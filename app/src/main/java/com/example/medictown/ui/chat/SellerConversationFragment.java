@@ -89,11 +89,19 @@ public class SellerConversationFragment extends Fragment {
             binding.rvConversations.setVisibility(values.isEmpty() ? View.GONE : View.VISIBLE);
         });
 
-        viewModel.getLoading().observe(getViewLifecycleOwner(), isLoading ->
-                binding.progressLoading.setVisibility(
-                        Boolean.TRUE.equals(isLoading) ? View.VISIBLE : View.GONE
-                )
-        );
+        viewModel.getLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            boolean loading = Boolean.TRUE.equals(isLoading);
+            if (loading) {
+                binding.shimmerLoading.setVisibility(View.VISIBLE);
+                binding.shimmerLoading.startShimmer();
+                binding.rvConversations.setVisibility(View.GONE);
+                binding.emptyState.setVisibility(View.GONE);
+                binding.errorState.setVisibility(View.GONE);
+            } else {
+                binding.shimmerLoading.stopShimmer();
+                binding.shimmerLoading.setVisibility(View.GONE);
+            }
+        });
 
         viewModel.getConnected().observe(getViewLifecycleOwner(), isConnected -> {
             boolean connected = Boolean.TRUE.equals(isConnected);

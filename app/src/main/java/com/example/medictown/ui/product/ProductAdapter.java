@@ -86,10 +86,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
             if (product.requires_prescription) {
                 binding.tvBadge.setVisibility(View.VISIBLE);
-                binding.tvBadge.setText("RX required");
+                binding.tvBadge.setText("THUỐC KÊ ĐƠN");
             } else if (product.is_best_seller) {
                 binding.tvBadge.setVisibility(View.VISIBLE);
-                binding.tvBadge.setText("BEST SELLER");
+                binding.tvBadge.setText("BÁN CHẠY");
             } else {
                 binding.tvBadge.setVisibility(View.GONE);
             }

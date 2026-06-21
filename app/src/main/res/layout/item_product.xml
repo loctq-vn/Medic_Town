@@ -34,7 +34,7 @@
                 android:backgroundTint="#E64A19"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp"
-                android:text="RX required"
+                android:text="BÁN CHẠY"
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 android:textStyle="bold"

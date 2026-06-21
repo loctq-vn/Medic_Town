@@ -89,6 +89,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.tvSideEffectsDetail.setText(displayText(product.side_effects));
         binding.tvPrecautionsDetail.setText(displayText(product.precautions));
         binding.tvStorageDetail.setText(displayText(product.storage));
+
+        // Badges visibility
+        binding.tvPrescriptionBadge.setVisibility(product.requires_prescription ? View.VISIBLE : View.GONE);
+        binding.tvBestSellerBadge.setVisibility(product.is_best_seller ? View.VISIBLE : View.GONE);
         
         if (product.sale_price != null && product.sale_price > 0 && product.sale_price < product.price) {
             binding.tvOldPriceDetail.setVisibility(View.VISIBLE);

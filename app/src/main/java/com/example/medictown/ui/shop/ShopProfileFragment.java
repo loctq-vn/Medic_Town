@@ -26,7 +26,6 @@ public class ShopProfileFragment extends Fragment {
     private FragmentShopProfileBinding binding;
     private ShopRepository repository;
     private SessionManager sessionManager;
-    private Shop currentShop;
 
     @Nullable
     @Override
@@ -41,25 +40,21 @@ public class ShopProfileFragment extends Fragment {
         repository = new ShopRepository();
         sessionManager = new SessionManager(requireContext());
 
-        binding.btnManageProducts.setOnClickListener(v ->
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new com.example.medictown.ui.admin.AdminInventoryFragment())
-                        .addToBackStack(null)
-                        .commit()
-        );
-        binding.btnManageOrders.setOnClickListener(v ->
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new com.example.medictown.ui.admin.AdminOrdersFragment())
-                        .addToBackStack(null)
-                        .commit()
-        );
-        binding.btnManageAds.setOnClickListener(v ->
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new AdManagementFragment())
-                        .addToBackStack(null)
-                        .commit()
-        );
-        binding.btnSaveShop.setOnClickListener(v -> saveShop());
+        binding.btnManageProducts.setOnClickListener(v -> requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new com.example.medictown.ui.admin.AdminInventoryFragment())
+                .addToBackStack(null)
+                .commit());
+
+        binding.btnManageOrders.setOnClickListener(v -> requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new com.example.medictown.ui.admin.AdminOrdersFragment())
+                .addToBackStack(null)
+                .commit());
+
+        binding.btnManageAds.setOnClickListener(v -> requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new AdManagementFragment())
+                .addToBackStack(null)
+                .commit());
+
         binding.btnBuyerChannel.setOnClickListener(v -> {
             sessionManager.clearCurrentShop();
             if (getActivity() instanceof MainActivity) {
@@ -113,58 +108,17 @@ public class ShopProfileFragment extends Fragment {
     }
 
     private void bindShop(Shop shop) {
-        currentShop = shop;
-        binding.etShopName.setText(shop.name);
-        binding.etShopDescription.setText(shop.description);
-        binding.etShopAddress.setText(shop.address);
-        binding.etShopLogo.setText(shop.logo_url);
+        binding.tvShopName.setText(shop.name);
+        binding.tvShopDescription.setText(shop.description != null && !shop.description.isEmpty() 
+            ? shop.description : "Chưa có mô tả");
+        binding.tvShopAddress.setText(shop.address != null && !shop.address.isEmpty() 
+            ? shop.address : "Chưa cập nhật địa chỉ");
+        
         Glide.with(this)
                 .load(shop.logo_url)
                 .placeholder(R.drawable.ic_profile)
                 .circleCrop()
                 .into(binding.ivShopLogo);
-    }
-
-    private void saveShop() {
-        if (currentShop == null) return;
-
-        Shop update = new Shop();
-        update.name = binding.etShopName.getText().toString().trim();
-        update.description = binding.etShopDescription.getText().toString().trim();
-        update.address = binding.etShopAddress.getText().toString().trim();
-        update.logo_url = binding.etShopLogo.getText().toString().trim();
-
-        if (update.name.isEmpty()) {
-            binding.etShopName.setError("Vui lòng nhập tên gian hàng");
-            return;
-        }
-
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.btnSaveShop.setEnabled(false);
-        repository.updateShop(currentShop.id, update, new Callback<Shop>() {
-            @Override
-            public void onResponse(Call<Shop> call, Response<Shop> response) {
-                if (binding == null) return;
-                binding.progressBar.setVisibility(View.GONE);
-                binding.btnSaveShop.setEnabled(true);
-                if (!response.isSuccessful() || response.body() == null) {
-                    Toast.makeText(getContext(), "Không thể cập nhật gian hàng", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Shop shop = response.body();
-                sessionManager.saveCurrentShop(shop.id, shop.name, shop.logo_url);
-                bindShop(shop);
-                Toast.makeText(getContext(), "Đã lưu thông tin gian hàng", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<Shop> call, Throwable t) {
-                if (binding == null) return;
-                binding.progressBar.setVisibility(View.GONE);
-                binding.btnSaveShop.setEnabled(true);
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
