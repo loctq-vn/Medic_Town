@@ -27,5 +27,9 @@ public class Products implements Serializable {
     public String subcategory_id;
     public Date created_at;
 
+    // UI only fields
+    public double average_rating = 5.0;
+    public int total_reviews = 0;
+
     public Products() {}
 }

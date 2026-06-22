@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="160dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp"
+    app:rippleColor="@color/ripple_primary_light"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="140dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_product"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="12dp"
+                android:background="#F8F9FA"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_product"
+                app:shapeAppearanceOverlay="@style/RoundedSquare" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_hot"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_margin="8dp"
+                android:text="HOT"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                app:chipBackgroundColor="#FF9800"
+                app:chipCornerRadius="4dp"
+                app:chipStrokeWidth="0dp"
+                app:ensureMinTouchTargetSize="false" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tv_product_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Tên sản phẩm nổi bật"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="★ 4.8"
+                    android:textColor="#FFB300"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="10dp"
+                    android:layout_marginHorizontal="6dp"
+                    android:background="#DDDDDD" />
+
+                <TextView
+                    android:id="@+id/tv_sold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đã bán 100+"
+                    android:textColor="@color/text_gray"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="450.000đ"
+                    android:textColor="@color/main_blue"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_discount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/round_corner_item"
+                    android:backgroundTint="#FFE0E0"
+                    android:paddingHorizontal="4dp"
+                    android:paddingVertical="2dp"
+                    android:text="-10%"
+                    android:textColor="#D32F2F"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
