@@ -39,7 +39,6 @@ public class ProductFragment extends Fragment {
     private CartViewModel cartViewModel;
     private SessionManager sessionManager;
     private ProductAdapter adapter;
-    private FeaturedProductAdapter featuredAdapter;
     private AdBannerAdapter adBannerAdapter;
     private AdvertisementRepository advertisementRepository;
     private RecommendationRepository recommendationRepository;
@@ -124,7 +123,6 @@ public class ProductFragment extends Fragment {
         recommendationRepository = new RecommendationRepository();
 
         setupRecyclerView();
-        setupFeaturedRecyclerView();
         setupAdBanner();
         setupSearch();
         setupCategoryNavigation();
@@ -256,28 +254,6 @@ public class ProductFragment extends Fragment {
         });
         binding.rvProducts.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.rvProducts.setAdapter(adapter);
-    }
-
-    private void setupFeaturedRecyclerView() {
-        featuredAdapter = new FeaturedProductAdapter();
-        featuredAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
-            @Override
-            public void onProductClick(Products product, android.widget.ImageView productImage) {
-                recordProductEvent(product, "click", "home_featured_horizontal", 0);
-                android.content.Intent intent = new android.content.Intent(getContext(), ProductDetailActivity.class);
-                intent.putExtra("product", product);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onBuyNowClick(Products product) {
-                showBuyNowBottomSheet(product);
-            }
-        });
-        binding.rvFeaturedProducts.setAdapter(featuredAdapter);
-        
-        // Thêm hiệu ứng Snap để cuộn mượt và hít vào vị trí
-        new androidx.recyclerview.widget.LinearSnapHelper().attachToRecyclerView(binding.rvFeaturedProducts);
     }
 
     private void setupAdBanner() {
@@ -419,18 +395,10 @@ public class ProductFragment extends Fragment {
             }
         });
 
-        // Hiển thị Featured Products ở hàng ngang
+        // Quan sát cả featured và all products để hiển thị
         viewModel.getFeaturedProducts().observe(getViewLifecycleOwner(), products -> {
-            if (products != null && !products.isEmpty()) {
-                binding.layoutFeaturedProducts.setVisibility(View.VISIBLE);
-                featuredAdapter.setProductList(products);
-                
-                // Nếu adapter chính đang trống (đang đợi load gợi ý), dùng featured làm placeholder
-                if (adapter.getItemCount() == 0) {
-                    adapter.setProductList(products);
-                }
-            } else {
-                binding.layoutFeaturedProducts.setVisibility(View.GONE);
+            if (!showingRecommendations && products != null && !products.isEmpty()) {
+                adapter.setProductList(products);
             }
         });
 

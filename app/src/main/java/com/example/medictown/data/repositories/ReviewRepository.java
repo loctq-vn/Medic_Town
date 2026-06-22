@@ -34,19 +34,6 @@ public class ReviewRepository {
         api.getReviewsByProduct(productId).enqueue(callback);
     }
 
-    public void getReviewsForProducts(List<String> productIds, Callback<List<Reviews>> callback) {
-        if (productIds == null || productIds.isEmpty()) return;
-        
-        StringBuilder sb = new StringBuilder("in.(");
-        for (int i = 0; i < productIds.size(); i++) {
-            sb.append(productIds.get(i));
-            if (i < productIds.size() - 1) sb.append(",");
-        }
-        sb.append(")");
-
-        api.getReviews(null, sb.toString()).enqueue(callback);
-    }
-
     public void submitReview(Reviews review, Callback<Void> callback) {
         api.createReview(review).enqueue(callback);
     }

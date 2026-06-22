@@ -479,17 +479,16 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = popupView.findViewById(R.id.rv_short_notifications);
         TextView moreButton = popupView.findViewById(R.id.tv_more_notifications);
-        TextView markAllRead = popupView.findViewById(R.id.tv_mark_all_read);
 
-        List<AppNotification> shortList = notifications.size() > 5
-                ? notifications.subList(0, 5)
+        List<AppNotification> shortList = notifications.size() > 3
+                ? notifications.subList(0, 3)
                 : notifications;
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         PopupWindow popupWindow = new PopupWindow(
                 popupView,
-                (int) (getResources().getDisplayMetrics().widthPixels * 0.9), // 90% màn hình
+                getResources().getDisplayMetrics().widthPixels - 32,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 true
         );
@@ -500,48 +499,14 @@ public class MainActivity extends AppCompatActivity {
         }));
 
         popupWindow.setOutsideTouchable(true);
-        popupWindow.setElevation(16f); // Bo góc và đổ bóng sâu hơn
-
-        markAllRead.setOnClickListener(v -> {
-            markAllNotificationsRead();
-            popupWindow.dismiss();
-        });
+        popupWindow.setElevation(12f);
 
         moreButton.setOnClickListener(v -> {
             popupWindow.dismiss();
             startActivity(new Intent(this, NotificationCenterActivity.class));
         });
 
-        // Animation mờ nền nhẹ
-        View rootView = getWindow().getDecorView().getRootView();
-        float originalAlpha = 1.0f;
-        
-        popupWindow.setOnDismissListener(() -> {
-            // Restore alpha
-        });
-
-        popupWindow.showAsDropDown(notificationButton, 0, 10, Gravity.END);
-    }
-
-    private void markAllNotificationsRead() {
-        for (AppNotification n : notifications) {
-            n.isRead = true;
-        }
-        updateNotificationBadge();
-        
-        RetrofitClient.getApiService().markAllNotificationsRead().enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    loadNotifications(); // Reload to sync
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                // Silent fail
-            }
-        });
+        popupWindow.showAsDropDown(notificationButton, -280, 0, Gravity.END);
     }
 
     private void handleNotificationClick(AppNotification notification) {

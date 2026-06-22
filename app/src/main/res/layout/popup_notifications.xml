@@ -1,81 +1,30 @@
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="8dp"
-    app:strokeWidth="0dp"
-    android:layout_margin="8dp">
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="12dp">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:text="Notifications"
+        android:textColor="@color/main_blue"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-        <!-- Header -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="12dp">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_short_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_marginTop="8dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:text="@string/notifications"
-                android:textColor="@color/main_blue"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_mark_all_read"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:text="@string/mark_all_read"
-                android:textColor="@color/main_blue"
-                android:textSize="13sp"
-                android:alpha="0.7"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#F0F0F0" />
-
-        <!-- List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_short_notifications"
-            android:layout_width="match_parent"
-            android:layout_height="320dp"
-            android:clipToPadding="false"
-            android:overScrollMode="never" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#F0F0F0" />
-
-        <!-- Footer -->
-        <TextView
-            android:id="@+id/tv_more_notifications"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="center"
-            android:text="@string/view_all_notifications"
-            android:textColor="@color/main_blue"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true" />
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:id="@+id/tv_more_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center"
+        android:text="More..."
+        android:textColor="@color/main_blue"
+        android:textStyle="bold" />
+</LinearLayout>
