@@ -6,11 +6,18 @@ import androidx.lifecycle.ViewModel;
 import com.example.medictown.data.models.Advertisement;
 import com.example.medictown.data.models.ProductCategory;
 import com.example.medictown.data.models.Products;
+import com.example.medictown.data.models.Reviews;
 import com.example.medictown.data.repositories.ProductRepository;
 import com.example.medictown.data.repositories.RecommendationRepository;
+import com.example.medictown.data.repositories.ReviewRepository;
+
 import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.List;
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -18,6 +25,7 @@ import retrofit2.Response;
 public class ProductViewModel extends ViewModel {
     private final ProductRepository repository;
     private final RecommendationRepository recommendationRepository;
+    private final ReviewRepository reviewRepository;
     private final MutableLiveData<List<Advertisement>> homeBannerAds = new MutableLiveData<>();
     private final MutableLiveData<List<Products>> featuredProducts = new MutableLiveData<>();
     private final MutableLiveData<List<Products>> allProducts = new MutableLiveData<>();
@@ -29,6 +37,7 @@ public class ProductViewModel extends ViewModel {
     public ProductViewModel() {
         this.repository = new ProductRepository();
         this.recommendationRepository = new RecommendationRepository();
+        this.reviewRepository = new ReviewRepository();
         loadFeaturedProducts();
     }
 
@@ -57,13 +66,15 @@ public class ProductViewModel extends ViewModel {
     }
 
     public void loadFeaturedProducts() {
-        isLoading.setValue(true);
+        // isLoading.setValue(true); // Để ProductFragment chủ động quản lý loading chính
         repository.getFeaturedProducts(new Callback<List<Products>>() {
             @Override
             public void onResponse(Call<List<Products>> call, Response<List<Products>> response) {
-                isLoading.setValue(false);
+                // isLoading.setValue(false); 
                 if (response.isSuccessful() && response.body() != null) {
-                    featuredProducts.setValue(response.body());
+                    List<Products> products = response.body();
+                    featuredProducts.setValue(products);
+                    loadRatingsForProducts(products, featuredProducts);
                 } else {
                     errorMessage.setValue("Lỗi khi tải sản phẩm nổi bật: " + response.message());
                 }
@@ -71,8 +82,55 @@ public class ProductViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<List<Products>> call, Throwable t) {
-                isLoading.setValue(false);
+                // isLoading.setValue(false);
                 errorMessage.setValue("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    private void loadRatingsForProducts(List<Products> products, MutableLiveData<List<Products>> targetLiveData) {
+        if (products == null || products.isEmpty()) return;
+
+        List<String> productIds = new ArrayList<>();
+        for (Products p : products) {
+            productIds.add(p.id);
+        }
+
+        reviewRepository.getReviewsForProducts(productIds, new Callback<List<Reviews>>() {
+            @Override
+            public void onResponse(Call<List<Reviews>> call, Response<List<Reviews>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Reviews> allReviews = response.body();
+                    
+                    // Group reviews by product ID
+                    Map<String, List<Integer>> ratingsMap = new HashMap<>();
+                    for (Reviews r : allReviews) {
+                        if (!ratingsMap.containsKey(r.product_id)) {
+                            ratingsMap.put(r.product_id, new ArrayList<>());
+                        }
+                        ratingsMap.get(r.product_id).add(r.rating);
+                    }
+
+                    // Calculate average for each product
+                    for (Products p : products) {
+                        List<Integer> ratings = ratingsMap.get(p.id);
+                        if (ratings == null || ratings.isEmpty()) {
+                            p.average_rating = 5.0;
+                            p.total_reviews = 0;
+                        } else {
+                            double sum = 0;
+                            for (int r : ratings) sum += r;
+                            p.average_rating = sum / ratings.size();
+                            p.total_reviews = ratings.size();
+                        }
+                    }
+                    targetLiveData.setValue(products);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Reviews>> call, Throwable t) {
+                // If failed, products already have default 5.0 rating
             }
         });
     }
